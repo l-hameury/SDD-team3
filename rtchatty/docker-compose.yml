@@ -2,27 +2,40 @@
 version: "3.1"
 
 services:
-  rtchatty:
-    image: rtchatty
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 80:80
+  # rtchatty:
+  #   image: rtchatty
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:80
+  #   # - ASPNETCORE_Kestrel__Certificates__Default__Path=\https\aspnetapp.pfx
+  #   volumes:
+  #     - ./:/src
+  #   ports:
+  #     - 80:80
 
   mongo:
     image: mongo
     restart: always
+    container_name: mongo
     environment:
+      MONGO_HOST_DATA: /mongodb
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-
-  mongo-express:
-    image: mongo-express
-    restart: always
+    volumes:
+      - ./data/db:/data/db
     ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      - 27017:27017
+
+  # mongo-express:
+  #   image: mongo-express
+  #   container_name: mongo-express
+  #   restart: always
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: example
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
