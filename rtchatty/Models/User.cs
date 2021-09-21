@@ -9,10 +9,14 @@ namespace rtchatty.Models
 		[BsonRepresentation(BsonType.ObjectId)]
 		public string Id { get; set; }
 
-		[BsonElement("UserName")]
-		public string userName { get; set; }
+		[BsonElement("Email")]
+		public string Email { get; set; }
+		[BsonElement("Password")]
+		public string Password { get; set; }
 
-		public string firstName { get; set; }
-		public string lastName { get; set; }
+		// [BsonElement("FirstName")]
+		// public string firstName { get; set; }
+		// [BsonElement("LastName")]
+		// public string lastName { get; set; }
 	}
 }
