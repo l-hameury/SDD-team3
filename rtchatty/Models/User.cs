@@ -13,10 +13,5 @@ namespace rtchatty.Models
 		public string Email { get; set; }
 		[BsonElement("Password")]
 		public string Password { get; set; }
-
-		// [BsonElement("FirstName")]
-		// public string firstName { get; set; }
-		// [BsonElement("LastName")]
-		// public string lastName { get; set; }
 	}
 }
