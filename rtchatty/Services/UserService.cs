@@ -33,9 +33,31 @@ namespace rtchatty.Services
 
 		public User Create(User user)
 		{
+			/* //to fix "string not valid 24 hex" i had issues with this api when not running locally
+			User newUser = new User()
+			{
+				Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString(),
+				Email = user.Email,
+				Password = user.Password
+			};
+			user.Id = newUser.Id;
+			*/
 			_users.InsertOne(user);
-
 			return user;
 		}
+
+		public User Update(User user)
+        {
+			var filter = Builders<User>.Filter.Eq("id", user.Id);
+			var updatedUser = new User()
+			{
+				Id = user.Id,
+				Email = user.Email,
+				Password = user.Password,
+				Avatar = user.Avatar
+            };
+			_users.FindOneAndReplace(filter, updatedUser);
+			return user;
+        }
 	}
 }

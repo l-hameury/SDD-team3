@@ -32,6 +32,14 @@ namespace rtchatty.Controllers
 			return Json(user);
 		}
 
+		[Route("update")]
+		[HttpPost]
+		public ActionResult<User> Update(User user)
+        {
+			service.Update(user);
+			return Json(user);
+        }
+
 		[HttpPost]
 		public ActionResult<User> Create(User user)
 		{
