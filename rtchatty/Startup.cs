@@ -1,3 +1,5 @@
+using System.Runtime.Serialization;
+using System.Net.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,6 +11,9 @@ using Microsoft.Extensions.Options;
 using rtchatty.Database;
 using rtchatty.Hubs;
 using rtchatty.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace rtchatty
 {
@@ -23,17 +28,40 @@ namespace rtchatty
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
-		{
-
-			services.Configure<ChattyDatabaseSettings>(
-				Configuration.GetSection(nameof(ChattyDatabaseSettings)));
+		{	
+			// Enable scoped lifetime of UserService service for Dependency Injection
+			// DI Explanation from Microsoft: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-5.0
+			services.AddScoped<UserService>();
 
 			services.AddSingleton<IChattyDatabaseSettings>(
 				db => db.GetRequiredService<IOptions<ChattyDatabaseSettings>>().Value);
 
-			// Enable scoped lifetime of UserService service for Dependency Injection
-			// DI Explanation from Microsoft: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-5.0
-			services.AddScoped<UserService>();
+			services.AddControllers();
+
+			services.Configure<ChattyDatabaseSettings>(
+				Configuration.GetSection(nameof(ChattyDatabaseSettings)));
+
+
+			services.AddAuthentication(x =>
+           {
+               x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+               x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+           })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("JwtKey").ToString())),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+
+                });
+
+			
 
 			services.AddControllersWithViews();
 			services.AddSignalR();
@@ -51,6 +79,7 @@ namespace rtchatty
 		{
 			if (env.IsDevelopment())
 			{
+				app.UseAuthentication(); //authentication
 				app.UseDeveloperExceptionPage();
 			}
 			else
@@ -65,6 +94,8 @@ namespace rtchatty
 			app.UseSpaStaticFiles();
 
 			app.UseRouting();
+
+			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{
