@@ -12,3 +12,8 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+.registerContainer{
+  max-width: 750px;
+  border-radius: 1em;
+}
