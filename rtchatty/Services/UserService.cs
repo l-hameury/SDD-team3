@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Threading;
+using System.Globalization;
 using System.ComponentModel;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
@@ -5,14 +8,21 @@ using rtchatty.Database;
 using rtchatty.Models;
 using System.Linq;
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System;
+
 
 namespace rtchatty.Services
 {
 	public class UserService
 	{
 		private readonly IMongoCollection<User> _users;
+		private readonly string key;
 
-		public UserService(IChattyDatabaseSettings settings)
+		public UserService(IConfiguration configuration)
 		{
 			// var client = new MongoClient(settings.ConnectionString);
 
@@ -21,9 +31,12 @@ namespace rtchatty.Services
 			// _users = database.GetCollection<User>(settings.UsersCollectionName);
 			var client = new MongoClient("mongodb://localhost:27017");
 
-			var database = client.GetDatabase("Chat");
+			var database = client.GetDatabase("chattyDB");
 
 			_users = database.GetCollection<User>("users");
+
+			this.key = configuration.GetSection("JwtKey").ToString();
+
 		}
 
 		public List<User> GetUsers() =>
@@ -34,8 +47,41 @@ namespace rtchatty.Services
 		public User Create(User user)
 		{
 			_users.InsertOne(user);
+
 			return user;
 		}
+
+
+		public string Authenticate(string email, string password)
+        {
+            var user = this._users.Find(x => x.Email == email && x.Password == password).FirstOrDefault();
+
+            if (user == null)
+                return null;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var tokenKey = Encoding.ASCII.GetBytes(key);
+
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Email, email),
+                }),
+
+                Expires = DateTime.UtcNow.AddHours(1),
+
+                SigningCredentials = new SigningCredentials
+                (
+                    new SymmetricSecurityKey(tokenKey),
+                    SecurityAlgorithms.HmacSha256Signature
+                )
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
 
 		public User Update(User user)
         {
