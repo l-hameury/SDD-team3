@@ -34,8 +34,8 @@ namespace rtchatty.Controllers
             return Json(user);
         }
 
-        [HttpPost]
         [Route("createUser")]
+        [HttpPost]
         public ActionResult<User> Create(User user)
         {
             service.Create(user);
