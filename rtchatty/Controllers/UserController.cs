@@ -20,7 +20,7 @@ namespace rtchatty.Controllers
         }
 
         [HttpGet]
-        [Route("api/[controller]/getUsers")]
+        [Route("getUsers")]
         public ActionResult<List<User>> GetUsers()
         {
             return service.GetUsers();
@@ -35,7 +35,7 @@ namespace rtchatty.Controllers
         }
 
         [HttpPost]
-        [Route("api/[controller]/createUser")]
+        [Route("createUser")]
         public ActionResult<User> Create(User user)
         {
             service.Create(user);
@@ -54,6 +54,14 @@ namespace rtchatty.Controllers
                 return Unauthorized();
 
             return Ok(new { token, user });
+        }
+
+        [Route("update")]
+        [HttpPost]
+        public ActionResult<User> Update(User user)
+        {
+            service.Update(user);
+            return Json(user);
         }
     }
 }

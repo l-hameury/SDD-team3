@@ -17,32 +17,32 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace rtchatty
 {
-	public class Startup
-	{
-		public Startup(IConfiguration configuration)
-		{
-			Configuration = configuration;
-		}
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-		public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
-		{	
-			// Enable scoped lifetime of UserService service for Dependency Injection
-			// DI Explanation from Microsoft: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-5.0
-			services.AddScoped<UserService>();
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // Enable scoped lifetime of UserService service for Dependency Injection
+            // DI Explanation from Microsoft: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-5.0
+            services.AddScoped<UserService>();
 
-			services.AddSingleton<IChattyDatabaseSettings>(
-				db => db.GetRequiredService<IOptions<ChattyDatabaseSettings>>().Value);
+            services.AddSingleton<IChattyDatabaseSettings>(
+                db => db.GetRequiredService<IOptions<ChattyDatabaseSettings>>().Value);
 
-			services.AddControllers();
+            services.AddControllers();
 
-			services.Configure<ChattyDatabaseSettings>(
-				Configuration.GetSection(nameof(ChattyDatabaseSettings)));
+            services.Configure<ChattyDatabaseSettings>(
+                Configuration.GetSection(nameof(ChattyDatabaseSettings)));
 
 
-			services.AddAuthentication(x =>
+            services.AddAuthentication(x =>
            {
                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -61,60 +61,59 @@ namespace rtchatty
 
                 });
 
-			
-
-			services.AddControllersWithViews();
-			services.AddSignalR();
+            services.AddControllersWithViews();
+            services.AddSignalR();
 
 
-			// In production, the React files will be served from this directory
-			services.AddSpaStaticFiles(configuration =>
-			{
-				configuration.RootPath = "ClientApp/build";
-			});
-		}
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/build";
+            });
+        }
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseAuthentication(); //authentication
-				app.UseDeveloperExceptionPage();
-			}
-			else
-			{
-				app.UseExceptionHandler("/Error");
-				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-				app.UseHsts();
-			}
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseAuthentication(); //authentication
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
 
-			app.UseHttpsRedirection();
-			app.UseStaticFiles();
-			app.UseSpaStaticFiles();
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
-			app.UseRouting();
+            app.UseRouting();
+            app.UseAuthorization();
 
-			app.UseAuthorization();
+            app.UseAuthorization();
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapControllerRoute(
-					name: "default",
-					pattern: "{controller}/{action=Index}/{id?}");
-				// Map the /chatHub endpoint to our ChatHub class
-				endpoints.MapHub<ChatHub>("/chatHub");
-			});
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+                // Map the /chatHub endpoint to our ChatHub class
+                endpoints.MapHub<ChatHub>("/chatHub");
+            });
 
-			app.UseSpa(spa =>
-			{
-				spa.Options.SourcePath = "ClientApp";
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
 
-				if (env.IsDevelopment())
-				{
-					spa.UseReactDevelopmentServer(npmScript: "start");
-				}
-			});
-		}
-	}
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+            });
+        }
+    }
 }
