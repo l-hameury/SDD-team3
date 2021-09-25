@@ -84,7 +84,7 @@ namespace rtchatty.Services
         }
 
 		public User Update(User user)
-        {
+		{
 			var filter = Builders<User>.Filter.Eq(p => p.Id, user.Id);
 			var update = Builders<User>.Update
 			.Set(p => p.Bio, user.Bio)

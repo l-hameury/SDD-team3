@@ -3,6 +3,7 @@ import { EditText, EditTextarea } from 'react-edit-text'
 import axios from 'axios';
 import 'react-edit-text/dist/index.css'
 const Profile = () => {
+  const token = "store your token in here"
 
   const saveText = async (val) => {
     // post request to update user info
@@ -10,9 +11,13 @@ const Profile = () => {
     // just need this component to have user information (from props im assuming)
     // so that we can pass that information into the api request
     await axios.post('https://localhost:5001/api/user/update', {
-      id: "614b76b07a03a7bb696e0a1d",
+      id: "614e6c015f4990e6e66e9853",
       avatar: "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350",
       bio: "kris smells"
+    }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
     })
     .then(function (res){
       console.log(res)
