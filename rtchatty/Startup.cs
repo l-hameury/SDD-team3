@@ -62,7 +62,6 @@ namespace rtchatty
                 });
 
 			
-
 			services.AddControllersWithViews();
 			services.AddSignalR();
 
@@ -94,7 +93,6 @@ namespace rtchatty
 			app.UseSpaStaticFiles();
 
 			app.UseRouting();
-
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>

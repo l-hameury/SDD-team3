@@ -33,6 +33,7 @@ namespace rtchatty.Controllers
 			return Json(user);
 		}
 
+		[AllowAnonymous]
 		[HttpPost]
 		public ActionResult<User> Create(User user)
 		{
@@ -52,6 +53,14 @@ namespace rtchatty.Controllers
                 return Unauthorized();
 
             return Ok(new { token, user });
+        }
+
+		[Route("update")]
+		[HttpPost]
+		public ActionResult<User> Update(User user)
+        {
+			service.Update(user);
+			return Json(user);
         }
 	}
 }
