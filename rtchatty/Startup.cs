@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Immutable;
 using System.Runtime.Serialization;
 using System.Net.Security;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +31,7 @@ namespace rtchatty
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{	
+			
 			// Enable scoped lifetime of UserService service for Dependency Injection
 			// DI Explanation from Microsoft: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-5.0
 			services.AddScoped<UserService>();
@@ -77,6 +80,8 @@ namespace rtchatty
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
+			
+
 			if (env.IsDevelopment())
 			{
 				app.UseAuthentication(); //authentication
@@ -88,6 +93,8 @@ namespace rtchatty
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
+
+			
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
