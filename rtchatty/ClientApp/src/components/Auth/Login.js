@@ -4,6 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import axios from 'axios';
+import {Redirect} from 'react-router';
 
 export default function Login(){
 
@@ -18,7 +19,11 @@ export default function Login(){
                 password: user.password,
             })
             .then((res) =>{
-                console.log(res);
+                 console.log(res);
+                if (res != null){
+                    return <Redirect to ="/chat" {...user} />;
+                }
+               
             })
             .catch((err) =>{
                 console.log(err)
