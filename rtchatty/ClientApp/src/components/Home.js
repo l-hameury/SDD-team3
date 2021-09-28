@@ -1,6 +1,7 @@
+import axios from 'axios';
 import React, { Component } from 'react';
 
-export class Home extends Component {
+/* export class Home extends Component {
   static displayName = Home.name;
 
   render () {
@@ -23,4 +24,17 @@ export class Home extends Component {
       </div>
     );
   }
+}
+ */
+
+export default class Home extends Component{
+
+  componentDidMount(){
+    axios.get('https://localhost:5001/api/user/authenticate')
+  }
+    render(){
+      return(
+        <h2>Not Authorized</h2>
+      );
+    }
 }

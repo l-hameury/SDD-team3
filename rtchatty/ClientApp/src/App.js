@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router';
+import { BrowserRouter,Route, Switch} from 'react-router-dom';
+import '../node_modules/bootstrap/dist/css/bootstrap-reboot.min.css';
 //import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import { Layout } from './components/Layout';
-import { Home } from './components/Home';
+//import { Layout } from './components/Layout';
+import NavMenu from './components/NavMenu';
+import Home from './components/Home';
+import Nav from './components/Nav';
 import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
-import Nav from './components/NavMenu';
 // Export default means that you don't need to use braces around the class name
 // Source: https://stackoverflow.com/questions/47619405/why-does-my-react-component-export-not-work
 import Chat from './components/Chat';
-import Login from "./components/Auth/Login";
+import Login from "./components/Login";
+import SignUp from "./components/Signup";
 import './custom.css'
 
-export default class App extends Component {
+/* export default class App extends Component {
   static displayName = App.name;
 
   render() {
@@ -29,4 +32,27 @@ export default class App extends Component {
 
     
   }
+} */
+
+
+function App(){
+  return(
+    <BrowserRouter>
+    <div className="App">
+      <Nav/>
+      <div className="auth-wrapper">
+          <div className="auth-inner">
+            <Switch>
+              <Route exact path="/" component={Home}/>
+              <Route exact path="/login" component={Login}/>
+              <Route exact path="/signup" component={SignUp}/>
+
+            </Switch>
+          </div>
+      </div>
+    </div>
+    </BrowserRouter>
+  );
 }
+
+export default App; 

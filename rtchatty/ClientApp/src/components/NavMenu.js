@@ -3,7 +3,7 @@ import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLi
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 
-export class NavMenu extends Component {
+/* export class NavMenu extends Component {
   static displayName = NavMenu.name;
 
   constructor(props) {
@@ -51,5 +51,27 @@ export class NavMenu extends Component {
         </Navbar>
       </header>
     );
+  }
+} */
+
+export default class NavMenu extends Component{
+  render(){
+    return(
+    <nav className="navbar navbar-expand navbar-light fixed-top">
+    <div className="container">
+      <a href="" className="navbar-brand">Home</a>
+      <div className="collapse navbar-collapse">
+        <ul className="navbar-nav ml-auto">
+          <li className="nav-item">
+            <a href="" className="nav-link">Login</a>
+          </li>
+          <li className="nav-item">
+            <a href="" className="nav-link">Chat</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>);
+
   }
 }
