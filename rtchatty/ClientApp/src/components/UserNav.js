@@ -5,7 +5,7 @@ import Row from "reactstrap/lib/Row";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
 const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvcGVAdGVzdC5jb20iLCJuYmYiOjE2MzI4MTY0MzMsImV4cCI6MTYzMjgyMDAzMywiaWF0IjoxNjMyODE2NDMzfQ.2Ko4EO_m6fUcRjIlwYqg6k7AwKjNnRFzHLGwxJa09Ds`;
-
+var filtered = [];
 var sideProfilePicStyle = {
   width: "64px",
   height: "64px",
@@ -36,38 +36,57 @@ export default function UserNav() {
       .then((response) => response.json())
       .then((json) => {
         setUserData(json);
-        // users = userData;
+        filtered = userData;
       });
   }, []);
 
-  function search(users) {
-    return users.filter((user) => user.email.toLowerCase().indexOf(q) > -1);
+  function search() {
+    filtered = userData.filter(
+      (user) => user.email.toLowerCase().indexOf(q) > -1
+    ); // change to query type to search users through api
   }
 
   return (
     <div class="w-25 min-vh-100 bg-black float-start">
-      <Row>
-        <input
-          type="text"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-        ></input>
-      </Row>
+      <input
+        width="100%"
+        type="text"
+        value={q}
+        onChange={(e) => {
+          setQ(e.target.value);
+          search();
+        }}
+      ></input>
       <ListGroup>
-        {userData.map((user) => {
-          return (
-            <ListGroupItem style={listGroupStyle}>
-              <Media middle left>
-                <Media
-                  className="m-1"
-                  src={defaultProfilePic}
-                  style={sideProfilePicStyle}
-                />
-                <span>{user.email} Success</span>
-              </Media>
-            </ListGroupItem>
-          );
-        })}
+        {filtered.length === 0
+          ? userData.map((user) => {
+              return (
+                <ListGroupItem style={listGroupStyle}>
+                  <Media middle left>
+                    <Media
+                      className="m-1"
+                      src={defaultProfilePic}
+                      style={sideProfilePicStyle}
+                    />
+                    <span>{user.email} Success</span>
+                  </Media>
+                </ListGroupItem>
+              );
+            })
+          : filtered.map((user) => {
+              return (
+                <ListGroupItem style={listGroupStyle}>
+                  <Media middle left>
+                    <Media
+                      className="m-1"
+                      src={defaultProfilePic}
+                      style={sideProfilePicStyle}
+                    />
+                    <span>{user.email} Success</span>
+                  </Media>
+                </ListGroupItem>
+              );
+            })}
       </ListGroup>
     </div>
   );
