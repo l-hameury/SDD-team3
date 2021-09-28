@@ -14,6 +14,7 @@ using rtchatty.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 
 namespace rtchatty
 {
@@ -61,8 +62,48 @@ namespace rtchatty
 
                 });
 
+
             services.AddControllersWithViews();
             services.AddSignalR();
+            //if you have issues with this make sure to go to api proj folder in terminal and run "dotnet add rtchatty.csproj package Swashbuckle.AspNetCore -v 5.6.3" to download swagger
+            services.AddSwaggerGen(c =>
+            {
+                // configure SwaggerDoc and others
+
+                // add JWT Authentication
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "JWT Authentication",
+                    Description = "Enter JWT Bearer token **_only_**",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer", // must be lower case
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, new string[] { }}
+                });
+
+                // add Basic Authentication
+                var basicSecurityScheme = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    Reference = new OpenApiReference { Id = "BasicAuth", Type = ReferenceType.SecurityScheme }
+                };
+                c.AddSecurityDefinition(basicSecurityScheme.Reference.Id, basicSecurityScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {basicSecurityScheme, new string[] { }}
+                });
+            });
 
 
             // In production, the React files will be served from this directory
@@ -77,6 +118,7 @@ namespace rtchatty
         {
             if (env.IsDevelopment())
             {
+                app.UseSwagger();
                 app.UseAuthentication(); //authentication
                 app.UseDeveloperExceptionPage();
             }
@@ -91,9 +133,12 @@ namespace rtchatty
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseRouting();
-            app.UseAuthorization();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
+            app.UseRouting();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

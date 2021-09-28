@@ -90,8 +90,8 @@ namespace rtchatty.Services
             .Set(p => p.Bio, user.Bio)
             .Set(p => p.Avatar, user.Avatar);
 
-            _users.UpdateOne(filter, update);
-            return user;
+			_users.UpdateOne(filter, update);
+			return user;
         }
     }
 }
