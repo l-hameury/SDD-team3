@@ -94,7 +94,11 @@ namespace rtchatty
 				app.UseHsts();
 			}
 
-			
+			//global cors policy
+			app.UseCors( x=> x 
+				.AllowAnyOrigin()
+				.AllowAnyMethod()
+				.AllowAnyHeader());
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
