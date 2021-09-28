@@ -12,6 +12,7 @@ import Chat from "./components/Chat";
 import Profile from "./components/Profile";
 
 import "./custom.css";
+import UserNav from "./components/UserNav";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -25,6 +26,7 @@ export default class App extends Component {
         <Route path="/chat" component={Chat} />
         <Route path="/profile" component={Profile} />
         <Route path="/side-nav" component={SideNav} />
+        <Route path="/user-nav" component={UserNav} />
       </Layout>
     );
   }
