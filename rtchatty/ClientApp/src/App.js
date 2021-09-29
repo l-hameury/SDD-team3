@@ -36,7 +36,7 @@ import axios from 'axios';
 } */
 
 
-function App(){
+/* function App(){
 
   
   
@@ -60,4 +60,43 @@ function App(){
   
 }
 
-export default App;
+export default App; */
+
+
+export default class App extends Component{
+  state = {}
+  componentDidMount = () =>{
+    axios.get('https://localhost:5001/api/user').then(
+      res=>{
+        console.log(res);
+        this.setState({ //list of usersr ->user state
+          users: res.data
+        });
+      },
+      err => {
+        console.log(err)
+      }
+    )
+  };
+  
+  render(){
+  return(
+    <BrowserRouter>
+    <div className="App">
+      <Nav users ={this.state.users}/>
+      <div className="auth-wrapper">
+          <div className="auth-inner">
+            <Switch>
+              <Route exact path="/" component={() =><Home users= {this.state.users}/>}/>
+              <Route exact path="/login" component={Login}/>
+              <Route exact path="/signup" component={SignUp}/>
+
+            </Switch>
+          </div>
+      </div>
+    </div>
+    </BrowserRouter>
+  );
+  }
+}
+

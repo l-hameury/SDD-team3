@@ -27,7 +27,9 @@ import React, { Component } from 'react';
 }
  */
 
-export default class Home extends Component{
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* export default class Home extends Component{
   state = {}
 
   componentDidMount(){
@@ -45,6 +47,22 @@ export default class Home extends Component{
 }
   render (){
       if(this.state.users){
+        return(
+          <h2> Logged in</h2>
+        )
+      }
+      return (
+        <h2>Not Authorized</h2>
+      )
+  }
+}
+ */
+export default class Home extends Component{
+  
+
+
+  render (){
+      if(this.props.users){
         return(
           <h2> Logged in</h2>
         )
