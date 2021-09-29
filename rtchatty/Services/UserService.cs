@@ -1,3 +1,6 @@
+using System.Threading.Tasks;
+using System.Reflection.Metadata;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Threading;
 using System.Globalization;
@@ -50,7 +53,6 @@ namespace rtchatty.Services
 
 			return user;
 		}
-
 
 		public string Authenticate(string email, string password)
         {

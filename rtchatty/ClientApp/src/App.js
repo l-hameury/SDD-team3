@@ -14,6 +14,7 @@ import Chat from './components/Chat';
 import Login from "./components/Login";
 import SignUp from "./components/Signup";
 import './custom.css'
+import axios from 'axios';
 
 /* export default class App extends Component {
   static displayName = App.name;
@@ -36,6 +37,9 @@ import './custom.css'
 
 
 function App(){
+
+  
+  
   return(
     <BrowserRouter>
     <div className="App">
@@ -53,6 +57,7 @@ function App(){
     </div>
     </BrowserRouter>
   );
+  
 }
 
-export default App; 
+export default App;

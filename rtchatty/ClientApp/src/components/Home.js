@@ -28,29 +28,29 @@ import React, { Component } from 'react';
  */
 
 export default class Home extends Component{
+  state = {}
 
-  // method runs before render method
   componentDidMount(){
-
-    const config ={
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    };
-
-
-    axios.get('https://localhost:5001/api/user', config).then(
-      res=>{
-        console.log(res);
-      },
-      err => {
-        console.log(err)
-      }
-    )
-  }
-    render(){
-      return(
-        <h2>Not Authorized</h2>
-      );
+  axios.get('https://localhost:5001/api/user').then(
+    res=>{
+      console.log(res);
+      this.setState({ //list of usersr ->user state
+        users: res.data
+      });
+    },
+    err => {
+      console.log(err)
     }
+  )
+}
+  render (){
+      if(this.state.users){
+        return(
+          <h2> Logged in</h2>
+        )
+      }
+      return (
+        <h2>Not Authorized</h2>
+      )
+  }
 }

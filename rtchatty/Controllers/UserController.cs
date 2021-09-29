@@ -25,13 +25,13 @@ namespace rtchatty.Controllers
 			return service.GetUsers();
 		}
 
-		[HttpGet("{id:length(24)}")]
+	 	[HttpGet("{id:length(24)}")]
 		public ActionResult<User> GetUser(string id)
 		{
 			var user = service.GetUser(id);
 
 			return Json(user);
-		}
+		} 
 
 		[HttpPost]
 		public ActionResult<User> Create(User user)
