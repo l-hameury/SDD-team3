@@ -29,8 +29,24 @@ import React, { Component } from 'react';
 
 export default class Home extends Component{
 
+  // method runs before render method
   componentDidMount(){
-    axios.get('https://localhost:5001/api/user/authenticate')
+
+    const config ={
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    };
+
+
+    axios.get('https://localhost:5001/api/user', config).then(
+      res=>{
+        console.log(res);
+      },
+      err => {
+        console.log(err)
+      }
+    )
   }
     render(){
       return(

@@ -5,16 +5,16 @@ export default class Login extends Component{
 
     handleSubmit = e => {
         e.preventDefault();
-
+        //stores users data from form
         const data = {
             email: this.email,
             password: this.password
         }
-
+        // calls api to authenticate user
         axios.post('https://localhost:5001/api/user/authenticate', data)
             .then(res =>{
-                console.log(res)
-                localStorage.setItem('token', res.token);
+                console.log(res) //console logs user info and token
+                localStorage.setItem('token', res.data.token); //stores token in local storage
             })
             .catch(err =>{
                 console.log(err)
