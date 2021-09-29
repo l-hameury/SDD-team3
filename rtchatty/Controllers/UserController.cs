@@ -26,6 +26,14 @@ namespace rtchatty.Controllers
             return service.GetUsers();
         }
 
+
+        [Route("searchUsers")]
+        [HttpPost]
+        public ActionResult<List<User>> searchUsers([FromBody] string query)
+        {
+            return service.searchUsers(query);
+        }
+
         [HttpGet("{id:length(24)}")]
         public ActionResult<User> GetUser(string id)
         {

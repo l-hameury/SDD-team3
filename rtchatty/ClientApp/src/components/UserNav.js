@@ -4,8 +4,8 @@ import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import Row from "reactstrap/lib/Row";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
-const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvcGVAdGVzdC5jb20iLCJuYmYiOjE2MzI4MTY0MzMsImV4cCI6MTYzMjgyMDAzMywiaWF0IjoxNjMyODE2NDMzfQ.2Ko4EO_m6fUcRjIlwYqg6k7AwKjNnRFzHLGwxJa09Ds`;
-var filtered = [];
+const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RBZG1pbkB0ZXN0LmNvbSIsIm5iZiI6MTYzMjg5MjQ4MywiZXhwIjoxNjMyODk2MDgzLCJpYXQiOjE2MzI4OTI0ODN9.NWflAKlq2bHTZPqShkbKvzsoCqFjXM_8wktw-aUWRoo`;
+var displayUsers = [];
 var sideProfilePicStyle = {
   width: "64px",
   height: "64px",
@@ -26,25 +26,20 @@ export default function UserNav() {
   const [q, setQ] = useState("");
 
   useEffect(() => {
-    fetch("https://localhost:5001/api/User/getUsers", {
-      method: "get",
+    fetch(`https://localhost:5001/api/User/searchUsers/`, {
+      method: "POST",
       headers: new Headers({
         Authorization: "Bearer " + token,
         "Content-Type": "application/json",
       }),
+      body: JSON.stringify(q),
     })
       .then((response) => response.json())
       .then((json) => {
         setUserData(json);
-        filtered = userData;
+        displayUsers = userData;
       });
-  }, []);
-
-  function search() {
-    filtered = userData.filter(
-      (user) => user.email.toLowerCase().indexOf(q) > -1
-    ); // change to query type to search users through api
-  }
+  }, [q]);
 
   return (
     <div class="w-25 min-vh-100 bg-black float-start">
@@ -52,41 +47,23 @@ export default function UserNav() {
         width="100%"
         type="text"
         value={q}
-        onChange={(e) => {
-          setQ(e.target.value);
-          search();
-        }}
+        onChange={(e) => setQ(e.target.value)}
       ></input>
       <ListGroup>
-        {filtered.length === 0
-          ? userData.map((user) => {
-              return (
-                <ListGroupItem style={listGroupStyle}>
-                  <Media middle left>
-                    <Media
-                      className="m-1"
-                      src={defaultProfilePic}
-                      style={sideProfilePicStyle}
-                    />
-                    <span>{user.email} Success</span>
-                  </Media>
-                </ListGroupItem>
-              );
-            })
-          : filtered.map((user) => {
-              return (
-                <ListGroupItem style={listGroupStyle}>
-                  <Media middle left>
-                    <Media
-                      className="m-1"
-                      src={defaultProfilePic}
-                      style={sideProfilePicStyle}
-                    />
-                    <span>{user.email} Success</span>
-                  </Media>
-                </ListGroupItem>
-              );
-            })}
+        {displayUsers.map((user) => {
+          return (
+            <ListGroupItem style={listGroupStyle}>
+              <Media middle left>
+                <Media
+                  className="m-1"
+                  src={defaultProfilePic}
+                  style={sideProfilePicStyle}
+                />
+                <span>{user.email}</span>
+              </Media>
+            </ListGroupItem>
+          );
+        })}
       </ListGroup>
     </div>
   );

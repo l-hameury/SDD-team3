@@ -44,6 +44,20 @@ namespace rtchatty.Services
 
         public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
 
+        public List<User> searchUsers(string query)
+        {
+            if (query != "")
+            {
+                return _users.Find<User>(user => user.Email.ToLower().Contains(query.ToLower())).ToList();
+            }
+            else
+            {
+                return GetUsers();
+            }
+        }
+        // _users.InsertOne(user);
+
+
         public User Create(User user)
         {
             _users.InsertOne(user);
@@ -90,8 +104,8 @@ namespace rtchatty.Services
             .Set(p => p.Bio, user.Bio)
             .Set(p => p.Avatar, user.Avatar);
 
-			_users.UpdateOne(filter, update);
-			return user;
+            _users.UpdateOne(filter, update);
+            return user;
         }
     }
 }
