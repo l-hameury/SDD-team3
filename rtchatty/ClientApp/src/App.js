@@ -69,26 +69,30 @@ export default class App extends Component{
     axios.get('https://localhost:5001/api/user').then(
       res=>{
         console.log(res);
-        this.setState({ //list of usersr ->user state
-          users: res.data
-        });
+        this.setUser(res.data)
       },
       err => {
         console.log(err)
       }
     )
   };
+
+  setUser = users =>{
+    this.setState({
+      users: users
+    });
+  }
   
   render(){
   return(
     <BrowserRouter>
     <div className="App">
-      <Nav users ={this.state.users}/>
+      <Nav users ={this.state.users} setUser={this.setUser}/>
       <div className="auth-wrapper">
           <div className="auth-inner">
             <Switch>
               <Route exact path="/" component={() =><Home users= {this.state.users}/>}/>
-              <Route exact path="/login" component={Login}/>
+              <Route exact path="/login" component={() => <Login setUser={this.setUser}/>}/>
               <Route exact path="/signup" component={SignUp}/>
 
             </Switch>

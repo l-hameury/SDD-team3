@@ -25,6 +25,12 @@ import { Link } from 'react-router-dom';
 
 
   export default class NavMenu extends Component{
+
+    handleLogout = () => {
+        localStorage.clear()
+        this.props.setUser(null)
+    };
+
     render(){
         let buttons;
 
@@ -32,7 +38,7 @@ import { Link } from 'react-router-dom';
             buttons=(
             <ul className="navbar-nav ml-auto">
             <li className="nav-item">
-              <Link to="/" onClick={() => localStorage.clear()} className="nav-link" >Logout</Link>
+              <Link to="/" onClick={this.handleLogout } className="nav-link" >Logout</Link>
             </li>
           </ul>)
 

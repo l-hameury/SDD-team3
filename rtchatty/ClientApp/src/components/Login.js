@@ -1,8 +1,10 @@
 import axios from 'axios';
 import React, {Component} from 'react'
+import {Redirect} from 'react-router-dom'
 
 export default class Login extends Component{
 
+    state = {}
     handleSubmit = e => {
         e.preventDefault();
         //stores users data from form
@@ -13,16 +15,28 @@ export default class Login extends Component{
         // calls api to authenticate user
         axios.post('https://localhost:5001/api/user/authenticate', data)
             .then(res =>{
-                console.log(res) //console logs user info and token
+                // console.log(res) //console logs user info and token
                 localStorage.setItem('token', res.data.token); //stores token in local storage
+                this.setState({
+                    loggedIn: true
+                });
+                this.props.setUser(res.data.user)
             })
             .catch(err =>{
                 console.log(err)
             })
+    };
 
+  /*   render(){
+        if(this.state.loggedIn){ //if loggIn is true
+            return <Redirect exact from ="/login" to={'/'}/>; //redirect to home page with authorized message
+        }
     }
-
+ */
     render(){
+        if(this.state.loggedIn){ //if loggIn is true
+            return <Redirect exact from ="/login" to={'/'}/>; //redirect to home page with authorized message
+        }
       return(
        <form onSubmit={this.handleSubmit}>
            <h3>Login</h3> 
