@@ -7,6 +7,7 @@ using rtchatty.Services;
 
 namespace rtchatty.Controllers
 {
+	[Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class UserController : Controller
@@ -32,6 +33,7 @@ namespace rtchatty.Controllers
 			return Json(user);
 		}
 
+		[AllowAnonymous]
 		[HttpPost]
 		public ActionResult<User> Create(User user)
 		{
@@ -39,5 +41,26 @@ namespace rtchatty.Controllers
 
 			return Json(user);
 		}
+
+		[AllowAnonymous]
+        [Route("authenticate")]
+        [HttpPost]
+        public ActionResult Login([FromBody] User user)
+        {
+            var token = service.Authenticate(user.Email, user.Password);
+
+            if (token == null)
+                return Unauthorized();
+
+            return Ok(new { token, user });
+        }
+
+		[Route("update")]
+		[HttpPost]
+		public ActionResult<User> Update(User user)
+        {
+			service.Update(user);
+			return Json(user);
+        }
 	}
 }
