@@ -22,7 +22,7 @@ export default class App extends Component {
         <Route path='/fetch-data' component={FetchData} />
         <Route path='/chat' component={Chat} />
         <Route path='/register' component={Register} />
-        <Route path='/profile' component={Profile} /> 
+        <Route path='/profile' component={Profile} />
       </Layout>
     );
   }

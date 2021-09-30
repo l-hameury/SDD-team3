@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Alert, Button, Col, Form, Input, Label, Row } from "reactstrap";
+import axios from 'axios';
 
 const Register = () => {
 
@@ -74,7 +75,7 @@ const Register = () => {
         setInputs({...inputs, [name]: value});
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Check if email/username are already in use
@@ -84,14 +85,26 @@ const Register = () => {
         for (const [key, value] of Object.entries(inputs)) {
             validateField(key, value);
         }
-
+        
         errors.fieldErrors = (errors.email || errors.username || errors.password || errors.confirmPassword);
-
+        
         if(errors.fieldErrors) {
             return;
         }
-
+        
         // Send the new user info to the backend for processing
+        await axios.post('https://localhost:5001/api/user/register', {
+            email: inputs.email,
+            username: inputs.username,
+            password: inputs.password
+          })
+          .then(function (res){
+            console.log(res)
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+          console.log('New user -> ', e.username)
 
         // Display success message
         setShowSuccess(true);

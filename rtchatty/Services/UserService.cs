@@ -44,7 +44,8 @@ namespace rtchatty.Services
 
 		public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
 
-		public User Create(User user)
+		// Register new user
+		public User CreateUser(User user)
 		{
 			_users.InsertOne(user);
 
