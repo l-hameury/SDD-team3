@@ -100,14 +100,12 @@ const Register = () => {
           })
           .then(function (res){
             console.log(res)
+            // Display success message
+            setShowSuccess(true);
           })
           .catch(function (error) {
             console.log(error);
           });
-          console.log('New user -> ', e.username)
-
-        // Display success message
-        setShowSuccess(true);
 
         //(MAYBE?) Send the user an email
     };
