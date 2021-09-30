@@ -23,24 +23,33 @@ export default class Login extends Component{
                 this.props.setUser(res.data.user)
             })
             .catch(err =>{
-                console.log(err)
+                //console.log(err)
+                this.setState({
+                    message: err.response.data.message // error message
+                })
             })
     };
 
-  /*   render(){
-        if(this.state.loggedIn){ //if loggIn is true
-            return <Redirect exact from ="/login" to={'/'}/>; //redirect to home page with authorized message
-        }
-    }
- */
+
     render(){
         if(this.state.loggedIn){ //if loggIn is true
             return <Redirect exact from ="/login" to={'/'}/>; //redirect to home page with authorized message
         }
-      return(
-       <form onSubmit={this.handleSubmit}>
-           <h3>Login</h3> 
 
+      let  error = ''
+
+      if (this.state.message){// if there is an error, message will be triggered
+        error = (
+            <div className="alert alert-danger" role="alert">
+                {this.state.message}
+            </div>
+        )
+      }
+      return(
+          // {error} error message to be displayed
+       <form onSubmit={this.handleSubmit}>
+            {error}
+           <h3>Login</h3> 
            <div className="form-group">
                <label>Email</label>
                <input type="email" className="form-control" placeholder="Email"
