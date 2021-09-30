@@ -52,6 +52,16 @@ namespace rtchatty.Services
 			return user;
 		}
 
+		// Validate username is unique across all users
+		public bool ValidateUsername(string username)
+		{
+			if(this._users.Find(x => x.username).FirstOrDefault();){
+				return false;
+			}
+			
+			return true;
+		}
+
 
 		public string Authenticate(string email, string password)
         {

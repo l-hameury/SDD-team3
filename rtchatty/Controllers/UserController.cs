@@ -38,9 +38,15 @@ namespace rtchatty.Controllers
 		[HttpPost]
 		public ActionResult<User> CreateUser(User user)
 		{
-			service.CreateUser(user);
+			//username validation
+			if(service.ValidateUsername(user.username)){
+				service.CreateUser(user);
 
-			return Json(user);
+				return Json(user);
+			}
+			else{
+				//insert error message here
+			}
 		}
 
 		[AllowAnonymous]
