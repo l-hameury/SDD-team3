@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Col, Form, Input, Label, Row } from "reactstrap";
+import { Alert, Button, Col, Form, Input, Label, Row } from "reactstrap";
 
 const Register = () => {
 
@@ -16,6 +16,7 @@ const Register = () => {
         confirmPassword: "",
         fieldErrors: "",
     });
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const handleInput = (e) => {
         const name = e.target.name;
@@ -93,7 +94,8 @@ const Register = () => {
         // Send the new user info to the backend for processing
 
         // Display success message
-        
+        setShowSuccess(true);
+
         //(MAYBE?) Send the user an email
     };
 
@@ -104,6 +106,7 @@ const Register = () => {
     return (
         <div>
             <h1 className="mb-3">Register a New User</h1>
+            <div className="alert alert-success" hidden={!showSuccess} name="successAlert">Success! An account has been created. Return to login to sign-in.</div>
             <div className="container registerContainer border border-dark rounded">
                 <Form className="p-3 needs-validation" onSubmit={handleSubmit} noValidate>
                     <Row className="mb-4">
