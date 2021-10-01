@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";
-import Row from "reactstrap/lib/Row";
+// import Row from "reactstrap/lib/Row";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
-const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RBZG1pbkB0ZXN0LmNvbSIsIm5iZiI6MTYzMjg5MjQ4MywiZXhwIjoxNjMyODk2MDgzLCJpYXQiOjE2MzI4OTI0ODN9.NWflAKlq2bHTZPqShkbKvzsoCqFjXM_8wktw-aUWRoo`;
-var displayUsers = [];
+const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwibmJmIjoxNjMzMTMxMjQwLCJleHAiOjE2MzMxMzQ4NDAsImlhdCI6MTYzMzEzMTI0MH0.y3_H7MqCQYL6doETFKdCUt4ICqIO9j5DvSlG1m3aoMY`;
+// var displayUsers = [];
 var sideProfilePicStyle = {
   width: "64px",
   height: "64px",
@@ -26,7 +26,9 @@ export default function UserNav() {
   const [q, setQ] = useState("");
 
   useEffect(() => {
-    fetch(`https://localhost:5001/api/User/searchUsers/`, {
+    // i wrapped the api request into a function
+    const search = async () => {
+      fetch(`https://localhost:5001/api/User/searchUsers/`, {
       method: "POST",
       headers: new Headers({
         Authorization: "Bearer " + token,
@@ -37,12 +39,24 @@ export default function UserNav() {
       .then((response) => response.json())
       .then((json) => {
         setUserData(json);
-        displayUsers = userData;
+        // displayUsers = userData;
       });
+    }
+
+    const timeoutId = setTimeout(() => {
+    if(q){
+      search()
+    }
+      // 1 second delay?
+    }, 1000);
+    // api throttling
+    return () => {
+      clearTimeout(timeoutId)
+    };
   }, [q]);
 
   return (
-    <div class="w-25 min-vh-100 bg-black float-start">
+    <div className="w-25 min-vh-100 bg black float-start">
       <input
         width="100%"
         type="text"
@@ -50,13 +64,13 @@ export default function UserNav() {
         onChange={(e) => setQ(e.target.value)}
       ></input>
       <ListGroup>
-        {displayUsers.map((user) => {
+        {userData.map((user) => {
           return (
-            <ListGroupItem style={listGroupStyle}>
+            <ListGroupItem style={listGroupStyle} key={user.id}>
               <Media middle left>
                 <Media
                   className="m-1"
-                  src={defaultProfilePic}
+                  src={user.avatar}
                   style={sideProfilePicStyle}
                 />
                 <span>{user.email}</span>
