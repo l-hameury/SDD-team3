@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver.Core.Authentication;
 using rtchatty.Models;
 using rtchatty.Services;
 
@@ -38,9 +40,18 @@ namespace rtchatty.Controllers
 		[HttpPost]
 		public ActionResult<User> CreateUser(User user)
 		{
-			service.CreateUser(user);
+			string invalidItem = "";
 
-			return Json(user);
+			if(!service.ValidateUsername(user.Username)) invalidItem += nameof(user.Username);
+			if(!service.ValidateEmail(user.Email)) invalidItem += nameof(user.Email);
+
+			// User is correctly created - return 201; If User is already created - return 409
+			if(String.IsNullOrEmpty(invalidItem)) {
+				service.CreateUser(user);
+				return CreatedAtAction("CreateUser", user);
+			}
+			
+			return Conflict(invalidItem);
 		}
 
 		[AllowAnonymous]
@@ -50,8 +61,7 @@ namespace rtchatty.Controllers
         {
             var token = service.Authenticate(user.Email, user.Password);
 
-            if (token == null)
-                return Unauthorized();
+            if (token == null) return Unauthorized(); 
 
             return Ok(new { token, user });
         }

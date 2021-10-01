@@ -18,6 +18,8 @@ const Register = () => {
         fieldErrors: "",
     });
     const [showSuccess, setShowSuccess] = useState(false);
+    const [showUsernameError, setShowUsernameError] = useState(false);
+    const [showEmailError, setShowEmailError] = useState(false);
 
     const handleInput = (e) => {
         const name = e.target.name;
@@ -77,9 +79,6 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Check if email/username are already in use
-        //Axios call here//////////////
         
         // Make sure no fields are currently invalid
         for (const [key, value] of Object.entries(inputs)) {
@@ -91,6 +90,11 @@ const Register = () => {
         if(errors.fieldErrors) {
             return;
         }
+
+        // Clear lingering error alert boxes
+        setShowSuccess(false);
+        setShowUsernameError(false);
+        setShowEmailError(false);
         
         // Send the new user info to the backend for processing
         await axios.post('https://localhost:5001/api/user/register', {
@@ -104,7 +108,9 @@ const Register = () => {
             setShowSuccess(true);
           })
           .catch(function (error) {
-            console.log(error);
+            console.log(error.response.data);
+            if(error.response.data.includes("Username")) setShowUsernameError(true);
+            if(error.response.data.includes("Email")) setShowEmailError(true);
           });
 
         //(MAYBE?) Send the user an email
@@ -118,6 +124,8 @@ const Register = () => {
         <div>
             <h1 className="mb-3">Register a New User</h1>
             <div className="alert alert-success" hidden={!showSuccess} name="successAlert">Success! An account has been created. Return to login to sign-in.</div>
+            <div className="alert alert-danger" hidden={!showEmailError} name="emailAlert">An account with that email has already been created. Please use different email.</div>
+            <div className="alert alert-danger" hidden={!showUsernameError} name="usernameAlert">An account with that username has already been created. Please choose a different username.</div>
             <div className="container registerContainer border border-dark rounded">
                 <Form className="p-3 needs-validation" onSubmit={handleSubmit} noValidate>
                     <Row className="mb-4">
