@@ -55,13 +55,22 @@ namespace rtchatty.Services
 		// Validate username is unique across all users
 		public bool ValidateUsername(string username)
 		{
-			if(this._users.Find(x => x.username).FirstOrDefault();){
+			if(_users.Find<User>(user => user.Username == username).FirstOrDefault() != null){
 				return false;
 			}
 			
 			return true;
 		}
 
+
+		public bool ValidateEmail(string email)
+        {
+			if(_users.Find<User>(user => user.Email == email).FirstOrDefault() != null){
+				return false;
+			}
+
+			return true;
+        }
 
 		public string Authenticate(string email, string password)
         {
