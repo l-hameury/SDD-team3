@@ -7,8 +7,8 @@ import { Counter } from './components/Counter';
 // Export default means that you don't need to use braces around the class name
 // Source: https://stackoverflow.com/questions/47619405/why-does-my-react-component-export-not-work
 import Chat from './components/Chat';
+import Register from './components/Register';
 import Profile from './components/Profile';
-
 import './custom.css'
 
 export default class App extends Component {
@@ -21,7 +21,8 @@ export default class App extends Component {
         <Route path='/counter' component={Counter} />
         <Route path='/fetch-data' component={FetchData} />
         <Route path='/chat' component={Chat} />
-        <Route path='/profile' component={Profile} /> 
+        <Route path='/register' component={Register} />
+        <Route path='/profile' component={Profile} />
       </Layout>
     );
   }

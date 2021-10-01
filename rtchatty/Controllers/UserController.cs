@@ -34,10 +34,11 @@ namespace rtchatty.Controllers
 		}
 
 		[AllowAnonymous]
+		[Route("register")]
 		[HttpPost]
-		public ActionResult<User> Create(User user)
+		public ActionResult<User> CreateUser(User user)
 		{
-			service.Create(user);
+			service.CreateUser(user);
 
 			return Json(user);
 		}
