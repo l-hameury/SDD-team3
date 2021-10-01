@@ -1,9 +1,17 @@
-import React, { Component } from 'react';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import './NavMenu.css';
+import React, { Component } from "react";
+import {
+  Collapse,
+  Container,
+  Navbar,
+  NavbarBrand,
+  NavbarToggler,
+  NavItem,
+  NavLink,
+} from "reactstrap";
+import { Link } from "react-router-dom";
+import "./NavMenu.css";
 
-/* export class NavMenu extends Component {
+export class NavMenu extends Component {
   static displayName = NavMenu.name;
 
   constructor(props) {
@@ -11,39 +19,72 @@ import './NavMenu.css';
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
     this.state = {
-      collapsed: true
+      collapsed: true,
     };
   }
 
   toggleNavbar() {
     this.setState({
-      collapsed: !this.state.collapsed
+      collapsed: !this.state.collapsed,
     });
   }
+
+  handleLogout = () => {
+    localStorage.clear();
+    // this.props.setUser(null);
+  };
 
   render() {
     return (
       <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
+        <Navbar
+          className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
+          light
+        >
           <Container>
-            <NavbarBrand tag={Link} to="/">rtchatty</NavbarBrand>
+            <NavbarBrand tag={Link} to="/">
+              rtchatty
+            </NavbarBrand>
             <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-            <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
+            <Collapse
+              className="d-sm-inline-flex flex-sm-row-reverse"
+              isOpen={!this.state.collapsed}
+              navbar
+            >
               <ul className="navbar-nav flex-grow">
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+                  <NavLink tag={Link} className="text-dark" to="/">
+                    Home
+                  </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
+                  <NavLink tag={Link} className="text-dark" to="/counter">
+                    Counter
+                  </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch data</NavLink>
+                  <NavLink tag={Link} className="text-dark" to="/fetch-data">
+                    Fetch data
+                  </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/chat">Chat</NavLink>
+                  <NavLink tag={Link} className="text-dark" to="/chat">
+                    Chat
+                  </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>
+                  <NavLink tag={Link} className="text-dark" to="/login">
+                    Login
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <Link
+                    to="/login"
+                    onClick={this.handleLogout}
+                    className="nav-link"
+                  >
+                    Logout
+                  </Link>
                 </NavItem>
               </ul>
             </Collapse>
@@ -52,26 +93,26 @@ import './NavMenu.css';
       </header>
     );
   }
-} */
-
-export default class NavMenu extends Component{
-  render(){
-    return(
-    <nav className="navbar navbar-expand navbar-light fixed-top">
-    <div className="container">
-      <a href="" className="navbar-brand">Home</a>
-      <div className="collapse navbar-collapse">
-        <ul className="navbar-nav ml-auto">
-          <li className="nav-item">
-            <a href="" className="nav-link">Login</a>
-          </li>
-          <li className="nav-item">
-            <a href="" className="nav-link">Chat</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>);
-
-  }
 }
+
+// export default class NavMenu extends Component{
+//   render(){
+//     return(
+//     <nav className="navbar navbar-expand navbar-light fixed-top">
+//     <div className="container">
+//       <a href="" className="navbar-brand">Home</a>
+//       <div className="collapse navbar-collapse">
+//         <ul className="navbar-nav ml-auto">
+//           <li className="nav-item">
+//             <a href="" className="nav-link">Login</a>
+//           </li>
+//           <li className="nav-item">
+//             <a href="" className="nav-link">Chat</a>
+//           </li>
+//         </ul>
+//       </div>
+//     </div>
+//   </nav>);
+
+//   }
+// }
