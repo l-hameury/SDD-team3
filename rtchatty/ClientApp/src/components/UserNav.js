@@ -4,7 +4,7 @@ import ListGroupItem from "reactstrap/lib/ListGroupItem";
 // import Row from "reactstrap/lib/Row";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
-const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwibmJmIjoxNjMzMTMxMjQwLCJleHAiOjE2MzMxMzQ4NDAsImlhdCI6MTYzMzEzMTI0MH0.y3_H7MqCQYL6doETFKdCUt4ICqIO9j5DvSlG1m3aoMY`;
+const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtAdGVzdC5jb20iLCJuYmYiOjE2MzMxMzU0NTAsImV4cCI6MTYzMzEzOTA1MCwiaWF0IjoxNjMzMTM1NDUwfQ.U99VwvAP9JiaV3o84N8XsMk02mGXX9t6coqMf-PJJ8Y`;
 // var displayUsers = [];
 var sideProfilePicStyle = {
   width: "64px",
@@ -29,29 +29,29 @@ export default function UserNav() {
     // i wrapped the api request into a function
     const search = async () => {
       fetch(`https://localhost:5001/api/User/searchUsers/`, {
-      method: "POST",
-      headers: new Headers({
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json",
-      }),
-      body: JSON.stringify(q),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        setUserData(json);
-        // displayUsers = userData;
-      });
-    }
+        method: "POST",
+        headers: new Headers({
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(q),
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          setUserData(json);
+          // displayUsers = userData;
+        });
+    };
 
     const timeoutId = setTimeout(() => {
-    if(q){
-      search()
-    }
+      if (q) {
+        search();
+      }
       // 1 second delay?
     }, 1000);
     // api throttling
     return () => {
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
     };
   }, [q]);
 
