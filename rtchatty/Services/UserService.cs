@@ -17,62 +17,79 @@ using System;
 
 namespace rtchatty.Services
 {
-	public class UserService
-	{
-		private readonly IMongoCollection<User> _users;
-		private readonly string key;
+    public class UserService
+    {
+        private readonly IMongoCollection<User> _users;
+        private readonly string key;
 
-		public UserService(IConfiguration configuration)
-		{
-			// var client = new MongoClient(settings.ConnectionString);
-
-			// var database = client.GetDatabase(settings.DatabaseName);
-
-			// _users = database.GetCollection<User>(settings.UsersCollectionName);
-			var client = new MongoClient("mongodb://localhost:27017");
-
-			var database = client.GetDatabase("chattyDB");
-
-			_users = database.GetCollection<User>("users");
-
-			this.key = configuration.GetSection("JwtKey").ToString();
-
-		}
-
-		public List<User> GetUsers() =>
-			_users.Find(user => true).ToList();
-
-		public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
-
-		// Register new user
-		public User CreateUser(User user)
-		{
-			_users.InsertOne(user);
-
-			return user;
-		}
-
-		// Validate username is unique across all users
-		public bool ValidateUsername(string username)
-		{
-			if(_users.Find<User>(user => user.Username == username).FirstOrDefault() != null){
-				return false;
-			}
-			
-			return true;
-		}
-
-
-		public bool ValidateEmail(string email)
+        public UserService(IConfiguration configuration)
         {
-			if(_users.Find<User>(user => user.Email == email).FirstOrDefault() != null){
-				return false;
-			}
+            // var client = new MongoClient(settings.ConnectionString);
 
-			return true;
+            // var database = client.GetDatabase(settings.DatabaseName);
+
+            // _users = database.GetCollection<User>(settings.UsersCollectionName);
+            var client = new MongoClient("mongodb://localhost:27017");
+
+            var database = client.GetDatabase("chattyDB");
+
+            _users = database.GetCollection<User>("users");
+
+            this.key = configuration.GetSection("JwtKey").ToString();
+
         }
 
-		public string Authenticate(string email, string password)
+        public List<User> GetUsers() =>
+            _users.Find(user => true).ToList();
+
+        public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
+
+        public List<User> searchUsers(string query)
+        {
+            if (query != "")
+            {
+                return _users.Find<User>(user => user.Email.ToLower().Contains(query.ToLower())).ToList();
+            }
+            else
+            {
+                return GetUsers();
+            }
+        }
+        // _users.InsertOne(user);
+
+
+        // Register new user
+        public User CreateUser(User user)
+        {
+            _users.InsertOne(user);
+
+            return user;
+        }
+
+        // Validate username is unique across all users
+        public bool ValidateUsername(string username)
+        {
+            if (_users.Find<User>(user => user.Username == username).FirstOrDefault() != null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
+        public bool ValidateEmail(string email)
+        {
+            if (_users.Find<User>(user => user.Email == email).FirstOrDefault() != null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
+        public string Authenticate(string email, string password)
         {
             var user = this._users.Find(x => x.Email == email && x.Password == password).FirstOrDefault();
 
@@ -103,15 +120,15 @@ namespace rtchatty.Services
             return tokenHandler.WriteToken(token);
         }
 
-		public User Update(User user)
-		{
-			var filter = Builders<User>.Filter.Eq(p => p.Id, user.Id);
-			var update = Builders<User>.Update
-			.Set(p => p.Bio, user.Bio)
-			.Set(p => p.Avatar, user.Avatar);
+        public User Update(User user)
+        {
+            var filter = Builders<User>.Filter.Eq(p => p.Id, user.Id);
+            var update = Builders<User>.Update
+            .Set(p => p.Bio, user.Bio)
+            .Set(p => p.Avatar, user.Avatar);
 
-			_users.UpdateOne(filter, update);
-			return user;
+            _users.UpdateOne(filter, update);
+            return user;
         }
-	}
+    }
 }

@@ -9,31 +9,33 @@ using rtchatty.Services;
 
 namespace rtchatty.Controllers
 {
-	[Authorize]
-	[Route("api/[controller]")]
-	[ApiController]
-	public class UserController : Controller
-	{
-		private readonly UserService service;
+    [Authorize]
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : Controller
+    {
+        private readonly UserService service;
 
-		public UserController(UserService _service)
-		{
-			service = _service;
-		}
+        public UserController(UserService _service)
+        {
+            service = _service;
+        }
 
-		[HttpGet]
-		public ActionResult<List<User>> GetUsers()
-		{
-			return service.GetUsers();
-		}
+        [HttpGet]
+        [Route("getUsers")]
+        public ActionResult<List<User>> GetUsers()
+        {
+            return service.GetUsers();
+        }
 
-		[HttpGet("{id:length(24)}")]
-		public ActionResult<User> GetUser(string id)
-		{
-			var user = service.GetUser(id);
 
-			return Json(user);
-		}
+        [Route("searchUsers")]
+        [HttpPost]
+        public ActionResult<List<User>> searchUsers([FromBody] string query)
+        {
+            return service.searchUsers(query);
+        }
+
 
 		[AllowAnonymous]
 		[Route("register")]
@@ -54,7 +56,10 @@ namespace rtchatty.Controllers
 			return Conflict(invalidItem);
 		}
 
-		[AllowAnonymous]
+            return Conflict(invalidItem);
+        }
+
+        [AllowAnonymous]
         [Route("authenticate")]
         [HttpPost]
         public ActionResult Login([FromBody] User user)
@@ -66,12 +71,12 @@ namespace rtchatty.Controllers
             return Ok(new { token, user });
         }
 
-		[Route("update")]
-		[HttpPost]
-		public ActionResult<User> Update(User user)
+        [Route("update")]
+        [HttpPost]
+        public ActionResult<User> Update(User user)
         {
-			service.Update(user);
-			return Json(user);
+            service.Update(user);
+            return Json(user);
         }
-	}
+    }
 }

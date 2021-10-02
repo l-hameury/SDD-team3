@@ -1,6 +1,13 @@
 {
 	"version": "0.2.0",
 	"configurations": [
+	{
+		"name": "Attach to Chrome",
+		"port": 9222,
+		"request": "attach",
+		"type": "pwa-chrome",
+		"webRoot": "${workspaceFolder}"
+	},
 		{
 			// Use IntelliSense to find out which attributes exist for C# debugging
 			// Use hover for the description of the existing attributes
