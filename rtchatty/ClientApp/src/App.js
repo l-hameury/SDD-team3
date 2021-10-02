@@ -16,6 +16,7 @@ import SignUp from "./components/Signup";
 import "./custom.css";
 import axios from "axios";
 import RequireAuth from "./components/Auth/AuthenticationComponent";
+import { Layout } from "./components/Layout";
 
 export default class App extends Component {
   state = { auth: true };
@@ -31,17 +32,24 @@ export default class App extends Component {
   render() {
     return (
       // <Provider store={store}>
-
+      // <Layout>
       <BrowserRouter>
         <Switch>
-          <Route exact path="/" component={RequireAuth(Home)} />
           <Route path="/login" component={Login} />
-          <Route exact path="/fetch-data" component={RequireAuth(FetchData)} />
-          <Route exact path="/chat" component={RequireAuth(Counter)} />
-          <Route exact path="/counter" component={RequireAuth(Chat)} />
-          {!this.state.auth && <Redirect push to="/login" />}
+          <Layout>
+            <Route exact path="/" component={RequireAuth(Home)} />
+            <Route
+              exact
+              path="/fetch-data"
+              component={RequireAuth(FetchData)}
+            />
+            <Route exact path="/chat" component={RequireAuth(Counter)} />
+            <Route exact path="/counter" component={RequireAuth(Chat)} />
+            {!this.state.auth && <Redirect push to="/login" />}
+          </Layout>
         </Switch>
       </BrowserRouter>
+      //</Layout>
 
       // </Provider>
     );
