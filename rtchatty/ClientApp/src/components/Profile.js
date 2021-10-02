@@ -13,7 +13,7 @@ const Profile = () => {
     await axios.post('https://localhost:5001/api/user/update', {
       id: "614e6c015f4990e6e66e9853",
       avatar: "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350",
-      bio: "kris smells"
+      bio: "kris smells delightful"
     }, {
       headers: {
         'Authorization': `Bearer ${token}`,

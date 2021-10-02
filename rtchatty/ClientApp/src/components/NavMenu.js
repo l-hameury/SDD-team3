@@ -72,6 +72,12 @@ export class NavMenu extends Component {
                     SideNav Proto
                   </NavLink>
                 </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} className="text-dark" to="/profile">Profile</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} className="text-dark" to="/register">Register</NavLink>
+                </NavItem>
               </ul>
             </Collapse>
           </Container>

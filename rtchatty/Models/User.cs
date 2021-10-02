@@ -17,5 +17,7 @@ namespace rtchatty.Models
 		public string Avatar { get; set; }
 		[BsonElement("Bio")]
 		public string Bio { get; set; }
+		[BsonElement("Username")]
+		public string Username { get; set; }
 	}
 }
