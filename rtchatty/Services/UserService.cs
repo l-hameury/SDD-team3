@@ -57,6 +57,7 @@ namespace rtchatty.Services
         }
         // _users.InsertOne(user);
 
+
         // Register new user
         public User CreateUser(User user)
         {
