@@ -37,24 +37,22 @@ namespace rtchatty.Controllers
         }
 
 
-		[AllowAnonymous]
-		[Route("register")]
-		[HttpPost]
-		public ActionResult<User> CreateUser(User user)
-		{
-			string invalidItem = "";
+        [AllowAnonymous]
+        [Route("register")]
+        [HttpPost]
+        public ActionResult<User> CreateUser(User user)
+        {
+            string invalidItem = "";
 
-			if(!service.ValidateUsername(user.Username)) invalidItem += nameof(user.Username);
-			if(!service.ValidateEmail(user.Email)) invalidItem += nameof(user.Email);
+            if (!service.ValidateUsername(user.Username)) invalidItem += nameof(user.Username);
+            if (!service.ValidateEmail(user.Email)) invalidItem += nameof(user.Email);
 
-			// User is correctly created - return 201; If User is already created - return 409
-			if(String.IsNullOrEmpty(invalidItem)) {
-				service.CreateUser(user);
-				return CreatedAtAction("CreateUser", user);
-			}
-			
-			return Conflict(invalidItem);
-		}
+            // User is correctly created - return 201; If User is already created - return 409
+            if (String.IsNullOrEmpty(invalidItem))
+            {
+                service.CreateUser(user);
+                return CreatedAtAction("CreateUser", user);
+            }
 
             return Conflict(invalidItem);
         }
@@ -66,7 +64,7 @@ namespace rtchatty.Controllers
         {
             var token = service.Authenticate(user.Email, user.Password);
 
-            if (token == null) return Unauthorized(); 
+            if (token == null) return Unauthorized();
 
             return Ok(new { token, user });
         }
