@@ -4,7 +4,8 @@ import ListGroupItem from "reactstrap/lib/ListGroupItem";
 // import Row from "reactstrap/lib/Row";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
-const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtAdGVzdC5jb20iLCJuYmYiOjE2MzMxMzU0NTAsImV4cCI6MTYzMzEzOTA1MCwiaWF0IjoxNjMzMTM1NDUwfQ.U99VwvAP9JiaV3o84N8XsMk02mGXX9t6coqMf-PJJ8Y`;
+const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvcGVAdGVzdC5jb20iLCJuYmYiOjE2MzMyMzk1OTEsImV4cCI6MTYzMzI0MzE5MSwiaWF0IjoxNjMzMjM5NTkxfQ.elJZK2BzyeliSXBvtA6DiarTQigkc9L5amr8mTMgdGg`;
+// const token = localStorage.getItem("token");
 // var displayUsers = [];
 var sideProfilePicStyle = {
   width: "64px",
@@ -18,6 +19,11 @@ var listGroupStyle = {
   backgroundColor: "#70a7ff",
 };
 
+var searchStyle = {
+  width: "100%",
+  display: "flex",
+};
+
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
 
@@ -27,42 +33,29 @@ export default function UserNav() {
 
   useEffect(() => {
     // i wrapped the api request into a function
-    const search = async () => {
-      fetch(`https://localhost:5001/api/User/searchUsers/`, {
-        method: "POST",
-        headers: new Headers({
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify(q),
-      })
-        .then((response) => response.json())
-        .then((json) => {
-          setUserData(json);
-          // displayUsers = userData;
-        });
-    };
-
-    const timeoutId = setTimeout(() => {
-      if (q) {
-        search();
-      }
-      // 1 second delay?
-    }, 1000);
-    // api throttling
-    return () => {
-      clearTimeout(timeoutId);
-    };
+    // const search = async () => {
+    fetch(`https://localhost:5001/api/User/searchUsers/`, {
+      method: "POST",
+      headers: new Headers({
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      }),
+      body: JSON.stringify(q),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        setUserData(json);
+      });
   }, [q]);
 
   return (
-    <div className="w-25 min-vh-100 bg black float-start">
+    <div className="min-w-25 min-vh-100 bg black float-start">
       <input
-        width="100%"
+        style={searchStyle}
         type="text"
         value={q}
         onChange={(e) => setQ(e.target.value)}
-      ></input>
+      />
       <ListGroup>
         {userData.map((user) => {
           return (
@@ -70,7 +63,7 @@ export default function UserNav() {
               <Media middle left>
                 <Media
                   className="m-1"
-                  src={user.avatar}
+                  src={user.avatar ? user.avatar : defaultProfilePic}
                   style={sideProfilePicStyle}
                 />
                 <span>{user.email}</span>

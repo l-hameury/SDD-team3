@@ -48,24 +48,24 @@ const Register = () => {
                 }
                 break;
             case 'password':
-                if(value.trim() === "") {
-                    errors.password = "Password is required.";
-                } else if(value !== inputs.confirmPassword) {
-                    errors.confirmPassword = "Passwords must match."
-                } else if(!value.match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")) {
+                // Password meets security requirements
+                if(!value.match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")) {
                     errors.password = "Password must be at least 6 characters long, and contain a lowercase and uppercase letter, one number, and one special character.";
                 } else {
                     errors.password = "";
                 }
+
+                // Password and confirm password must match
+                if((value !== inputs.confirmPassword)) {
+                    errors.confirmPassword = "Passwords must match."
+                } else {
+                    errors.confirmPassword = "";
+                }
                 break;
             case 'confirmPassword':
-                if(value.trim() === "") {
-                    errors.confirmPassword = "Password is required.";
-                } else if(value !== inputs.password) {
+                // Passwords must match
+                if(value !== inputs.password) {
                     errors.confirmPassword = "Passwords must match."
-                } 
-                if(!value.match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")) {
-                    errors.confirmPassword = "Password must be at least 6 characters long, and contain a lowercase and uppercase letter, one number, and one special character.";
                 } else {
                     errors.confirmPassword = "";
                 }
@@ -123,7 +123,7 @@ const Register = () => {
     return (
         <div>
             <h1 className="mb-3">Register a New User</h1>
-            <div className="alert alert-success" hidden={!showSuccess} name="successAlert">Success! An account has been created. Return to login to sign-in.</div>
+            <div className="alert alert-success" hidden={!showSuccess} name="successAlert">Success! An account has been created. Return to <a href="/login" className="alert-link">login</a> to sign-in.</div>
             <div className="alert alert-danger" hidden={!showEmailError} name="emailAlert">An account with that email has already been created. Please use different email.</div>
             <div className="alert alert-danger" hidden={!showUsernameError} name="usernameAlert">An account with that username has already been created. Please choose a different username.</div>
             <div className="container registerContainer border border-dark rounded">
