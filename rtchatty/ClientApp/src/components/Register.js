@@ -48,24 +48,24 @@ const Register = () => {
                 }
                 break;
             case 'password':
-                if(value.trim() === "") {
-                    errors.password = "Password is required.";
-                } else if(value !== inputs.confirmPassword) {
-                    errors.confirmPassword = "Passwords must match."
-                } else if(!value.match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")) {
+                // Password meets security requirements
+                if(!value.match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")) {
                     errors.password = "Password must be at least 6 characters long, and contain a lowercase and uppercase letter, one number, and one special character.";
                 } else {
                     errors.password = "";
                 }
+
+                // Password and confirm password must match
+                if((value !== inputs.confirmPassword)) {
+                    errors.confirmPassword = "Passwords must match."
+                } else {
+                    errors.confirmPassword = "";
+                }
                 break;
             case 'confirmPassword':
-                if(value.trim() === "") {
-                    errors.confirmPassword = "Password is required.";
-                } else if(value !== inputs.password) {
+                // Passwords must match
+                if(value !== inputs.password) {
                     errors.confirmPassword = "Passwords must match."
-                } 
-                if(!value.match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")) {
-                    errors.confirmPassword = "Password must be at least 6 characters long, and contain a lowercase and uppercase letter, one number, and one special character.";
                 } else {
                     errors.confirmPassword = "";
                 }
