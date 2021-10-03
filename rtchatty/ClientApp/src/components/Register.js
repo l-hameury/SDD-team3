@@ -123,7 +123,7 @@ const Register = () => {
     return (
         <div>
             <h1 className="mb-3">Register a New User</h1>
-            <div className="alert alert-success" hidden={!showSuccess} name="successAlert">Success! An account has been created. Return to login to sign-in.</div>
+            <div className="alert alert-success" hidden={!showSuccess} name="successAlert">Success! An account has been created. Return to <a href="/login" className="alert-link">login</a> to sign-in.</div>
             <div className="alert alert-danger" hidden={!showEmailError} name="emailAlert">An account with that email has already been created. Please use different email.</div>
             <div className="alert alert-danger" hidden={!showUsernameError} name="usernameAlert">An account with that username has already been created. Please choose a different username.</div>
             <div className="container registerContainer border border-dark rounded">
