@@ -73,8 +73,13 @@ namespace rtchatty.Controllers
         [HttpPost]
         public ActionResult<User> ProfileUpdate(User user)
         {
-            service.ProfileUpdate(user);
-            return Json(user);
+            string invalidItem = "";
+            if (!service.ValidateUsername(user.Username)) invalidItem += nameof(user.Username);
+            if(String.IsNullOrEmpty(invalidItem)){
+                service.ProfileUpdate(user);
+                return Ok(user);
+            }
+            return Conflict(invalidItem);
         }
     }
 }

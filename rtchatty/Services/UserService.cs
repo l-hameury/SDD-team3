@@ -124,6 +124,8 @@ namespace rtchatty.Services
         {
             var filter = Builders<User>.Filter.Eq(p => p.Id, user.Id);
             var update = Builders<User>.Update
+            .Set(p => p.Username, user.Username)
+            .Set(p => p.Email, user.Email)
             .Set(p => p.Bio, user.Bio)
             .Set(p => p.Avatar, user.Avatar);
 
