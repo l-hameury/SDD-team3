@@ -69,11 +69,11 @@ namespace rtchatty.Controllers
             return Ok(new { token, user });
         }
 
-        [Route("update")]
+        [Route("profileUpdate")]
         [HttpPost]
-        public ActionResult<User> Update(User user)
+        public ActionResult<User> ProfileUpdate(User user)
         {
-            service.Update(user);
+            service.ProfileUpdate(user);
             return Json(user);
         }
     }

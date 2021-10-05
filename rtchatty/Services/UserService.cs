@@ -120,7 +120,7 @@ namespace rtchatty.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public User Update(User user)
+        public User ProfileUpdate(User user)
         {
             var filter = Builders<User>.Filter.Eq(p => p.Id, user.Id);
             var update = Builders<User>.Update
