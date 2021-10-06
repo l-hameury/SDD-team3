@@ -17,3 +17,8 @@ code {
   max-width: 750px;
   border-radius: 1em;
 }
+
+/* nothing to see here this is not custom CSS I swear */
+.chatMessageBox:focus {
+  box-shadow: none;
+}

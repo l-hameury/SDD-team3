@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHandPointRight } from '@fortawesome/free-solid-svg-icons'
+import { Button, Container, Input, InputGroup, InputGroupAddon, Navbar, NavbarText } from 'reactstrap';
 // File to render our User and message inputs at the top of the screen
 
 const ChatInput = (props) => {
 	// default state for user and message fields
-	const [user, setUser] = useState('');
+	const [user, setUser] = useState('TestUser');
 	const [message, setMessage] = useState('');
 
 	const onSubmit = (e) => {
@@ -37,26 +39,21 @@ const ChatInput = (props) => {
 
 	// The actual input form
 	return (
-		<form
-			onSubmit={onSubmit}>
-			<label htmlFor="user">User:</label>
-			<br />
-			<input
-				id="user"
-				name="user"
-				value={user}
-				onChange={onUserUpdate} />
-			<br />
-			<label htmlFor="message">Message:</label>
-			<br />
-			<input
-				type="text"
-				id="message"
-				name="message"
-				value={message}
-				onChange={onMessageUpdate} />
-			<br /><br />
-			<button>Submit</button>
+		<form onSubmit={onSubmit}>
+			<label hidden={true} htmlFor="user">User:</label>
+			<input hidden={true} id="user" name="user" value={user} onChange={onUserUpdate} />
+
+			<Navbar color="dark" dark fixed="bottom">
+				<NavbarText className="flex-fill">
+					<Container className="rounded bg-secondary pe-0">
+						<InputGroup>
+							<InputGroupAddon addonType="prepend"><FontAwesomeIcon icon={faHandPointRight} transform="grow-5 left-10 down-8" className="ps-2" /></InputGroupAddon>
+							<Input type="text" id="message" name="message" value={message} onChange={onMessageUpdate} className="chatMessageBox bg-secondary border-0 text-light" />
+							<InputGroupAddon addonType="append"><Button>Chat</Button></InputGroupAddon>
+						</InputGroup>
+					</Container>
+				</NavbarText>
+			</Navbar>
 		</form>
 	)
 };
