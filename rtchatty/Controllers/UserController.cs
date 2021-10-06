@@ -66,7 +66,7 @@ namespace rtchatty.Controllers
 
             if (token == null) return Unauthorized();
 
-            return Ok(new { token, user });
+            return Ok(new { token, user.Email });
         }
 
         [Route("update")]

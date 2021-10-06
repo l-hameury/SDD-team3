@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
@@ -10,22 +9,38 @@ import Chat from './components/Chat';
 import Register from './components/Register';
 import Profile from './components/Profile';
 import UserNav from "./components/UserNav";
+import Login from "./components/Login";
+import useToken from "./components/Auth/useToken";
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './custom.css'
 
-export default class App extends Component {
-  static displayName = App.name;
+// refactoring App.js
+function App() {
 
-  render() {
-    return (
+  //assign the results to a token variable
+  const {token, setToken} = useToken();
+
+  // if token doesn't exist, redirect back to login page, 
+  // sending token to prop in Login
+  if(!token){
+    return <Login setToken={setToken}/>
+  }
+
+    return( 
       <Layout>
-        <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetch-data' component={FetchData} />
-        <Route path='/chat' component={Chat} />
-        <Route path='/register' component={Register} />
-        <Route path='/profile' component={Profile} />
-        <Route path="/user-nav" component={UserNav} />
+        {/* <BrowserRouter> */}
+          <Switch>
+            <Route path="/"><Home/></Route>
+            <Route path="/counter"><Counter/></Route>
+            <Route path="/fetch-data"><FetchData/></Route>
+            <Route path="/chat"><Chat/></Route>
+            <Route path="/register"><Register/></Route>
+            <Route path="/profile"><Profile/></Route>
+            <Route path="/user-nav"><UserNav/></Route>
+          </Switch>
+        {/* </BrowserRouter> */}
       </Layout>
     );
-  }
 }
+
+export default App;
