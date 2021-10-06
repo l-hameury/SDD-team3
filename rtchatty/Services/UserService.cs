@@ -122,13 +122,29 @@ namespace rtchatty.Services
 
         public User ProfileUpdate(User user)
         {
+            // filter to get current user document
             var filter = Builders<User>.Filter.Eq(p => p.Id, user.Id);
+
+            // grabbing current user username in mongodb
+            var usernameProjection = Builders<User>.Projection.Include("Username");
+            var mongoUsername = _users.Find<User>(filter).Project(usernameProjection).First()["Username"].ToString();
+
+            // grabbing current user email in mongodb
+            var emailProjection = Builders<User>.Projection.Include("Email");
+            var mongoEmail = _users.Find<User>(filter).Project(emailProjection).First()["Email"].ToString();
+
+            // preparing properties to be updated
             var update = Builders<User>.Update
-            .Set(p => p.Username, user.Username)
-            .Set(p => p.Email, user.Email)
             .Set(p => p.Bio, user.Bio)
             .Set(p => p.Avatar, user.Avatar);
 
+            // if there is a username to be updated, add it to the update operation
+            if(user.Username != mongoUsername) update = update.Set(p => p.Username, user.Username);
+
+            // if there is an email to be updated, add it to the update operation
+            if(user.Email != mongoEmail) update = update.Set(p => p.Email, user.Email);
+
+            // invoke update operation
             _users.UpdateOne(filter, update);
             return user;
         }
