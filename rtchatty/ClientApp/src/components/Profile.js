@@ -23,7 +23,7 @@ const Profile = () => {
   const[currentInfo, setCurrentInfo] = useState({...userInfo})
 
   // const token = localStorage.getItem('token');
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRvZ2d1eUBkb2cuY29tIiwibmJmIjoxNjMzNTQ3MTUxLCJleHAiOjE2MzM1NTA3NTEsImlhdCI6MTYzMzU0NzE1MX0.7Lu9LKPnXlIaSwioMgchVeVRG5nPicHgB1TROgUbGAE"
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRvZ0B0ZXN0LmNvbSIsIm5iZiI6MTYzMzU2NTgwMSwiZXhwIjoxNjMzNTY5NDAxLCJpYXQiOjE2MzM1NjU4MDF9.wsgGctxzyOvDgtTA2OuELVEcrYSnZZaB6oqmmmvp3uk"
 
   const handleChange = (event) => {
     const key = event.target.name;
@@ -83,17 +83,17 @@ const Profile = () => {
     <div>
       <Card className="card">
         <CardBody className="cardBody">
-          <CardImg className="avatar rounded-circle" src={userInfo.avatar} alt={defaultProfilePic}></CardImg>
+          <CardImg className="avatar rounded-circle" src={currentInfo.avatar} alt={defaultProfilePic}></CardImg>
           <ListGroup className="listgroup" type="unstyled">
             <ListGroupItem>
               <label className="mr-2">Username:
-                <CardText className="editText" id="userName" name="userName">{userInfo.username}</CardText>
+                <CardText className="editText" id="userName" name="userName">{currentInfo.username}</CardText>
               </label>
             </ListGroupItem>
 
             <ListGroupItem>
               <label className="mr-2">Email:
-                <CardText className="editText" id="email" name="email" defaultValue="testguy@test.com">{userInfo.email}</CardText>
+                <CardText className="editText" id="email" name="email" defaultValue="testguy@test.com">{currentInfo.email}</CardText>
               </label>
             </ListGroupItem>
           </ListGroup>
@@ -101,7 +101,7 @@ const Profile = () => {
 
         <CardBody>
           <div>
-            <CardText name='bio'>{userInfo.bio}</CardText>
+            <CardText name='bio'>{currentInfo.bio}</CardText>
           </div>
         </CardBody>
 
@@ -116,25 +116,25 @@ const Profile = () => {
           <Form>
             <FormGroup>
               <Label for="username"> Username:
-                <Input name={"username"} id="username" defaultValue={userInfo.username} onChange={handleChange}></Input>
+                <Input name={"username"} id="username" defaultValue={currentInfo.username} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
 
             <FormGroup>
               <Label for="email"> Email:
-                <Input type="email" name={"email"} id="email" defaultValue={userInfo.email} onChange={handleChange}></Input>
+                <Input type="email" name={"email"} id="email" defaultValue={currentInfo.email} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
 
             <FormGroup>
               <Label for="bio"> Bio:
-                <Input type="textarea" name={"bio"} id="bio" defaultValue={userInfo.bio} onChange={handleChange}></Input>
+                <Input type="textarea" name={"bio"} id="bio" defaultValue={currentInfo.bio} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
 
             <FormGroup>
               <Label for="avatar"> Avatar Link:
-                <Input name={"avatar"} id="avatar" defaultValue={userInfo.avatar} onChange={handleChange}></Input>
+                <Input name={"avatar"} id="avatar" defaultValue={currentInfo.avatar} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
           </Form>
