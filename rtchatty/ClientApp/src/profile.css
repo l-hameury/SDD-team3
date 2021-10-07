@@ -46,3 +46,9 @@
 	display: block;
 	opacity: 1;
 }
+
+.rounded{
+	width: 60%;
+	text-align: center;
+	margin-inline: auto;
+}

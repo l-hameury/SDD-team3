@@ -28,6 +28,13 @@ namespace rtchatty.Controllers
             return service.GetUsers();
         }
 
+        [HttpGet]
+        [Route("getUserByEmail")]
+        public ActionResult<User> GetUserByEmail(string email)
+        {
+            return service.GetUserByEmail(email);
+        }
+
 
         [Route("searchUsers")]
         [HttpPost]
