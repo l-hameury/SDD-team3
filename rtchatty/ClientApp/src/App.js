@@ -11,7 +11,7 @@ import Profile from './components/Profile';
 import UserNav from "./components/UserNav";
 import Login from "./components/Login";
 import useToken from "./components/Auth/useToken";
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import './custom.css'
 
 // refactoring App.js
@@ -25,20 +25,18 @@ function App() {
   if(!token){
     return <Login setToken={setToken}/>
   }
-
-    return( 
+   
+return( 
       <Layout>
-        {/* <BrowserRouter> */}
           <Switch>
-            <Route path="/"><Home/></Route>
-            <Route path="/counter"><Counter/></Route>
-            <Route path="/fetch-data"><FetchData/></Route>
-            <Route path="/chat"><Chat/></Route>
-            <Route path="/register"><Register/></Route>
-            <Route path="/profile"><Profile/></Route>
-            <Route path="/user-nav"><UserNav/></Route>
+            <Route exact path="/" component={Home}/>
+            <Route exact path="/counter" component={Counter}/>
+            <Route exact path="/fetch-data" component={FetchData}/>
+            <Route exact path="/chat" component={Chat}/>
+            <Route exact path="/register" component={Register}/>
+            <Route exact path="/profile" component={Profile}/>
+            <Route exact path="/user-nav" component={UserNav}/>
           </Switch>
-        {/* </BrowserRouter> */}
       </Layout>
     );
 }
