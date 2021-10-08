@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Alert, Button, Col, Form, Input, Label, Row } from "reactstrap";
+import { Alert, Button, Col, Form, Input, Label, Row, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import axios from 'axios';
-import Popup from "./Popup";
 
 const Register = () => {
 
@@ -21,11 +20,12 @@ const Register = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showUsernameError, setShowUsernameError] = useState(false);
     const [showEmailError, setShowEmailError] = useState(false);
-    const [popOpen, setPopOpen] = useState(false);
+    // Modal popup boolean
+    const [showPopup, setShowPopup] = useState(false);
 
-    const togglePop = () => {
-        setPopOpen(!popOpen);
-    }
+    // Toggle modal to true or false
+    const showPop = () => setShowPopup(true);
+    const closePop = () => setShowPopup(false);
 
     const handleInput = (e) => {
         const name = e.target.name;
@@ -101,7 +101,7 @@ const Register = () => {
         setShowSuccess(false);
         setShowUsernameError(false);
         setShowEmailError(false);
-        setPopOpen(false);
+        closePop();
 
         // Send the new user info to the backend for processing
         await axios.post('https://localhost:5001/api/user/register', {
@@ -114,7 +114,7 @@ const Register = () => {
                 // Display success message
                 setShowSuccess(true);
                 // Sets Popup box to open to true
-                setPopOpen(true);
+                showPop();
             })
             .catch(function (error) {
                 console.log(error.response.data);
@@ -171,7 +171,18 @@ const Register = () => {
                     </Row>
                     <Button color="primary" type="submit" value="Submit">Sign Up</Button>
                     {/* Creates popup telling user to finish creating their profile after they have logged in */}
-                    {popOpen ? <Popup handleClose={togglePop} /> : null}
+                    <>
+                        <Modal isOpen={showPopup}>
+                            <ModalHeader>Finish Profile</ModalHeader>
+                            <ModalBody>Please finish filling out your profile after you log in.</ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" onClick={closePop}>
+                                    Close
+                                </Button>
+                            </ModalFooter>
+                        </Modal>
+                    </>
+                    {/* Creates popup telling user to finish creating their profile after they have logged in */}
                 </Form>
 
             </div>
