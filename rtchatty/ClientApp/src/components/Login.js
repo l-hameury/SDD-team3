@@ -62,3 +62,6 @@ Login.propTypes = {
     //ensure the prop being passed is function type?
     setToken: PropTypes.func.isRequired
 }
+
+
+//

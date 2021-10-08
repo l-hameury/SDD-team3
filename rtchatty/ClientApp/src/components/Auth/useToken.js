@@ -7,7 +7,9 @@ export default function useToken() {
     //Convert the string to an object using JSON.parse, then return the value of token
     const getToken = () =>{
     const tokenString = localStorage.getItem('token');
-    const userToken = JSON.parse(tokenString);
+    const tokenJSON = JSON.stringify(tokenString);
+    //const userToken = JSON.parse(tokenString);
+    const userToken = JSON.parse(tokenJSON);
     return userToken?.token
     };
     //This will fetch the token and set it as the initial state:
@@ -26,3 +28,4 @@ export default function useToken() {
         token
     }
  }
+ 
