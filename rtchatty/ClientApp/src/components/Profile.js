@@ -25,25 +25,18 @@ const Profile = () => {
   const [emailError, setEmailError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRvZ2d1eUB0ZXN0LmNvbSIsIm5iZiI6MTYzMzcyODY1MywiZXhwIjoxNjMzNzMyMjUzLCJpYXQiOjE2MzM3Mjg2NTN9.YiSyOKnfxVQT4kKgAKc8FU7ZxuaHFPOyn29TS-v0GKU"
-  // const token = localStorage.getItem('token');
-
-  // im using this hook to initialize user information after rendering component
+  // hook to initialize user information after rendering component
   useEffect(() => {
+    // getting token and email to get user from the database
+    const loggedInEmail = localStorage.getItem('email');
     axios.get("https://localhost:5001/api/user/getUserByEmail", {
       params: {
-        email: 'dogguy@test.com'
-      },
-      headers: {
-        'Authorization': `Bearer ${token}`
+        email: loggedInEmail
       }
     })
     .then(function (res){
       setUserInfo(res.data)
       setCurrentInfo(res.data)
-    })
-    .catch(function (error){
-      console.log(error)
     })
   }, [])
 
@@ -80,16 +73,11 @@ const Profile = () => {
       username: userInfo.username,
       avatar: userInfo.avatar,
       bio: userInfo.bio
-    }, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      }
     })
-    .then(function (res){
+    .then(function (){
       setEditInfoModal(!editInfoModal);
       setCurrentInfo({...userInfo})
       setSuccess("Profile successfully updated")
-      console.log(res)
     })
     .catch(function (error){
       if(error.response.data.includes("Username")) setUsernameError("Username is already taken.")
@@ -113,17 +101,17 @@ const Profile = () => {
     <div>
       <Card className="card">
         <CardBody className="cardBody">
-          <CardImg className="avatar rounded-circle" id="profileImg" src={userInfo.avatar ? userInfo.avatar : defaultProfilePic}></CardImg>
+          <CardImg className="avatar rounded-circle" onError={event => {event.target.src = defaultProfilePic;}} src={currentInfo.avatar ? currentInfo.avatar : defaultProfilePic}></CardImg>
           <ListGroup className="listgroup" type="unstyled">
             <ListGroupItem>
               <label className="mr-2">Username:
-                <CardText className="editText" id="userName" name="userName">{userInfo.username}</CardText>
+                <CardText className="editText" id="userName" name="userName">{currentInfo.username}</CardText>
               </label>
             </ListGroupItem>
 
             <ListGroupItem>
               <label className="mr-2">Email:
-                <CardText className="editText" id="email" name="email" defaultValue="testguy@test.com">{userInfo.email}</CardText>
+                <CardText className="editText" id="email" name="email" defaultValue="testguy@test.com">{currentInfo.email}</CardText>
               </label>
             </ListGroupItem>
           </ListGroup>
@@ -131,7 +119,7 @@ const Profile = () => {
 
         <CardBody>
           <div>
-            <CardText name='bio'>{userInfo.bio}</CardText>
+            <CardText name='bio'>{currentInfo.bio}</CardText>
           </div>
         </CardBody>
 
