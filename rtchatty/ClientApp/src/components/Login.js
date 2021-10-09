@@ -13,6 +13,7 @@ async function loginUser(credentials){
     .then(function (res) {
       returnData = res.data;
     })
+    // TODO: Implement error handling
     .catch(function (error) {
       console.log(error);
       return error;
@@ -26,6 +27,8 @@ export default function Login({setToken}){
     //setting up local state to grab email and password
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    // TODO: Actually use this error for error handling
+    const [error, setError] = useState();
 
     // event listener for login button
     const handleSubmit = async (e) =>{
@@ -34,8 +37,9 @@ export default function Login({setToken}){
             email,
             password
         });
-        setToken(authData);
-        localStorage.setItem("token", authData.token);
+        // localStorage.setItem("token", authData.token);
+        localStorage.setItem("email", email);
+        setToken(authData.token);
     }
     //basic login form 
     return (
@@ -63,5 +67,3 @@ Login.propTypes = {
     setToken: PropTypes.func.isRequired
 }
 
-
-//

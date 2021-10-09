@@ -1,3 +1,4 @@
+using System.Runtime.ExceptionServices;
 using System.Reflection;
 using System.Threading;
 using System.Globalization;
@@ -90,7 +91,7 @@ namespace rtchatty.Services
 
 
         public string Authenticate(string email, string password)
-        {
+        {           
             var user = _users.Find(user => user.Email == email && user.Password == password).FirstOrDefault();
             
             // TODO: Return Not Found error. (Not a 404. User not found error.)
@@ -117,8 +118,10 @@ namespace rtchatty.Services
                 )
             };
 
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+           
         }
 
         public User Update(User user)

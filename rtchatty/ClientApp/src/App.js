@@ -20,14 +20,12 @@ function App() {
   //assign the results to a token variable
   const {token, setToken} = useToken();
 
-  //grab token from local storage if one is there already.
-  const storageToken = localStorage.getItem('token');
-
   // if token doesn't exist, redirect back to login page, 
   // sending token to prop in Login
-  console.log(token); // debugging
-  if(!token && !storageToken){
-    console.log("inside token if statment") //debugging
+  // TODO: Remove Debug
+  // console.log(token); // debugging
+  if(!token){
+    // console.log("inside token if statment") //debugging
     return <Login setToken={setToken}/>
   }
    
