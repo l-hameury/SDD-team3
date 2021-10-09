@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
@@ -10,22 +9,40 @@ import Chat from './components/Chat';
 import Register from './components/Register';
 import Profile from './components/Profile';
 import UserNav from "./components/UserNav";
+import Login from "./components/Login";
+import useToken from "./components/Auth/useToken";
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import './custom.css'
 
-export default class App extends Component {
-  static displayName = App.name;
+// refactoring App.js
+function App() {
 
-  render() {
-    return (
+  //assign the results to a token variable
+  const {token, setToken} = useToken();
+
+  // if token doesn't exist, redirect back to login page, 
+  // sending token to prop in Login
+  // TODO: Remove Debug
+  // console.log(token); // debugging
+  if(!token){
+    // console.log("inside token if statment") //debugging
+    return <Login setToken={setToken}/>
+  }
+   
+return( 
       <Layout>
-        <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetch-data' component={FetchData} />
-        <Route path='/chat' component={Chat} />
-        <Route path='/register' component={Register} />
-        <Route path='/profile' component={Profile} />
-        <Route path="/user-nav" component={UserNav} />
+          <Switch>
+            <Route exact path="/" component={Home}/>
+            <Route exact path="/counter" component={Counter}/>
+            <Route exact path="/fetch-data" component={FetchData}/>
+            <Route exact path="/chat" component={Chat}/>
+            <Route exact path="/register" component={Register}/>
+            <Route exact path="/profile" component={Profile}/>
+            <Route exact path="/user-nav" component={UserNav}/>
+          </Switch>
       </Layout>
     );
-  }
 }
+
+export default App;
+//

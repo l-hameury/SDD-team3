@@ -71,9 +71,10 @@ namespace rtchatty.Controllers
         {
             var token = service.Authenticate(user.Email, user.Password);
 
+            // TODO: Add proper error handling
             if (token == null) return Unauthorized();
 
-            return Ok(new { token, user });
+            return Ok(new { token });
         }
 
         [Route("profileUpdate")]
