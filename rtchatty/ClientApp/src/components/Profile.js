@@ -21,18 +21,18 @@ const Profile = () => {
   })
   const [currentInfo, setCurrentInfo] = useState({...userInfo})
   const [editInfoModal, setEditInfoModal] = useState(false);
-  const [error, setError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRvZzY5QHRlc3QuY29tIiwibmJmIjoxNjMzNjQxOTEwLCJleHAiOjE2MzM2NDU1MTAsImlhdCI6MTYzMzY0MTkxMH0.sOJhJ84e5YB28wqFCMeFgKJ3PHAlFtleG1KS4aEAoRc"
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRvZ2d1eUB0ZXN0LmNvbSIsIm5iZiI6MTYzMzcyODY1MywiZXhwIjoxNjMzNzMyMjUzLCJpYXQiOjE2MzM3Mjg2NTN9.YiSyOKnfxVQT4kKgAKc8FU7ZxuaHFPOyn29TS-v0GKU"
   // const token = localStorage.getItem('token');
 
   // im using this hook to initialize user information after rendering component
-  // once I am able to get the user email, I can replace the hardcoded email in the params with it to load their information :) 
   useEffect(() => {
     axios.get("https://localhost:5001/api/user/getUserByEmail", {
       params: {
-        email: 'dog69@test.com'
+        email: 'dogguy@test.com'
       },
       headers: {
         'Authorization': `Bearer ${token}`
@@ -53,26 +53,26 @@ const Profile = () => {
     const value = event.target.value;
     if(key === 'username') validateUsername(value)
     if(key === 'email') validateEmail(value);
-    if(!error) setUserInfo({ ...userInfo, [key]: value})
+    if(!usernameError || !emailError) setUserInfo({ ...userInfo, [key]: value})
   }
 
   // validation for username
   const validateUsername = (username) => {
-    if(username.trim() === "") setError('Username is required');
-    else if(username.length < 3) setError('Username must be at least 3 characters long');
-    else setError('');
+    if(username.trim() === "") setUsernameError('Username is required');
+    else if(username.length < 3) setUsernameError('Username must be at least 3 characters long');
+    else setUsernameError('');
   }
   
   // validation for email
   const validateEmail = (email) => {
-    if(email.length === 0) setError('Email is required');
-    else if(!email.match("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[.][a-zA-Z]{2,4}$")) setError('Invalid Email Format')
-    else setError('');
+    if(email.length === 0) setEmailError('Email is required');
+    else if(!email.match("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[.][a-zA-Z]{2,4}$")) setEmailError('Invalid Email Format')
+    else setEmailError('');
   }
 
   // api request to update user information once submit button is pressed, if an error exists it will do nothing
   const updateInfo = () => {
-    if(error) return;
+    if(usernameError || emailError) return;
 
     axios.post("https://localhost:5001/api/user/profileUpdate", {
       id: userInfo.id,
@@ -92,8 +92,8 @@ const Profile = () => {
       console.log(res)
     })
     .catch(function (error){
-      if(error.response.data.includes("Username")) setError("Username is already taken.")
-      if(error.response.data.includes("Email")) setError("Email is already taken.")
+      if(error.response.data.includes("Username")) setUsernameError("Username is already taken.")
+      if(error.response.data.includes("Email")) setEmailError("Email is already taken.")
     })
   }
 
@@ -103,7 +103,8 @@ const Profile = () => {
   // this resets information upon pressing the X button or the Close button in the Modal
   const resetInfo = () =>{
     setUserInfo({...currentInfo})
-    setError("");
+    setUsernameError("");
+    setEmailError("");
     setSuccess("");
     setEditInfoModal(!editInfoModal)
   } 
@@ -112,7 +113,7 @@ const Profile = () => {
     <div>
       <Card className="card">
         <CardBody className="cardBody">
-          <CardImg className="avatar rounded-circle" src={userInfo.avatar ? userInfo.avatar : defaultProfilePic}></CardImg>
+          <CardImg className="avatar rounded-circle" id="profileImg" src={userInfo.avatar ? userInfo.avatar : defaultProfilePic}></CardImg>
           <ListGroup className="listgroup" type="unstyled">
             <ListGroupItem>
               <label className="mr-2">Username:
@@ -170,7 +171,8 @@ const Profile = () => {
             </FormGroup>
           </Form>
 
-          <Alert color="danger" hidden={!error}>{error}</Alert>
+          <Alert color="danger" hidden={!usernameError}>{usernameError}</Alert>
+          <Alert color="danger" hidden={!emailError}>{emailError}</Alert>
         </ModalBody>
         <ModalFooter>
           <Button color="success" onClick={updateInfo}>Submit</Button>
