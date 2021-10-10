@@ -5,7 +5,8 @@ import {
   Form, FormGroup, Label, Input,
   ListGroup, ListGroupItem, Modal,
   ModalBody, ModalHeader, ModalFooter,
-  Container, Row, Col } from "reactstrap";
+  Container, Row, Col, Dropdown,
+  DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
@@ -21,6 +22,7 @@ const Profile = () => {
   })
   const [currentInfo, setCurrentInfo] = useState({...userInfo})
   const [editInfoModal, setEditInfoModal] = useState(false);
+  const [settingsDropdown, setSettingsDropdown] = useState(false);
   const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [success, setSuccess] = useState("");
@@ -87,6 +89,7 @@ const Profile = () => {
 
   // to show the update modal for users to edit their information
   const toggleEditInfoModal = () => setEditInfoModal(!editInfoModal);
+  const toggleSettingsDropdown = () => setSettingsDropdown(!settingsDropdown);
 
   // this resets information upon pressing the X button or the Close button in the Modal
   const resetInfo = () =>{
@@ -137,7 +140,12 @@ const Profile = () => {
             </Col>
         </Row>
         <CardFooter style={{textAlign: "right"}}>
-          <Button color="primary" onClick={toggleEditInfoModal}>Edit Profile</Button>
+          <Dropdown isOpen={settingsDropdown} toggle={toggleSettingsDropdown} size="sm">
+            <DropdownToggle color="secondary">Settings</DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem onClick={toggleEditInfoModal}>Edit Profile</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </CardFooter>
       </Card>
       <Alert className="rounded" color="success" hidden={!success}>{success}</Alert>
