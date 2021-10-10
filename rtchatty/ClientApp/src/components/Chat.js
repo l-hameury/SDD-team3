@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import axios from 'axios';
 
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
@@ -13,14 +14,15 @@ const Chat = () => {
 
 	useEffect(() => {
 		const newConnection = new HubConnectionBuilder()
-			.withUrl("/chatHub")
+			.withUrl("https://localhost:5001/chatHub")
 			.withAutomaticReconnect()
 			.configureLogging(LogLevel.Information)
 			.build();
 
 		setConnection(newConnection);
 	}, []);
-
+	
+	// Update the chat window with new messages from the server
 	useEffect(() => {
 		if (connection) {
 			connection.start()
@@ -37,6 +39,25 @@ const Chat = () => {
 		}
 	}, [connection]);
 
+	useEffect(() => {
+		if(connection){
+			try {
+				console.log("Console log here: \n" + connection.on('ReceiveMessage'));			}
+			catch (e) {
+				console.log('Connection failed', e);
+			}
+		}
+
+		//TODO: Using this to test once I have a list of messages returning.
+		//TODO: For now, just random comments that I will use/remove later.
+		// const messagesList = getMessages();
+		// const updatedChat = [...messagesList];
+		// updatedChat.push(messagesList);
+
+		// setChat(messagesList);
+	}, [connection]);
+
+	// Send messages to the ChatHub back-end
 	const sendMessage = async (user, message) => {
 		const chatMessage = {
 			user: user,
@@ -45,10 +66,17 @@ const Chat = () => {
 
 		if (connection.connectionStarted) {
 			try {
-				await connection.send('SaveMessage', chatMessage);
+				// await connection.send('SaveMessage', chatMessage);
+				await fetch('https://localhost:5001/chatHub/messages', {
+					method: 'POST',
+					body: JSON.stringify(chatMessage),
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
 			}
 			catch (e) {
-				console.log(e);
+				console.log('Sending message failed', e);
 			}
 		}
 		else {
@@ -56,6 +84,24 @@ const Chat = () => {
 			alert('No connection to server yet.');
 		}
 	}
+
+	// const getMessages = async () => {
+	// 	// const chatInfo = {
+	// 	// 	group: group,
+	// 	// 	user: user
+	// 	// };
+
+	// 	// let messages = [];
+
+	// 	try {
+	// 		await connection.on('GetMessages');
+	// 	}
+	// 	catch (e) {
+	// 		console.log(e);
+	// 	}
+
+	// 	// return messages;
+	// }
 
 	return (
 		<div>

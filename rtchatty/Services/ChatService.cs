@@ -5,12 +5,12 @@ using rtchatty.Models;
 
 namespace rtchatty.Services
 {
-	public class MessageService
+	public class ChatService
 	{
 		private readonly IMongoCollection<ChatMessage> _messages;
 		private readonly string key;
 
-		public MessageService(IConfiguration configuration)
+		public ChatService(IConfiguration configuration)
 		{
 			var client = new MongoClient("mongodb://localhost:27017");
 
@@ -19,7 +19,12 @@ namespace rtchatty.Services
             _messages = database.GetCollection<ChatMessage>("chat_messages");
 		}
 
-		public List<ChatMessage> GetMessages() => _messages.Find(Group => true).ToList();
+		// public List<ChatMessage> GetMessages() => 
+		// 	_messages.Find(group => true).ToList();
+		public string GetMessages() 
+		{
+			return "Hello!";
+		}
 
 		public bool StoreMessage(ChatMessage message)
 		{
