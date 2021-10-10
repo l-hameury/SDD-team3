@@ -66,13 +66,7 @@ const Chat = () => {
 
 		if (connection.connectionStarted) {
 			try {
-				await fetch('https://localhost:5001/Chat/messages', {
-					method: 'POST',
-					body: JSON.stringify(chatMessage),
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				});
+				await axios.post('https://localhost:5001/Chat/messages', chatMessage);
 			}
 			catch (e) {
 				console.log('Sending message failed', e);
