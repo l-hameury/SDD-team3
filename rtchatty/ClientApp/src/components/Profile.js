@@ -4,11 +4,11 @@ import {
   CardFooter, CardImg, CardText,
   Form, FormGroup, Label, Input,
   ListGroup, ListGroupItem, Modal,
-  ModalBody, ModalHeader, ModalFooter } from "reactstrap";
+  ModalBody, ModalHeader, ModalFooter,
+  Container, Row, Col } from "reactstrap";
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
-import '../profile.css'
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState({
@@ -99,38 +99,51 @@ const Profile = () => {
 
   return (
     <div>
-      <Card className="card">
-        <CardBody className="cardBody">
-          <CardImg className="avatar rounded-circle" onError={event => {event.target.src = defaultProfilePic;}} src={currentInfo.avatar ? currentInfo.avatar : defaultProfilePic}></CardImg>
-          <ListGroup className="listgroup" type="unstyled">
-            <ListGroupItem>
-              <label className="mr-2">Username:
-                <CardText className="editText" id="userName" name="userName">{currentInfo.username}</CardText>
-              </label>
-            </ListGroupItem>
-
-            <ListGroupItem>
-              <label className="mr-2">Email:
-                <CardText className="editText" id="email" name="email" defaultValue="testguy@test.com">{currentInfo.email}</CardText>
-              </label>
-            </ListGroupItem>
-          </ListGroup>
-        </CardBody>
-
-        <CardBody>
-          <div>
-            <CardText name='bio'>{currentInfo.bio}</CardText>
-          </div>
-        </CardBody>
-
-        <CardFooter className="editFooter">
+      <Container fluid="sm">
+        <Card>
+          <Row>
+            <Col xs="3">
+              <CardImg 
+              className="rounded-circle" 
+              style={{padding: "5px"}}
+              onError={event => {event.target.src = defaultProfilePic;}} 
+              src={currentInfo.avatar ? currentInfo.avatar : defaultProfilePic}> 
+              </CardImg>
+            </Col>
+            <Col xs="9">
+              <Row>
+                <CardBody>
+                  <ListGroup>
+                    <ListGroupItem style={{display: "inherit"}}>
+                      <Col xs="2"> Username: </Col>
+                      <Col style={{textAlign: "right"}} className="profileInfo">
+                        <strong> <CardText id="userName" name="userName">{currentInfo.username}</CardText> </strong>
+                      </Col>
+                    </ListGroupItem>
+                    <ListGroupItem style={{display: "inherit"}}>
+                      <Col xs="2"> Email: </Col>
+                      <Col style={{textAlign: "right"}}>
+                        <strong> <CardText id="email" name="email">{currentInfo.email}</CardText> </strong>
+                      </Col>
+                    </ListGroupItem>
+                  </ListGroup>
+                </CardBody>
+              </Row>
+              <Row>
+                <CardBody>
+                  <CardText name='bio'>{currentInfo.bio ? currentInfo.bio : "Hello"}</CardText>
+                </CardBody>
+              </Row>
+            </Col>
+        </Row>
+        <CardFooter style={{textAlign: "right"}}>
           <Button color="primary" onClick={toggleEditInfoModal}>Edit Profile</Button>
         </CardFooter>
       </Card>
-
       <Alert className="rounded" color="success" hidden={!success}>{success}</Alert>
+      </Container>
 
-      <Modal isOpen={editInfoModal} toggle={resetInfo} className="modal">
+      <Modal isOpen={editInfoModal} toggle={resetInfo} className="updateModal">
         <ModalHeader toggle={resetInfo}>Update your information</ModalHeader>
         <ModalBody>
           <Form>
@@ -139,26 +152,22 @@ const Profile = () => {
                 <Input name={"username"} id="username" defaultValue={currentInfo.username} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
-
             <FormGroup>
               <Label for="email"> Email:
                 <Input type="email" name={"email"} id="email" defaultValue={currentInfo.email} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
-
             <FormGroup>
               <Label for="bio"> Bio:
-                <Input type="textarea" name={"bio"} id="bio" defaultValue={currentInfo.bio} onChange={handleChange}></Input>
+                <Input style={{width: "150%", height: "10rem"}} type="textarea" name={"bio"} id="bio" defaultValue={currentInfo.bio} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
-
             <FormGroup>
               <Label for="avatar"> Avatar Link:
-                <Input name={"avatar"} id="avatar" defaultValue={currentInfo.avatar} onChange={handleChange}></Input>
+                <Input style={{width: "150%"}} name={"avatar"} id="avatar" defaultValue={currentInfo.avatar} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
           </Form>
-
           <Alert color="danger" hidden={!usernameError}>{usernameError}</Alert>
           <Alert color="danger" hidden={!emailError}>{emailError}</Alert>
         </ModalBody>
@@ -167,7 +176,7 @@ const Profile = () => {
           <Button color="danger" onClick={resetInfo}>Cancel</Button>
         </ModalFooter>
       </Modal>
-    </div>
+     </div>
   );
 }
 
