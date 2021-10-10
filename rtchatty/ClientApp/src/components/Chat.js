@@ -66,8 +66,7 @@ const Chat = () => {
 
 		if (connection.connectionStarted) {
 			try {
-				// await connection.send('SaveMessage', chatMessage);
-				await fetch('https://localhost:5001/chatHub/messages', {
+				await fetch('https://localhost:5001/Chat/messages', {
 					method: 'POST',
 					body: JSON.stringify(chatMessage),
 					headers: {

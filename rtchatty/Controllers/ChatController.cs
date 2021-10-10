@@ -27,9 +27,9 @@ namespace rtchatty.Controllers
         public async Task Post(ChatMessage message)
         {
             service.StoreMessage(message);
-            
+
+            // chatHub.Clients sends to all chathub clients. This sends back to the front end
             await chatHub.Clients.All.ReceiveMessage(message);
-            // return CreatedAtAction("Savemessage", message);
         }
     }
 }
