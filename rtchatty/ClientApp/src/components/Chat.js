@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
@@ -15,6 +15,7 @@ const Chat = () => {
 		const newConnection = new HubConnectionBuilder()
 			.withUrl("/chatHub")
 			.withAutomaticReconnect()
+			.configureLogging(LogLevel.Information)
 			.build();
 
 		setConnection(newConnection);
@@ -44,7 +45,7 @@ const Chat = () => {
 
 		if (connection.connectionStarted) {
 			try {
-				await connection.send('SendMessage', chatMessage);
+				await connection.send('SaveMessage', chatMessage);
 			}
 			catch (e) {
 				console.log(e);

@@ -1,9 +1,17 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 namespace rtchatty.Models
 {
 	public class ChatMessage
 	{
+		[BsonId]
+		[BsonRepresentation(BsonType.ObjectId)]
+		public string Id { get; set; }
+		[BsonElement("Group")]
+		public string Group { get; set; }
+		[BsonElement("User")]
 		public string User { get; set; }
-
+		[BsonElement("Message")]
 		public string Message { get; set; }
 	}
 }

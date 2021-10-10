@@ -1,11 +1,5 @@
-using System.Runtime.ExceptionServices;
-using System.Reflection;
-using System.Threading;
-using System.Globalization;
-using System.ComponentModel;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using rtchatty.Database;
 using rtchatty.Models;
 using System.Linq;
 using System.Collections.Generic;
@@ -56,7 +50,6 @@ namespace rtchatty.Services
                 return GetUsers();
             }
         }
-        // _users.InsertOne(user);
 
 
         // Register new user
