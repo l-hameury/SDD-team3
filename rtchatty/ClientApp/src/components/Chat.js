@@ -3,6 +3,7 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
+import { Container } from 'reactstrap';
 
 const Chat = () => {
 	const [connection, setConnection] = useState(null);
@@ -58,9 +59,12 @@ const Chat = () => {
 
 	return (
 		<div>
+			<h1>General Chat</h1>
 			<hr />
-			<ChatWindow chat={chat} />
-			<ChatInput sendMessage={sendMessage} />
+			<Container className="pb-100">
+				<ChatWindow chat={chat} />
+				<ChatInput sendMessage={sendMessage} />
+			</Container>
 		</div>
 	);
 };
