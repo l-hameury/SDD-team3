@@ -18,13 +18,9 @@ namespace rtchatty.Services
 
             _messages = database.GetCollection<ChatMessage>("chat_messages");
 		}
-
-		// public List<ChatMessage> GetMessages() => 
-		// 	_messages.Find(group => true).ToList();
-		public string GetMessages() 
-		{
-			return "Hello!";
-		}
+		
+		public List<ChatMessage> GetMessages() => 
+			_messages.Find(group => true).ToList();
 
 		public bool StoreMessage(ChatMessage message)
 		{

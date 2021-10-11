@@ -11,6 +11,8 @@ using System;
 
 namespace rtchatty.Hubs
 {
+	// The functionality for this Chat Hub has been moved to the ChatController.cs file
+	// To allow for HTTP requests and to provide an API endpoint
 	public class ChatHub : Hub<IChatClient>
 	{
 		public ChatHub(ChatService _service)
@@ -18,14 +20,7 @@ namespace rtchatty.Hubs
 	}
 		//TODO: Move this logic to the ChatController
 		// public async Task SaveMessage(ChatMessage message)
-		// {
-		// 	service.StoreMessage(message);
-		// 	await SendMessage(message);
-		// }
-		// public async Task SendMessage(ChatMessage message)
-		// {
-		// 	await Clients.All.ReceiveMessage(message);
-		// }
+
 
 		// // public ActionResult<List<ChatMessage>> GetMessages(ChatMessage message){
 		// // 	// string group = message.Group;
@@ -40,14 +35,5 @@ namespace rtchatty.Hubs
 		// 	// return service.GetMessages();
 		// 	Console.WriteLine("GetMessages function hit! \n");
 		// 	return service.GetMessages();
-		// }
-
-
-		// TODO: Implement users and Groups for sending DMs
-		// Source for this sample: 
-		// https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/signalr/groups/sample/Hubs/ChatHub.cs
-		// public Task SendPrivateMessage(string user, string message)
-		// {
-		// 	return Clients.User(user).SendAsync("ReceiveMessage", message);
 		// }
 }
