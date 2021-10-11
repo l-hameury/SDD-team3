@@ -13,13 +13,14 @@ import Login from "./components/Login";
 import useToken from "./components/Auth/useToken";
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import './custom.css'
+import axios from 'axios';
 
 // refactoring App.js
 function App() {
 
   //assign the results to a token variable
   const {token, setToken} = useToken();
-
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   // if token doesn't exist, redirect back to login page, 
   // sending token to prop in Login
   // TODO: Remove Debug
