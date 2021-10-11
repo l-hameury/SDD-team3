@@ -3,25 +3,6 @@ import axios from 'axios';
 import { Button, Col, Form, Input, Label, Row } from "reactstrap";
 
 
-async function loginUser(credentials){
-    // Hold returnData for... returning. :)
-    let returnData;
-
-    await axios.post('https://localhost:5001/api/user/authenticate', {
-      email: credentials.email,
-      password: credentials.password
-    })
-    .then(function (res) {
-      returnData = res.data;
-    })
-    // TODO: Implement error handling
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    })
-
-    return returnData;
-}
 
 const Login = ({setToken}) => {
 
@@ -35,6 +16,9 @@ const Login = ({setToken}) => {
         password: "",
         fieldErrors: "",
     });
+
+    // var the 401 error
+    const [showAuthError, setShowAuthError] = useState(false);
 
     const handleInput = (e) =>{
         const field = e.target.name;
@@ -65,6 +49,8 @@ const Login = ({setToken}) => {
          setInputs({ ...inputs, [field]: value });
     }
 
+    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
          // Make sure no fields are currently invalid
@@ -78,14 +64,51 @@ const Login = ({setToken}) => {
             return;
         }
 
+        // Clear 401 error alert box
+        setShowAuthError(false);
+
+        //axios call to login user
+        async function loginUser(credentials){
+        // Hold returnData for... returning. :)
+        let returnData;
+    
+        await axios.post('https://localhost:5001/api/user/authenticate', {
+          email: credentials.email,
+          password: credentials.password
+        })
+        .then(function (res) {
+          returnData = res.data;
+        })
+        // TODO: Implement error handling
+        .catch(function (error) {
+          console.log(error);
+          // if there is a 401 response, log it
+          if (error.response.status ==='401') {
+             console.log(error.response.data);
+             console.log(error.response.status);
+              // returns null to authData
+             return null;
+          }
+          return error
+        })
+    
+        return returnData;
+    }
+
 
         const authData = await loginUser({
             email: inputs.email,
             password: inputs.password
         });
-        // localStorage.setItem("token", authData.token);
         localStorage.setItem("email", inputs.email);
+        // if authData is null then show the error
+        if(!authData){ 
+            setShowAuthError(true)
+            return;
+        }
+        //else set the token for login
         setToken(authData.token);
+    
     }
 
     const errorClass = (error) => {
@@ -96,6 +119,7 @@ const Login = ({setToken}) => {
         <div>
              <h1 className="mb-3">Please Log In</h1>
              <div className="container registerContainer border border-dark rounded">
+             <div className="alert alert-danger" hidden={!showAuthError} name="authAlert">401 Error: Not Authorized. Wrong Email or Password</div>
                 <Form className="p-3 needs-validation" onSubmit={handleSubmit} noValidate>
                     <Row>
                         <Col>
