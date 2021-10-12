@@ -9,6 +9,7 @@ import { Container } from 'reactstrap';
 const Chat = () => {
 	const [connection, setConnection] = useState(null);
 	const [chat, setChat] = useState([]);
+	const [messagesEnd, setMessagesEnd] = useState();
 	const latestChat = useRef(null);
 
 	latestChat.current = chat;
@@ -106,6 +107,7 @@ const Chat = () => {
 			// TODO: We're not using a separate server here, so.... not super relevant
 			alert('No connection to server yet.');
 		}
+		scrollToBottom();
 	}
 
 	/**
@@ -124,15 +126,24 @@ const Chat = () => {
 		else {
 			alert('No connection yet');
 		}
+		scrollToBottom();
+	}
+
+	/**
+	 * Scroll to the bottom of the chat window
+	 */
+	const scrollToBottom = () => {
+		messagesEnd.scrollIntoView({ behavior: "smooth"});
 	}
 
 	return (
 		<div>
 			<h1>General Chat</h1>
 			<hr />
-			<Container className="pb-100">
+			<Container>
 				<ChatWindow chat={chat} />
 				<ChatInput sendMessage={sendMessage} />
+				<div className="pb-5 mb-5" ref={(el) => { setMessagesEnd(el); }}/>
 			</Container>
 		</div>
 	);
