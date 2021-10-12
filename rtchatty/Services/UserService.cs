@@ -1,3 +1,4 @@
+using System.Runtime.ExceptionServices;
 using System.Reflection;
 using System.Threading;
 using System.Globalization;
@@ -43,6 +44,7 @@ namespace rtchatty.Services
             _users.Find(user => true).ToList();
 
         public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
+        public User GetUserByEmail(string email) => _users.Find<User>(user => user.Email == email).FirstOrDefault();
 
         public List<User> searchUsers(string query)
         {
@@ -90,9 +92,10 @@ namespace rtchatty.Services
 
 
         public string Authenticate(string email, string password)
-        {
-            var user = this._users.Find(x => x.Email == email && x.Password == password).FirstOrDefault();
-
+        {           
+            var user = _users.Find(user => user.Email == email && user.Password == password).FirstOrDefault();
+            
+            // TODO: Return Not Found error. (Not a 404. User not found error.)
             if (user == null)
                 return null;
 
@@ -116,17 +119,37 @@ namespace rtchatty.Services
                 )
             };
 
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+           
         }
 
-        public User Update(User user)
+        public User ProfileUpdate(User user)
         {
+            // filter by user ID to get current user document
             var filter = Builders<User>.Filter.Eq(p => p.Id, user.Id);
+
+            // grabbing current user username in mongodb
+            var usernameProjection = Builders<User>.Projection.Include("Username");
+            var mongoUsername = _users.Find<User>(filter).Project(usernameProjection).First()["Username"].ToString();
+
+            // grabbing current user email in mongodb
+            var emailProjection = Builders<User>.Projection.Include("Email");
+            var mongoEmail = _users.Find<User>(filter).Project(emailProjection).First()["Email"].ToString();
+
+            // preparing properties to be updated
             var update = Builders<User>.Update
             .Set(p => p.Bio, user.Bio)
             .Set(p => p.Avatar, user.Avatar);
 
+            // if there is a username to be updated, add it to the update operation that I defined above
+            if(user.Username != mongoUsername) update = update.Set(p => p.Username, user.Username);
+
+            // if there is an email to be updated, add it to the update operation that I defined above
+            if(user.Email != mongoEmail) update = update.Set(p => p.Email, user.Email);
+
+            // invoke update operation
             _users.UpdateOne(filter, update);
             return user;
         }
