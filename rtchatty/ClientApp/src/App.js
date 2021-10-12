@@ -10,6 +10,7 @@ import Chat from './components/Chat';
 import Register from './components/Register';
 import Profile from './components/Profile';
 import UserNav from "./components/UserNav";
+import Conversation from "./components/Conversation"
 import './custom.css'
 
 export default class App extends Component {
@@ -25,6 +26,7 @@ export default class App extends Component {
         <Route path='/register' component={Register} />
         <Route path='/profile' component={Profile} />
         <Route path="/user-nav" component={UserNav} />
+        <Route path='/conversation' component={Conversation} />
       </Layout>
     );
   }

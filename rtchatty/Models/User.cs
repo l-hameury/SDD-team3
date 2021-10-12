@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Collections.Generic;
 
 namespace rtchatty.Models
 {
@@ -19,5 +20,11 @@ namespace rtchatty.Models
 		public string Bio { get; set; }
 		[BsonElement("Username")]
 		public string Username { get; set; }
+		[BsonElement("FriendList")]
+		public List<string> FriendList { get; set; }
+		[BsonElement("isOnline")]
+		public bool isOnline { get; set; }
+
+
 	}
 }
