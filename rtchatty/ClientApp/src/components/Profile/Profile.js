@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Alert, Button, Card, CardBody,
   CardFooter, CardImg, CardText,
@@ -51,10 +51,6 @@ const Profile = () => {
     if(key === 'username') validateUsername(value)
     if(key === 'email') validateEmail(value);
     if(!usernameError || !emailError) setUserInfo({ ...userInfo, [key]: value})
-  }
-
-  const handlePassword = (event) => {
-    console.log(event)
   }
 
   // validation for username
