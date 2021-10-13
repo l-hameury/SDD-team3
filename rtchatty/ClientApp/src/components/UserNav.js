@@ -4,7 +4,7 @@ import ListGroupItem from "reactstrap/lib/ListGroupItem";
 // import Row from "reactstrap/lib/Row";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
-const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvcGVAdGVzdC5jb20iLCJuYmYiOjE2MzMyMzk1OTEsImV4cCI6MTYzMzI0MzE5MSwiaWF0IjoxNjMzMjM5NTkxfQ.elJZK2BzyeliSXBvtA6DiarTQigkc9L5amr8mTMgdGg`;
+const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjFAdGVzdC5jb20iLCJuYmYiOjE2MzQwODMzNTIsImV4cCI6MTYzNDA4Njk1MiwiaWF0IjoxNjM0MDgzMzUyfQ._mUzudi59yzBkg0e9DVgIl78um3LPyllgV4tU3ZsRpo`;
 // const token = localStorage.getItem("token");
 // var displayUsers = [];
 var sideProfilePicStyle = {
