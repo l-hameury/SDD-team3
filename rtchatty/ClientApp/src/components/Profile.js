@@ -23,6 +23,7 @@ const Profile = () => {
   const [currentInfo, setCurrentInfo] = useState({...userInfo})
   const [editInfoModal, setEditInfoModal] = useState(false);
   const [settingsDropdown, setSettingsDropdown] = useState(false);
+  const [passwordModal, setPasswordModal] = useState(false)
   const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [success, setSuccess] = useState("");
@@ -90,6 +91,7 @@ const Profile = () => {
   // to show the update modal for users to edit their information
   const toggleEditInfoModal = () => setEditInfoModal(!editInfoModal);
   const toggleSettingsDropdown = () => setSettingsDropdown(!settingsDropdown);
+  const togglePasswordModal = () => setPasswordModal(!passwordModal)
 
   // this resets information upon pressing the X button or the Close button in the Modal
   const resetInfo = () =>{
@@ -98,6 +100,7 @@ const Profile = () => {
     setEmailError("");
     setSuccess("");
     setEditInfoModal(!editInfoModal)
+    setPasswordModal(!passwordModal)
   } 
 
   return (
@@ -119,7 +122,7 @@ const Profile = () => {
                   <ListGroup>
                     <ListGroupItem style={{display: "inherit"}}>
                       <Col xs="2"> Username: </Col>
-                      <Col style={{textAlign: "right"}} className="profileInfo">
+                      <Col style={{textAlign: "right"}}>
                         <strong> <CardText id="userName" name="userName">{currentInfo.username}</CardText> </strong>
                       </Col>
                     </ListGroupItem>
@@ -144,6 +147,7 @@ const Profile = () => {
             <DropdownToggle color="secondary">Settings</DropdownToggle>
             <DropdownMenu>
               <DropdownItem onClick={toggleEditInfoModal}>Edit Profile</DropdownItem>
+              <DropdownItem onClick={togglePasswordModal}>Change Password</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </CardFooter>
