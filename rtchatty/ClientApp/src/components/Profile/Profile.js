@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   Alert, Button, Card, CardBody,
   CardFooter, CardImg, CardText,
@@ -9,7 +9,8 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
+import defaultProfilePic from '../../Assets/Images/defaultProfilePic.png'
+import PasswordModal from './PasswordModal';
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState({
@@ -50,6 +51,10 @@ const Profile = () => {
     if(key === 'username') validateUsername(value)
     if(key === 'email') validateEmail(value);
     if(!usernameError || !emailError) setUserInfo({ ...userInfo, [key]: value})
+  }
+
+  const handlePassword = (event) => {
+    console.log(event)
   }
 
   // validation for username
@@ -188,6 +193,12 @@ const Profile = () => {
           <Button color="danger" onClick={resetInfo}>Cancel</Button>
         </ModalFooter>
       </Modal>
+
+      <PasswordModal
+      user={userInfo}
+      toggle={togglePasswordModal} 
+      open={passwordModal}
+      />
      </div>
   );
 }

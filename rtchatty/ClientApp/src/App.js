@@ -7,7 +7,7 @@ import { Counter } from './components/Counter';
 // Source: https://stackoverflow.com/questions/47619405/why-does-my-react-component-export-not-work
 import Chat from './components/Chat';
 import Register from './components/Register';
-import Profile from './components/Profile';
+import Profile from './components/Profile/Profile';
 import UserNav from "./components/UserNav";
 import Login from "./components/Login";
 import useToken from "./components/Auth/useToken";
