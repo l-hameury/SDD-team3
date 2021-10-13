@@ -12,6 +12,7 @@ const PasswordModal = (props) => {
 	const [newPass, setNewPass] = useState("")
 	const [confirmPass, setConfirmPass] = useState("")
 	const [passwordError, setPasswordError] = useState("")
+	const [submitError, setSubmitError] = useState("")
 
 	const reset = () => {
 		setCurrentPass("")
@@ -21,7 +22,6 @@ const PasswordModal = (props) => {
 	}
 
 	const handlePassword = () => {
-		console.log(props.user.password)
 		if(currentPass !== props.user.password){
 			setPasswordError("Incorrect Password")
 			return
@@ -41,52 +41,45 @@ const PasswordModal = (props) => {
 			avatar: props.user.avatar,
 			password: newPass
 		})
-		.then(function (res){
-			console.log(res)
+		.then(function (){
+			props.success("Password Successfully Changed")
+			props.toggle()
 		})
 		.catch(function (err){
-			console.log(err)
+			setSubmitError(err)
 		})
 	}
-
-	if(props.open){
-		return(
-			<div>
-				<Modal isOpen={props.open} toggle={props.toggle} className="updateModal">
-					<ModalHeader toggle={reset}>Change Password</ModalHeader>
-					<ModalBody>
-						<Form>
-							<FormGroup>
-								<Label for="currentPassword"> Current Password:
-									<Input name={"currentPassword"} onChange={e => setCurrentPass(e.target.value)}></Input>
-								</Label>
-							</FormGroup>
-							<FormGroup>
-								<Label for="newPassword"> New Password:
-									<Input name={"newPassword"} onChange={e => setNewPass(e.target.value)}></Input>
-								</Label>
-							</FormGroup>
-							<FormGroup>
-								<Label for="confirmPassword"> Confirm Password
-									<Input name={"confirmPassword"} onChange={e => setConfirmPass(e.target.value)}></Input>
-								</Label>
-							</FormGroup>
-						</Form>
-						<Alert color="danger" hidden={!passwordError}>{passwordError}</Alert>
-					</ModalBody>
-					<ModalFooter>
-						<Button color="success" onClick={handlePassword}>Submit</Button>
-						<Button color="secondary" onClick={props.toggle}>Close</Button>
-					</ModalFooter>
-				</Modal>
-			</div>
-		)
-	}
-	else{
-		return(
-			<div></div>
-		)
-	}
+	return(
+		<div>
+			<Modal isOpen={props.open} toggle={props.toggle} className="updateModal">
+				<ModalHeader toggle={reset}>Change Password</ModalHeader>
+				<ModalBody>
+					<Form>
+						<FormGroup>
+							<Label for="currentPassword"> Current Password:
+								<Input type="password" name={"currentPassword"} onChange={e => setCurrentPass(e.target.value)}></Input>
+							</Label>
+						</FormGroup>
+						<FormGroup>
+							<Label for="newPassword"> New Password:
+								<Input type="password" name={"newPassword"} onChange={e => setNewPass(e.target.value)}></Input>
+							</Label>
+						</FormGroup>
+						<FormGroup>
+							<Label for="confirmPassword"> Confirm Password
+								<Input type="password" name={"confirmPassword"} onChange={e => setConfirmPass(e.target.value)}></Input>
+							</Label>
+						</FormGroup>
+					</Form>
+					<Alert color="danger" hidden={!passwordError}>{passwordError}</Alert>
+					<Alert color="danger" hidden={!submitError}>{submitError}</Alert>
+				</ModalBody>
+				<ModalFooter>
+					<Button color="success" onClick={handlePassword}>Submit</Button>
+					<Button color="secondary" onClick={props.toggle}>Close</Button>
+				</ModalFooter>
+			</Modal>
+		</div>
+	)
 }
-
 export default PasswordModal

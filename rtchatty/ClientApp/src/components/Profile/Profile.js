@@ -186,7 +186,7 @@ const Profile = () => {
         </ModalBody>
         <ModalFooter>
           <Button color="success" onClick={updateInfo}>Submit</Button>
-          <Button color="danger" onClick={resetInfo}>Cancel</Button>
+          <Button color="danger" onClick={toggleEditInfoModal}>Cancel</Button>
         </ModalFooter>
       </Modal>
 
@@ -194,6 +194,7 @@ const Profile = () => {
       user={userInfo}
       toggle={togglePasswordModal} 
       open={passwordModal}
+      success={setSuccess}
       />
      </div>
   );
