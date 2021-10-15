@@ -100,8 +100,7 @@ const Profile = () => {
     setUsernameError("");
     setEmailError("");
     setSuccess("");
-    setEditInfoModal(!editInfoModal)
-    setPasswordModal(!passwordModal)
+    setEditInfoModal(false)
   } 
 
   return (
@@ -186,7 +185,7 @@ const Profile = () => {
         </ModalBody>
         <ModalFooter>
           <Button color="success" onClick={updateInfo}>Submit</Button>
-          <Button color="danger" onClick={toggleEditInfoModal}>Cancel</Button>
+          <Button color="danger" onClick={resetInfo}>Cancel</Button>
         </ModalFooter>
       </Modal>
 

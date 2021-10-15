@@ -3,7 +3,6 @@ import {
 	Modal, ModalHeader, ModalBody,
 	ModalFooter, Form, FormGroup, Label,
 	Input, Button, Alert } from 'reactstrap'
-// import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
@@ -15,10 +14,9 @@ const PasswordModal = (props) => {
 	const [submitError, setSubmitError] = useState("")
 
 	const reset = () => {
-		setCurrentPass("")
-		setNewPass("")
-		setConfirmPass("")
 		setPasswordError("")
+		setSubmitError("")
+		props.toggle()
 	}
 
 	const handlePassword = () => {
@@ -51,7 +49,7 @@ const PasswordModal = (props) => {
 	}
 	return(
 		<div>
-			<Modal isOpen={props.open} toggle={props.toggle} className="updateModal">
+			<Modal isOpen={props.open} toggle={reset} className="updateModal">
 				<ModalHeader toggle={reset}>Change Password</ModalHeader>
 				<ModalBody>
 					<Form>
@@ -76,7 +74,7 @@ const PasswordModal = (props) => {
 				</ModalBody>
 				<ModalFooter>
 					<Button color="success" onClick={handlePassword}>Submit</Button>
-					<Button color="secondary" onClick={props.toggle}>Close</Button>
+					<Button color="secondary" onClick={reset}>Close</Button>
 				</ModalFooter>
 			</Modal>
 		</div>
