@@ -11,6 +11,7 @@ const Chat = () => {
 	const [chat, setChat] = useState([]);
 	const [messagesEnd, setMessagesEnd] = useState();
 	const latestChat = useRef(null);
+	const user = useState(localStorage.getItem('username'));
 
 	latestChat.current = chat;
 
@@ -142,7 +143,7 @@ const Chat = () => {
 			<hr />
 			<Container>
 				<ChatWindow chat={chat} />
-				<ChatInput sendMessage={sendMessage} />
+				<ChatInput user={user} sendMessage={sendMessage} />
 				<div className="pb-5 mb-5" ref={(el) => { setMessagesEnd(el); }}/>
 			</Container>
 		</div>

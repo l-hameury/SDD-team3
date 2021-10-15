@@ -5,9 +5,9 @@ import { Button, Container, Input, InputGroup, InputGroupAddon, Navbar, NavbarTe
 // File to render our User and message inputs at the top of the screen
 
 const ChatInput = (props) => {
-	// default state for user and message fields
-	const [user, setUser] = useState('TestUser');
+	// default state for message field, get user from props
 	const [message, setMessage] = useState('');
+	const user = props.user[0];
 
 	const onSubmit = (e) => {
 		// Prevent refresh
@@ -16,20 +16,17 @@ const ChatInput = (props) => {
 		// Checking for user can be done with the DB later on... but for now I'm modifying the ReactJS/SignalR tutorial
 		// here: https://medium.com/swlh/creating-a-simple-real-time-chat-with-net-core-reactjs-and-signalr-6367dcadd2c6
 
-		// Determine that the user and message fields are not empty
-		const isUserProvided = user && user !== '';
+		// Determine that the message field is not empty
 		const isMessageProvided = message && message !== '';
 
-		if (isUserProvided && isMessageProvided) {
+		if (isMessageProvided) {
 			props.sendMessage(user, message);
+			// clear the input box
+			setMessage('');
 		}
 	}
 
-	// Update the User and Message variable values based on the input fields provided in the template
-	const onUserUpdate = (e) => {
-		setUser(e.target.value);
-	}
-
+	// Update the Message variable value based on the input field
 	const onMessageUpdate = (e) => {
 		setMessage(e.target.value);
 	}
