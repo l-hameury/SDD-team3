@@ -58,18 +58,20 @@ export default function UserNav() {
       />
       <ListGroup>
         {userData.map((user) => {
-          return (
-            <ListGroupItem style={listGroupStyle} key={user.id}>
-              <Media middle left>
-                <Media
-                  className="m-1"
-                  src={user.avatar ? user.avatar : defaultProfilePic}
-                  style={sideProfilePicStyle}
-                />
-                <span>{user.email}</span>
-              </Media>
-            </ListGroupItem>
-          );
+          // if statement checking if user has chosen to be searchable
+          if (user.canSearch)
+            return (
+              <ListGroupItem style={listGroupStyle} key={user.id}>
+                <Media middle left>
+                  <Media
+                    className="m-1"
+                    src={user.avatar ? user.avatar : defaultProfilePic}
+                    style={sideProfilePicStyle}
+                  />
+                  <span>{user.email}</span>
+                </Media>
+              </ListGroupItem>
+            );
         })}
       </ListGroup>
     </div>
