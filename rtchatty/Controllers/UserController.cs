@@ -81,20 +81,24 @@ namespace rtchatty.Controllers
         [HttpPost]
         public ActionResult<User> ProfileUpdate(User user)
         {
+
             var userBeforeUpdate = service.GetUser(user.Id);
             string invalidItem = "";
 
             // if user wanted to update username, validate if username is unique
-            if(user.Username != userBeforeUpdate.Username){
+            if (user.Username != userBeforeUpdate.Username)
+            {
                 if (!service.ValidateUsername(user.Username)) invalidItem += nameof(user.Username);
             }
 
             // if user wanted to update email, validate if email is unique
-            if(user.Email != userBeforeUpdate.Email){
-                if(!service.ValidateEmail(user.Email)) invalidItem += nameof(user.Email);
+            if (user.Email != userBeforeUpdate.Email)
+            {
+                if (!service.ValidateEmail(user.Email)) invalidItem += nameof(user.Email);
             }
-            
-            if(String.IsNullOrEmpty(invalidItem)){
+
+            if (String.IsNullOrEmpty(invalidItem))
+            {
                 service.ProfileUpdate(user);
                 return Ok(user);
             }

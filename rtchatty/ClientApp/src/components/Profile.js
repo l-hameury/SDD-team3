@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import {
   Alert, Button, Card, CardBody,
   CardFooter, CardImg, CardText,
-  Form, FormGroup, Label, Input,
+  Dropdown, DropdownToggle, DropdownMenu,
+  DropdownItem, Form, FormGroup, Label, Input,
   ListGroup, ListGroupItem, Modal,
   ModalBody, ModalHeader, ModalFooter,
-  Container, Row, Col, Dropdown,
-  DropdownToggle, DropdownMenu, DropdownItem
+  Container, Row, Col,
+  ButtonToggle
 } from "reactstrap";
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -19,11 +20,13 @@ const Profile = () => {
     password: "",
     avatar: "",
     bio: "",
-    username: ""
+    username: "",
+    status: ""
   })
   const [currentInfo, setCurrentInfo] = useState({ ...userInfo })
   const [editInfoModal, setEditInfoModal] = useState(false);
   const [settingsDropdown, setSettingsDropdown] = useState(false);
+  const [statusOnline, setStatusOnline] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [success, setSuccess] = useState("");
@@ -52,6 +55,10 @@ const Profile = () => {
     if (!usernameError || !emailError) setUserInfo({ ...userInfo, [key]: value })
   }
 
+  const handleStatus = () => {
+    setUserInfo(userInfo.status, statusOnline);
+  }
+
   // validation for username
   const validateUsername = (username) => {
     if (username.trim() === "") setUsernameError('Username is required');
@@ -70,12 +77,15 @@ const Profile = () => {
   const updateInfo = () => {
     if (usernameError || emailError) return;
 
+    console.log(userInfo.status);
+
     axios.post("https://localhost:5001/api/user/profileUpdate", {
       id: userInfo.id,
       email: userInfo.email,
       username: userInfo.username,
       avatar: userInfo.avatar,
-      bio: userInfo.bio
+      bio: userInfo.bio,
+      status: userInfo.status
     })
       .then(function () {
         setEditInfoModal(!editInfoModal);
@@ -83,14 +93,16 @@ const Profile = () => {
         setSuccess("Profile successfully updated")
       })
       .catch(function (error) {
-        if (error.response.data.includes("Username")) setUsernameError("Username is already taken.")
-        if (error.response.data.includes("Email")) setEmailError("Email is already taken.")
+        // if (error.response.data.includes("Username")) setUsernameError("Username is already taken.")
+        // if (error.response.data.includes("Email")) setEmailError("Email is already taken.")
+        console.log(error);
       })
   }
 
   // to show the update modal for users to edit their information
   const toggleEditInfoModal = () => setEditInfoModal(!editInfoModal);
   const toggleSettingsDropdown = () => setSettingsDropdown(!settingsDropdown);
+
 
   // this resets information upon pressing the X button or the Close button in the Modal
   const resetInfo = () => {
@@ -133,7 +145,7 @@ const Profile = () => {
                     <ListGroupItem style={{ display: "inherit" }}>
                       <Col xs="2"> Status: </Col>
                       <Col style={{ textAlign: "right" }}>
-                        <strong> <CardText id="email" name="email">{"online"}</CardText> </strong>
+                        <strong> <CardText id="status" name="status">{currentInfo.status}</CardText> </strong>
                       </Col>
                     </ListGroupItem>
                   </ListGroup>
@@ -182,6 +194,13 @@ const Profile = () => {
                 <Input style={{ width: "150%" }} name={"avatar"} id="avatar" defaultValue={currentInfo.avatar} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
+
+            <FormGroup>
+              <Label for="status"> Status:
+                <Input style={{ width: "150%", height: "10rem" }} type="textarea" name={"status"} id="status" defaultValue={currentInfo.status} onChange={handleChange}></Input>
+              </Label>
+            </FormGroup>
+
           </Form>
           <Alert color="danger" hidden={!usernameError}>{usernameError}</Alert>
           <Alert color="danger" hidden={!emailError}>{emailError}</Alert>
