@@ -107,7 +107,10 @@ const Register = () => {
         await axios.post('https://localhost:5001/api/user/register', {
             email: inputs.email,
             username: inputs.username,
-            password: inputs.password
+            password: inputs.password,
+            canSearch: true,
+            statusShow: true,
+            canMessage: true
         })
             .then(function (res) {
                 console.log(res)
