@@ -127,7 +127,7 @@ namespace rtchatty.Services
 
         public User ProfileUpdate(User user)
         {
-            // filter by user ID to get current user document
+            // prepare document filter by ID for update operation
             var filter = Builders<User>.Filter.Eq(p => p.Id, user.Id);
 
             // grabbing current user username in mongodb
@@ -138,16 +138,28 @@ namespace rtchatty.Services
             var emailProjection = Builders<User>.Projection.Include("Email");
             var mongoEmail = _users.Find<User>(filter).Project(emailProjection).First()["Email"].ToString();
 
+            // grabbing current user password in mongodb
+            var passwordProjection = Builders<User>.Projection.Include("Password");
+            var mongoPassword = _users.Find<User>(filter).Project(passwordProjection).First()["Password"].ToString();
+
             // preparing properties to be updated
             var update = Builders<User>.Update
             .Set(p => p.Bio, user.Bio)
             .Set(p => p.Avatar, user.Avatar);
+            
+            // update canSearch, statusShow and canMessage
+            update = update.Set(p => p.CanSearch, user.CanSearch);
+            update = update.Set(p => p.StatusShow, user.StatusShow);
+            update = update.Set(p => p.CanMessage, user.CanMessage); 
 
             // if there is a username to be updated, add it to the update operation that I defined above
-            if(user.Username != mongoUsername) update = update.Set(p => p.Username, user.Username);
+            if(user.Username != mongoUsername && user.Email != null) update = update.Set(p => p.Username, user.Username);
 
             // if there is an email to be updated, add it to the update operation that I defined above
-            if(user.Email != mongoEmail) update = update.Set(p => p.Email, user.Email);
+            if(user.Email != mongoEmail && user.Email != null) update = update.Set(p => p.Email, user.Email);
+
+            // if there is a password to be updated, add it to the update operation that I defined above
+            if(user.Password != mongoPassword && user.Password != null) update = update.Set(p => p.Password, user.Password);
 
             // invoke update operation
             _users.UpdateOne(filter, update);
