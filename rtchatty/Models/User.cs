@@ -19,5 +19,13 @@ namespace rtchatty.Models
 		public string Bio { get; set; }
 		[BsonElement("Username")]
 		public string Username { get; set; }
+		[BsonElement("CanSearch")]
+		public bool CanSearch { get; set; }
+		[BsonElement("StatusShow")]
+		public bool StatusShow { get; set; }
+		[BsonElement("CanMessage")]
+		public bool CanMessage { get; set; }
+		[BsonElement("Status")]
+        public string Status { get; set; }
 	}
 }
