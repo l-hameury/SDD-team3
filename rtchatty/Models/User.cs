@@ -25,5 +25,7 @@ namespace rtchatty.Models
 		public bool StatusShow { get; set; }
 		[BsonElement("CanMessage")]
 		public bool CanMessage { get; set; }
+		[BsonElement("FriendList")]
+		public bool FriendList { get; set; }
 	}
 }
