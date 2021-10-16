@@ -51,6 +51,7 @@ export default function AdminPage() {
   const [userData, setUserData] = useState([]);
   const [q, setQ] = useState("");
   const [showBanSuccess, setBanSuccess] = useState(false);
+  const [banMessage, setBanMessage] = useState("");
   //   const [selectedUser, setSelectedUser] = userState({});
 
   useEffect(() => {
@@ -72,7 +73,6 @@ export default function AdminPage() {
   }, [q]);
 
   const banUser = async (user) => {
-    user.banned = true;
     axios
       .post("https://localhost:5001/api/user/banUser", {
         email: user.email,
@@ -80,7 +80,14 @@ export default function AdminPage() {
       .then(function (res) {
         // setEditInfoModal(!editInfoModal);
         // setCurrentInfo({ ...userInfo });
-        setBanSuccess(`${user.email} successfully banned`);
+        setBanSuccess(true);
+        user.banned = !user.banned;
+        setBanMessage(
+          user.banned
+            ? `${user.email} successfully banned`
+            : `${user.email} successfully unbanned`
+        );
+
         // localStorage.setItem("email", res.data.email);
       })
       .catch(function (error) {
@@ -98,11 +105,7 @@ export default function AdminPage() {
         hidden={!showBanSuccess}
         name="successAlert"
       >
-        Success! An account has been created. Return to{" "}
-        <a href="/login" className="alert-link">
-          login
-        </a>{" "}
-        to sign-in.
+        Success! {banMessage}
       </div>
 
       {/* className="min-w-100 min-vh-100"> */}
@@ -134,11 +137,18 @@ export default function AdminPage() {
               </CardBody>
               <CardFooter>
                 <Button
-                  disabled={user.banned}
+                  hidden={user.banned}
                   className="btn-warning"
                   onClick={() => banUser(user)}
                 >
                   Ban
+                </Button>
+                <Button
+                  hidden={!user.banned}
+                  className="btn-warning"
+                  onClick={() => banUser(user)}
+                >
+                  Unban
                 </Button>
                 <Button className="btn-danger">Delete</Button>
               </CardFooter>

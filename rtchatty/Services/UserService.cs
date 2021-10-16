@@ -59,7 +59,7 @@ namespace rtchatty.Services
                 var user = _users.Find<User>(user => user.Email.ToLower().Contains(email.ToLower())).FirstOrDefault();
                 if (user != null)
                 {
-                    user.Banned = true;
+                    user.Banned = !user.Banned;
                     _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(email.ToLower()), user);
                     return user;
                 }
