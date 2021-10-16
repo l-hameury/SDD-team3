@@ -11,10 +11,8 @@ import {
   CardFooter,
   Button,
 } from "reactstrap";
-import ListGroup from "reactstrap/lib/ListGroup";
-import ListGroupItem from "reactstrap/lib/ListGroupItem";
-import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
+
 var sideProfilePicStyle = {
   width: "100px",
   height: "100px",
@@ -25,18 +23,7 @@ var sideProfilePicStyle = {
 
 var profileTitle = {
   width: "40%",
-  //   height: "fit-content",
-  //   minWidth: "40%",
 };
-
-// var profileTitle = {
-// //   width: "fit-content",
-// //   height: "fit-content",
-//     display: "flex",
-//     flexDirection: "row",
-//     justifyContent: "center",
-//     alignItems: "center",
-// };
 
 var listGroupStyle = {
   backgroundColor: "#70a7ff",
@@ -52,12 +39,10 @@ export default function AdminPage() {
   const [q, setQ] = useState("");
   const [showBanSuccess, setBanSuccess] = useState(false);
   const [banMessage, setBanMessage] = useState("");
-  //   const [selectedUser, setSelectedUser] = userState({});
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token").toString();
-    // i wrapped the api request into a function
-    // const search = async () => {
     fetch(`https://localhost:5001/api/User/searchUsers/`, {
       method: "POST",
       headers: new Headers({
@@ -78,8 +63,6 @@ export default function AdminPage() {
         email: user.email,
       })
       .then(function (res) {
-        // setEditInfoModal(!editInfoModal);
-        // setCurrentInfo({ ...userInfo });
         setBanSuccess(true);
         user.banned = !user.banned;
         setBanMessage(
@@ -87,14 +70,24 @@ export default function AdminPage() {
             ? `${user.email} successfully banned`
             : `${user.email} successfully unbanned`
         );
-
-        // localStorage.setItem("email", res.data.email);
       })
       .catch(function (error) {
-        //     if (error.response.data.includes("Username"))
-        //       setUsernameError("Username is already taken.");
-        //     if (error.response.data.includes("Email"))
-        //       setEmailError("Email is already taken.");
+        setError(`Error banning ${user.email}`);
+      });
+  };
+
+  const deleteUser = async (user) => {
+    axios
+      .post("https://localhost:5001/api/user/deleteUser", {
+        email: user.email,
+      })
+      .then(function (res) {
+        userData.splice(userData.indexOf(user), 1);
+        setBanSuccess(true);
+        setBanMessage(`Successfully deleted ${user.email}`);
+      })
+      .catch(function (error) {
+        setError(`Error deleting ${user.email}`);
       });
   };
 
@@ -108,7 +101,10 @@ export default function AdminPage() {
         Success! {banMessage}
       </div>
 
-      {/* className="min-w-100 min-vh-100"> */}
+      <div className="alert alert-danger" hidden={!error} name="Error">
+        {error}
+      </div>
+
       <input
         style={searchStyle}
         type="text"
@@ -118,7 +114,6 @@ export default function AdminPage() {
       <div className="d-flex flex-wrap">
         {userData.map((user) => {
           return (
-            // <Col className="m-3">
             <Card key={user.id} className="m-3" style={profileTitle}>
               <CardBody>
                 <CardTitle>
@@ -128,10 +123,8 @@ export default function AdminPage() {
                     src={user.avatar ? user.avatar : defaultProfilePic}
                     style={sideProfilePicStyle}
                   />
-                  {/* <Container className="m-2"> */}
                   {user.username} <br />
                   <small>{user.email}</small>
-                  {/* </Container> */}
                 </CardTitle>
                 <CardText>This is a placeholder, {user.bio}</CardText>
               </CardBody>
@@ -150,25 +143,11 @@ export default function AdminPage() {
                 >
                   Unban
                 </Button>
-                <Button className="btn-danger">Delete</Button>
+                <Button className="btn-danger" onClick={() => deleteUser(user)}>
+                  Delete
+                </Button>
               </CardFooter>
             </Card>
-            // </Col>
-
-            // <ListGroupItem
-            //   className="m-3 w-25"
-            //   style={listGroupStyle}
-            //   key={user.id}
-            // >
-            //   <Media middle left>
-            //     <Media
-            //       className="m-1"
-            //       src={user.avatar ? user.avatar : defaultProfilePic}
-            //       style={sideProfilePicStyle}
-            //     />
-            //     <span>{user.email}</span>
-            //   </Media>
-            // </ListGroupItem>
           );
         })}
       </div>

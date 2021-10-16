@@ -50,6 +50,13 @@ namespace rtchatty.Controllers
             return service.BanUser(user.Email);
         }
 
+        [Route("deleteUser")]
+        [HttpPost]
+        public ActionResult<Boolean> DeleteUser(User user)
+        {
+            return service.DeleteUser(user.Email);
+        }
+
 
         [AllowAnonymous]
         [Route("register")]

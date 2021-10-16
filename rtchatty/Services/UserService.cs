@@ -52,6 +52,21 @@ namespace rtchatty.Services
             }
         }
 
+        public bool DeleteUser(string email)
+        {
+            if (email != "")
+            {
+                var user = _users.FindOneAndDelete<User>(user => user.Email.ToLower().Contains(email.ToLower()));
+                // var user = _users.DeleteOne<User>(user => user.Email.ToLower().Contains(email.ToLower()));
+                if (user != null)
+                {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+
         public User BanUser(string email)
         {
             if (email != "")
