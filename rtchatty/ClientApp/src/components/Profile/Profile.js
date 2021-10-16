@@ -100,10 +100,11 @@ const Profile = () => {
         canMessage: userInfo.canMessage,
         status: userInfo.status
       })
-      .then(function () {
+      .then(function (res) {
         setEditInfoModal(!editInfoModal);
         setCurrentInfo({ ...userInfo });
         setSuccess("Profile successfully updated");
+        localStorage.setItem('email', res.data.email)
       })
       .catch(function (error) {
         if (error.response.data.includes("Username")) setUsernameError("Username is already taken.");
