@@ -22,6 +22,27 @@ async function loginUser(credentials){
     return returnData;
 }
 
+const getUsername = async (email) => {
+
+    let returnUsername;
+
+    await axios.get('https://localhost:5001/api/user/getUserByEmail/', {
+        params: {
+            email: email
+        }
+    })
+    .then(function (res) {
+        console.log(res.data.username);
+        returnUsername = res.data.username;
+    })
+    .catch(function (error) {
+        console.log(error);
+        return error;
+    })
+
+    return returnUsername;
+}
+
 // app.js passes prop to login
 export default function Login({setToken}){
     //setting up local state to grab email and password
@@ -40,6 +61,8 @@ export default function Login({setToken}){
         // localStorage.setItem("token", authData.token);
         localStorage.setItem("email", email);
         setToken(authData.token);
+        // get the username for the authenticated user
+        localStorage.setItem("username", await getUsername(email));
     }
     //basic login form 
     return (

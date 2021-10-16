@@ -18,6 +18,11 @@ code {
   border-radius: 1em;
 }
 
+/* nothing to see here this is not custom CSS I swear */
+.chatMessageBox:focus {
+  box-shadow: none;
+}
+
 .profile-popup {
   position: fixed;
   background: #00000050;
