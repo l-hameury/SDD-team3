@@ -43,6 +43,13 @@ namespace rtchatty.Controllers
             return service.searchUsers(query);
         }
 
+        [Route("banUser")]
+        [HttpPost]
+        public ActionResult<User> banUser(User user)
+        {
+            return service.BanUser(user.Email);
+        }
+
 
         [AllowAnonymous]
         [Route("register")]
@@ -69,10 +76,11 @@ namespace rtchatty.Controllers
         [HttpPost]
         public ActionResult Login([FromBody] User user)
         {
+            var tempUser = service.searchUsers(user.Email);
             var token = service.Authenticate(user.Email, user.Password);
 
             // TODO: Add proper error handling
-            if (token == null) return Unauthorized();
+            if (token == null || tempUser[0].Banned == true) return Unauthorized();
 
             return Ok(new { token });
         }

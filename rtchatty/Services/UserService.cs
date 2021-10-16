@@ -52,6 +52,22 @@ namespace rtchatty.Services
             }
         }
 
+        public User BanUser(string email)
+        {
+            if (email != "")
+            {
+                var user = _users.Find<User>(user => user.Email.ToLower().Contains(email.ToLower())).FirstOrDefault();
+                if (user != null)
+                {
+                    user.Banned = true;
+                    _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(email.ToLower()), user);
+                    return user;
+                }
+            }
+            return null;
+
+        }
+
 
         // Register new user
         public User CreateUser(User user)
@@ -85,9 +101,9 @@ namespace rtchatty.Services
 
 
         public string Authenticate(string email, string password)
-        {           
+        {
             var user = _users.Find(user => user.Email == email && user.Password == password).FirstOrDefault();
-            
+
             // TODO: Return Not Found error. (Not a 404. User not found error.)
             if (user == null)
                 return null;
@@ -115,7 +131,7 @@ namespace rtchatty.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
-           
+
         }
 
         public User ProfileUpdate(User user)
@@ -139,22 +155,22 @@ namespace rtchatty.Services
             var update = Builders<User>.Update
             .Set(p => p.Bio, user.Bio)
             .Set(p => p.Avatar, user.Avatar);
-            
+
             // update canSearch, statusShow and canMessage
             update = update.Set(p => p.CanSearch, user.CanSearch);
             update = update.Set(p => p.StatusShow, user.StatusShow);
-            update = update.Set(p => p.CanMessage, user.CanMessage); 
-            
+            update = update.Set(p => p.CanMessage, user.CanMessage);
+
             update = update.Set(p => p.Status, user.Status);
 
             // if there is a username to be updated, add it to the update operation that I defined above
-            if(user.Username != mongoUsername && user.Email != null) update = update.Set(p => p.Username, user.Username);
+            if (user.Username != mongoUsername && user.Email != null) update = update.Set(p => p.Username, user.Username);
 
             // if there is an email to be updated, add it to the update operation that I defined above
-            if(user.Email != mongoEmail && user.Email != null) update = update.Set(p => p.Email, user.Email);
+            if (user.Email != mongoEmail && user.Email != null) update = update.Set(p => p.Email, user.Email);
 
             // if there is a password to be updated, add it to the update operation that I defined above
-            if(user.Password != mongoPassword && user.Password != null) update = update.Set(p => p.Password, user.Password);
+            if (user.Password != mongoPassword && user.Password != null) update = update.Set(p => p.Password, user.Password);
 
             // invoke update operation
             _users.UpdateOne(filter, update);
