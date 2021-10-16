@@ -175,7 +175,6 @@ namespace rtchatty.Services
             update = update.Set(p => p.CanSearch, user.CanSearch);
             update = update.Set(p => p.StatusShow, user.StatusShow);
             update = update.Set(p => p.CanMessage, user.CanMessage);
-
             update = update.Set(p => p.Status, user.Status);
 
             // if there is a username to be updated, add it to the update operation that I defined above
