@@ -4,6 +4,7 @@ import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
 
+
 var sideProfilePicStyle = {
   width: "64px",
   height: "64px",
