@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import {
-  Alert, Button, Card, CardBody,
-  CardFooter, CardImg, CardText,
-  Dropdown, DropdownToggle, DropdownMenu,
-  DropdownItem, Form, FormGroup, Label, Input,
-  ListGroup, ListGroupItem, Modal,
-  ModalBody, ModalHeader, ModalFooter,
-  Container, Row, Col,
-  ButtonToggle
-} from "reactstrap";
-import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
+import React, { useState, useEffect } from "react";
+import { Alert, Button, Card, CardBody,
+  CardFooter, CardImg, CardText, Form,
+  FormGroup, Label, Input, ListGroup,
+  ListGroupItem, Modal, ModalBody, ModalHeader,
+  ModalFooter, Container, Row, Col, Dropdown,
+  DropdownToggle, DropdownMenu, DropdownItem, } from "reactstrap";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import defaultProfilePic from "../../Assets/Images/defaultProfilePic.png";
+import PasswordModal from "./PasswordModal";
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState({
@@ -21,12 +18,16 @@ const Profile = () => {
     avatar: "",
     bio: "",
     username: "",
+    canSearch: false,
+    statusShow: false,
+    canMessage: false,
     status: ""
-  })
-  const [currentInfo, setCurrentInfo] = useState({ ...userInfo })
+  });
+  const [currentInfo, setCurrentInfo] = useState({ ...userInfo });
   const [editInfoModal, setEditInfoModal] = useState(false);
   const [settingsDropdown, setSettingsDropdown] = useState(false);
   const [statusOnline, setStatusOnline] = useState("");
+  const [passwordModal, setPasswordModal] = useState(false);
   const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [success, setSuccess] = useState("");
@@ -34,26 +35,36 @@ const Profile = () => {
   // hook to initialize user information after rendering component
   useEffect(() => {
     // getting token and email to get user from the database
-    const loggedInEmail = localStorage.getItem('email');
-    axios.get("https://localhost:5001/api/user/getUserByEmail", {
-      params: {
-        email: loggedInEmail
-      }
-    })
-      .then(function (res) {
-        setUserInfo(res.data)
-        setCurrentInfo(res.data)
+    const loggedInEmail = localStorage.getItem("email");
+    axios
+      .get("https://localhost:5001/api/user/getUserByEmail", {
+        params: {
+          email: loggedInEmail,
+        },
       })
-  }, [])
+      .then(function (res) {
+        setUserInfo(res.data);
+        setCurrentInfo(res.data);
+      });
+  }, []);
 
   // to update userInfo state on input change
   const handleChange = (event) => {
     const key = event.target.name;
     const value = event.target.value;
-    if (key === 'username') validateUsername(value)
-    if (key === 'email') validateEmail(value);
-    if (!usernameError || !emailError) setUserInfo({ ...userInfo, [key]: value })
-  }
+
+    if (key === "username") validateUsername(value);
+    if (key === "email") validateEmail(value);
+    if (!usernameError || !emailError) setUserInfo({ ...userInfo, [key]: value });
+  };
+
+  // to update userInfo booleans on input change
+  const handleBool = (event) => {
+    const key = event.target.name;
+    const value = event.target.checked;
+
+    setUserInfo({ ...userInfo, [key]: value });
+  };
 
   const handleStatus = () => {
     setUserInfo(userInfo.status, statusOnline);
@@ -61,57 +72,58 @@ const Profile = () => {
 
   // validation for username
   const validateUsername = (username) => {
-    if (username.trim() === "") setUsernameError('Username is required');
-    else if (username.length < 3) setUsernameError('Username must be at least 3 characters long');
-    else setUsernameError('');
-  }
+    if (username.trim() === "") setUsernameError("Username is required");
+    else if (username.length < 3) setUsernameError("Username must be at least 3 characters long");
+    else setUsernameError("");
+  };
 
   // validation for email
   const validateEmail = (email) => {
-    if (email.length === 0) setEmailError('Email is required');
-    else if (!email.match("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[.][a-zA-Z]{2,4}$")) setEmailError('Invalid Email Format')
-    else setEmailError('');
-  }
+    if (email.length === 0) setEmailError("Email is required");
+    else if (!email.match("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[.][a-zA-Z]{2,4}$")) setEmailError("Invalid Email Format");
+    else setEmailError("");
+  };
 
   // api request to update user information once submit button is pressed, if an error exists it will do nothing
   const updateInfo = () => {
     if (usernameError || emailError) return;
 
-    console.log(userInfo.status);
-
-    axios.post("https://localhost:5001/api/user/profileUpdate", {
-      id: userInfo.id,
-      email: userInfo.email,
-      username: userInfo.username,
-      avatar: userInfo.avatar,
-      bio: userInfo.bio,
-      status: userInfo.status
-    })
+    axios
+      .post("https://localhost:5001/api/user/profileUpdate", {
+        id: userInfo.id,
+        email: userInfo.email,
+        username: userInfo.username,
+        avatar: userInfo.avatar,
+        bio: userInfo.bio,
+        canSearch: userInfo.canSearch,
+        statusShow: userInfo.statusShow,
+        canMessage: userInfo.canMessage,
+        status: userInfo.status
+      })
       .then(function () {
         setEditInfoModal(!editInfoModal);
-        setCurrentInfo({ ...userInfo })
-        setSuccess("Profile successfully updated")
+        setCurrentInfo({ ...userInfo });
+        setSuccess("Profile successfully updated");
       })
       .catch(function (error) {
-        // if (error.response.data.includes("Username")) setUsernameError("Username is already taken.")
-        // if (error.response.data.includes("Email")) setEmailError("Email is already taken.")
-        console.log(error);
-      })
-  }
+        if (error.response.data.includes("Username")) setUsernameError("Username is already taken.");
+        if (error.response.data.includes("Email")) setEmailError("Email is already taken.");
+      });
+  };
 
   // to show the update modal for users to edit their information
   const toggleEditInfoModal = () => setEditInfoModal(!editInfoModal);
   const toggleSettingsDropdown = () => setSettingsDropdown(!settingsDropdown);
-
+  const togglePasswordModal = () => setPasswordModal(!passwordModal);
 
   // this resets information upon pressing the X button or the Close button in the Modal
   const resetInfo = () => {
-    setUserInfo({ ...currentInfo })
+    setUserInfo({ ...currentInfo });
     setUsernameError("");
     setEmailError("");
     setSuccess("");
-    setEditInfoModal(!editInfoModal)
-  }
+    setEditInfoModal(false);
+  };
 
   return (
     <div>
@@ -122,9 +134,9 @@ const Profile = () => {
               <CardImg
                 className="rounded-circle"
                 style={{ padding: "5px" }}
-                onError={event => { event.target.src = defaultProfilePic; }}
-                src={currentInfo.avatar ? currentInfo.avatar : defaultProfilePic}>
-              </CardImg>
+                onError={(event) => { event.target.src = defaultProfilePic }}
+                src={ currentInfo.avatar ? currentInfo.avatar : defaultProfilePic }
+              ></CardImg>
             </Col>
             <Col xs="9">
               <Row>
@@ -132,14 +144,14 @@ const Profile = () => {
                   <ListGroup>
                     <ListGroupItem style={{ display: "inherit" }}>
                       <Col xs="2"> Username: </Col>
-                      <Col style={{ textAlign: "right" }} className="profileInfo">
-                        <strong> <CardText id="userName" name="userName">{currentInfo.username}</CardText> </strong>
+                      <Col style={{ textAlign: "right" }}>
+                        <strong> <CardText id="userName" name="userName"> {currentInfo.username}</CardText> </strong>
                       </Col>
                     </ListGroupItem>
                     <ListGroupItem style={{ display: "inherit" }}>
                       <Col xs="2"> Email: </Col>
                       <Col style={{ textAlign: "right" }}>
-                        <strong> <CardText id="email" name="email">{currentInfo.email}</CardText> </strong>
+                        <strong> <CardText id="email" name="email"> {currentInfo.email}</CardText> </strong>
                       </Col>
                     </ListGroupItem>
                     <ListGroupItem style={{ display: "inherit" }}>
@@ -153,7 +165,7 @@ const Profile = () => {
               </Row>
               <Row>
                 <CardBody>
-                  <CardText name='bio'>{currentInfo.bio ? currentInfo.bio : "Hello"}</CardText>
+                  <CardText name="bio"> {currentInfo.bio ? currentInfo.bio : "Hello"} </CardText>
                 </CardBody>
               </Row>
             </Col>
@@ -163,6 +175,7 @@ const Profile = () => {
               <DropdownToggle color="secondary">Settings</DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={toggleEditInfoModal}>Edit Profile</DropdownItem>
+                <DropdownItem onClick={togglePasswordModal}>Change Password</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </CardFooter>
@@ -170,37 +183,53 @@ const Profile = () => {
         <Alert className="rounded" color="success" hidden={!success}>{success}</Alert>
       </Container>
 
-      <Modal isOpen={editInfoModal} toggle={resetInfo} className="updateModal">
+      <Modal isOpen={editInfoModal} toggle={resetInfo}>
         <ModalHeader toggle={resetInfo}>Update your information</ModalHeader>
         <ModalBody>
           <Form>
             <FormGroup>
-              <Label for="username"> Username:
+              <Label for="username">{" "} Username:
                 <Input name={"username"} id="username" defaultValue={currentInfo.username} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
             <FormGroup>
-              <Label for="email"> Email:
+              <Label for="email">{" "} Email:
                 <Input type="email" name={"email"} id="email" defaultValue={currentInfo.email} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
             <FormGroup>
-              <Label for="bio"> Bio:
+              <Label for="bio">{" "} Bio:
                 <Input style={{ width: "150%", height: "10rem" }} type="textarea" name={"bio"} id="bio" defaultValue={currentInfo.bio} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
             <FormGroup>
-              <Label for="avatar"> Avatar Link:
+              <Label for="avatar">{" "} Avatar Link:
                 <Input style={{ width: "150%" }} name={"avatar"} id="avatar" defaultValue={currentInfo.avatar} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
-
             <FormGroup>
               <Label for="status"> Status:
                 <Input style={{ width: "150%", height: "10rem" }} type="textarea" name={"status"} id="status" defaultValue={currentInfo.status} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
-
+            <FormGroup>
+              <Label for="canSearch">
+                <Input type="checkbox" name={"canSearch"} id="canSearch" defaultChecked={currentInfo.canSearch} onChange={handleBool}/>
+                {" "} Searchable
+              </Label>
+            </FormGroup>
+            <FormGroup>
+              <Label for="statusShow">
+                <Input type="checkbox" name={"statusShow"} id="statusShow" defaultChecked={currentInfo.statusShow} onChange={handleBool}/>
+                {" "} Show Status
+              </Label>
+            </FormGroup>
+            <FormGroup>
+              <Label for="canMessage">
+                <Input type="checkbox" name={"canMessage"} id="canMessage" defaultChecked={currentInfo.canMessage} onChange={handleBool}/>
+                {" "} Allow Messages From Anyone
+              </Label>
+            </FormGroup>
           </Form>
           <Alert color="danger" hidden={!usernameError}>{usernameError}</Alert>
           <Alert color="danger" hidden={!emailError}>{emailError}</Alert>
@@ -210,8 +239,15 @@ const Profile = () => {
           <Button color="danger" onClick={resetInfo}>Cancel</Button>
         </ModalFooter>
       </Modal>
+
+      <PasswordModal
+        user={userInfo}
+        toggle={togglePasswordModal}
+        open={passwordModal}
+        success={setSuccess}
+      />
     </div>
   );
-}
+};
 
-export default Profile
+export default Profile;
