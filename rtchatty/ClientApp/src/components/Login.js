@@ -1,92 +1,152 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import axios from 'axios';
+import { Button, Col, Form, Input, Label, Row } from "reactstrap";
 
-async function loginUser(credentials){
-    // Hold returnData for... returning. :)
-    let returnData;
 
-    await axios.post('https://localhost:5001/api/user/authenticate', {
-      email: credentials.email,
-      password: credentials.password
-    })
-    .then(function (res) {
-      returnData = res.data;
-    })
-    // TODO: Implement error handling
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    })
 
-    return returnData;
-}
+const Login = ({setToken}) => {
 
-const getUsername = async (email) => {
+	const[inputs, setInputs] = useState({
+        email: "",
+        password: "",
+    });
 
-    let returnUsername;
+    const [errors, setErrors] = useState({
+        email: "",
+        password: "",
+        fieldErrors: "",
+    });
 
-    await axios.get('https://localhost:5001/api/user/getUserByEmail/', {
-        params: {
-            email: email
-        }
-    })
-    .then(function (res) {
-        console.log(res.data.username);
-        returnUsername = res.data.username;
-    })
-    .catch(function (error) {
-        console.log(error);
-        return error;
-    })
+    // var the 401 error
+    const [showAuthError, setShowAuthError] = useState(false);
 
-    return returnUsername;
-}
+    const handleInput = (e) =>{
+        const field = e.target.name;
+        const value = e.target.value;
 
-// app.js passes prop to login
-export default function Login({setToken}){
-    //setting up local state to grab email and password
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    // TODO: Actually use this error for error handling
-    const [error, setError] = useState();
-
-    // event listener for login button
-    const handleSubmit = async (e) =>{
-        e.preventDefault();
-        const authData = await loginUser({
-            email,
-            password
-        });
-        // localStorage.setItem("token", authData.token);
-        localStorage.setItem("email", email);
-        setToken(authData.token);
-        // get the username for the authenticated user
-        localStorage.setItem("username", await getUsername(email));
+        validateField(field, value)
     }
-    //basic login form 
-    return (
+
+    const validateField = (field, value) =>{
+        switch(field){
+            case 'email':
+                if (value.trim() === "" || value.length === 0) {
+                    errors.email = "Email is required";
+                } else {
+                    errors.email = "";
+                }
+            break;
+            case 'password':
+                // Password meets security requirements
+                if (!value.match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")) {
+                    errors.password = "Password must be at least 6 characters long, and contain a lowercase and uppercase letter, one number, and one special character.";
+                } else {
+                    errors.password = "";
+                }
+            break;
+        }
+        // Update the corresponding field in the state
+         setInputs({ ...inputs, [field]: value });
+    }
+
+    
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+         // Make sure no fields are currently invalid
+        for (const [key, value] of Object.entries(inputs)) {
+            validateField(key, value);
+        }
+
+        errors.fieldErrors = (errors.email || errors.password );
+
+        if (errors.fieldErrors) {
+            return;
+        }
+
+        // Clear 401 error alert box
+        setShowAuthError(false);
+
+        //axios call to login user
+        async function loginUser(credentials){
+        // Hold returnData for... returning. :)
+        let returnData;
+    
+        await axios.post('https://localhost:5001/api/user/authenticate', {
+          email: credentials.email,
+          password: credentials.password
+        })
+        .then(function (res) {
+          returnData = res.data;
+        })
+        // TODO: Implement error handling
+        .catch(function (error) {
+          console.log(error);
+          // if there is a 401 response, log it
+          if (error.response.status ==='401') {
+             console.log(error.response.data);
+             console.log(error.response.status);
+              // returns null to authData
+             return null;
+          }
+          return error
+        })
+    
+        return returnData;
+    }
+
+
+        const authData = await loginUser({
+            email: inputs.email,
+            password: inputs.password
+        });
+        localStorage.setItem("email", inputs.email);
+        // if authData is null then show the error
+        if(!authData){ 
+            setShowAuthError(true)
+            return;
+        }
+        //else set the token for login
+        setToken(authData.token);
+    
+    }
+
+    const errorClass = (error) => {
+        return (error.length === 0 ? '' : 'is-invalid');
+    }
+
+    return(
         <div>
-        <h1>Please Log In</h1>
-        <form onSubmit={handleSubmit}>
-            <label>
-                <p>Email</p>
-                <input type="text" onChange={e => setEmail(e.target.value)}/>
-            </label>
-            <label>
-                <p>Password</p>
-                <input type="password" onChange={e => setPassword(e.target.value)} />
-            </label>
-            <div>
-                <button type="submit">Login</button>
+             <h1 className="mb-3">Please Log In</h1>
+             <div className="container registerContainer border border-dark rounded">
+             <div className="alert alert-danger" hidden={!showAuthError} name="authAlert">401 Error: Not Authorized. Wrong Email or Password</div>
+                <Form className="p-3 needs-validation" onSubmit={handleSubmit} noValidate>
+                    <Row>
+                        <Col>
+                            <div className="form-floating">
+                                <Input type="email" className={"form-control " + errorClass(errors.email)} name="email" id="emailInput" placeholder="name@example.com" value={inputs.email} onChange={handleInput} />
+                                <Label for="emailInput" className="form-label">Email Address</Label>
+                                <div className="invalid-feedback">{errors.email}</div>
+                            </div>
+                        </Col>
+                    </Row>
+                    <br></br>
+                    <Row>
+                        <Col>
+                            <div className="form-floating">
+                                <Input type="password" className={"form-control " + errorClass(errors.password)} name="password" id="passwordInput" placeholder="Password" value={inputs.password} onChange={handleInput} />
+                                <Label for="passwordInput" className="form-label">Password</Label>
+                                <div className="invalid-feedback">{errors.password}</div>
+                            </div>
+                        </Col>
+                    </Row>
+                    <br></br>
+                    <Button color="primary" type="submit" value="Submit">Login</Button>
+                </Form>
             </div>
-        </form>
+
         </div>
     )
+	
 }
-
-Login.propTypes = {
-    //ensure the prop being passed is function type?
-    setToken: PropTypes.func.isRequired
-}
-
+export default Login;
