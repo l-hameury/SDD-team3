@@ -33,6 +33,7 @@ namespace rtchatty
             // Enable scoped lifetime of UserService service for Dependency Injection
             // DI Explanation from Microsoft: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-5.0
             services.AddScoped<UserService>();
+            services.AddScoped<ChatService>();
 
             services.AddSingleton<IChattyDatabaseSettings>(
                 db => db.GetRequiredService<IOptions<ChattyDatabaseSettings>>().Value);
