@@ -69,31 +69,31 @@ const Login = ({setToken}) => {
 
         //axios call to login user
         async function loginUser(credentials){
-        // Hold returnData for... returning. :)
-        let returnData;
-    
-        await axios.post('https://localhost:5001/api/user/authenticate', {
-          email: credentials.email,
-          password: credentials.password
-        })
-        .then(function (res) {
-          returnData = res.data;
-        })
-        // TODO: Implement error handling
-        .catch(function (error) {
-          console.log(error);
-          // if there is a 401 response, log it
-          if (error.response.status ==='401') {
-             console.log(error.response.data);
-             console.log(error.response.status);
-              // returns null to authData
-             return null;
-          }
-          return error
-        })
-    
-        return returnData;
-    }
+            // Hold returnData for... returning. :)
+            let returnData;
+        
+            await axios.post('https://localhost:5001/api/user/authenticate', {
+                email: credentials.email,
+                password: credentials.password
+            })
+            .then(function (res) {
+                returnData = res.data;
+            })
+            // TODO: Implement error handling
+            .catch(function (error) {
+                console.log(error);
+                // if there is a 401 response, log it
+                if (error.response.status ==='401') {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    // returns null to authData
+                    return null;
+                }
+                return error
+            })
+        
+            return returnData;
+        }
 
 
         const authData = await loginUser({
@@ -108,7 +108,31 @@ const Login = ({setToken}) => {
         }
         //else set the token for login
         setToken(authData.token);
+
+        // get the username for the authenticated user
+        localStorage.setItem("username", await getUsername(inputs.email));
     
+    }
+
+    const getUsername = async (email) => {
+
+        let returnUsername;
+    
+        await axios.get('https://localhost:5001/api/user/getUserByEmail/', {
+            params: {
+                email: email
+            }
+        })
+        .then(function (res) {
+            console.log(res.data.username);
+            returnUsername = res.data.username;
+        })
+        .catch(function (error) {
+            console.log(error);
+            return error;
+        })
+    
+        return returnUsername;
     }
 
     const errorClass = (error) => {
