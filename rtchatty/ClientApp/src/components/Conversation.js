@@ -8,11 +8,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import PersonIcon from '@mui/icons-material/Person';
 import SampleData from '../Assets/sample.json'
-const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjFAdGVzdC5jb20iLCJuYmYiOjE2MzQzMTUzMjUsImV4cCI6MTYzNDMxODkyNSwiaWF0IjoxNjM0MzE1MzI1fQ.tGqWUgxpWkDyqbuY9QJiKbyTvwUwgeAV6FdT7XjEor0`;
+//const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjFAdGVzdC5jb20iLCJuYmYiOjE2MzQzMTUzMjUsImV4cCI6MTYzNDMxODkyNSwiaWF0IjoxNjM0MzE1MzI1fQ.tGqWUgxpWkDyqbuY9QJiKbyTvwUwgeAV6FdT7XjEor0`;
 
 
 
-export default function SelectedListItem() {
+const Conversation = () => {
     const [user, searchUser] = useState('');
     const [userData, setUserData] = useState([]);
     const [q, setQ] = useState("");
@@ -22,6 +22,7 @@ export default function SelectedListItem() {
     useEffect(() => {
         // i wrapped the api request into a function
         // const search = async () => {
+            const token = localStorage.getItem('token').toString();
         fetch(`https://localhost:5001/api/User/searchUsers/`, {
         method: "POST",
         headers: new Headers({
@@ -81,4 +82,4 @@ export default function SelectedListItem() {
   );
 }
 
-//export default Conversation
+export default Conversation
