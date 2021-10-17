@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";
-// import Row from "reactstrap/lib/Row";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
-const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjFAdGVzdC5jb20iLCJuYmYiOjE2MzQzMTUzMjUsImV4cCI6MTYzNDMxODkyNSwiaWF0IjoxNjM0MzE1MzI1fQ.tGqWUgxpWkDyqbuY9QJiKbyTvwUwgeAV6FdT7XjEor0`;
-// const token = localStorage.getItem("token");
-// var displayUsers = [];
+
+
 var sideProfilePicStyle = {
   width: "64px",
   height: "64px",
@@ -32,6 +30,7 @@ export default function UserNav() {
   const [q, setQ] = useState("");
 
   useEffect(() => {
+    const token = localStorage.getItem("token").toString();
     // i wrapped the api request into a function
     // const search = async () => {
     fetch(`https://localhost:5001/api/User/searchUsers/`, {
@@ -58,18 +57,20 @@ export default function UserNav() {
       />
       <ListGroup>
         {userData.map((user) => {
-          return (
-            <ListGroupItem style={listGroupStyle} key={user.id}>
-              <Media middle left>
-                <Media
-                  className="m-1"
-                  src={user.avatar ? user.avatar : defaultProfilePic}
-                  style={sideProfilePicStyle}
-                />
-                <span>{user.email}</span>
-              </Media>
-            </ListGroupItem>
-          );
+          // if statement checking if user has chosen to be searchable
+          if (user.canSearch)
+            return (
+              <ListGroupItem style={listGroupStyle} key={user.id}>
+                <Media middle left>
+                  <Media
+                    className="m-1"
+                    src={user.avatar ? user.avatar : defaultProfilePic}
+                    style={sideProfilePicStyle}
+                  />
+                  <span>{user.email}</span>
+                </Media>
+              </ListGroupItem>
+            );
         })}
       </ListGroup>
     </div>

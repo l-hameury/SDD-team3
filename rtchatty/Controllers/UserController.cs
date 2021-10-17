@@ -28,12 +28,33 @@ namespace rtchatty.Controllers
             return service.GetUsers();
         }
 
+        [HttpGet]
+        [Route("getUserByEmail")]
+        public ActionResult<User> GetUserByEmail(string email)
+        {
+            return service.GetUserByEmail(email);
+        }
+
 
         [Route("searchUsers")]
         [HttpPost]
         public ActionResult<List<User>> searchUsers([FromBody] string query)
         {
             return service.searchUsers(query);
+        }
+
+        [Route("banUser")]
+        [HttpPost]
+        public ActionResult<User> banUser(User user)
+        {
+            return service.BanUser(user.Email);
+        }
+
+        [Route("deleteUser")]
+        [HttpPost]
+        public ActionResult<Boolean> DeleteUser(User user)
+        {
+            return service.DeleteUser(user.Email);
         }
 
 
@@ -62,19 +83,41 @@ namespace rtchatty.Controllers
         [HttpPost]
         public ActionResult Login([FromBody] User user)
         {
+            var tempUser = service.searchUsers(user.Email);
             var token = service.Authenticate(user.Email, user.Password);
 
-            if (token == null) return Unauthorized();
+            // TODO: Add proper error handling
+            if (token == null || tempUser[0].Banned == true) return Unauthorized();
 
-            return Ok(new { token, user });
+            return Ok(new { token });
         }
 
-        [Route("update")]
+        [Route("profileUpdate")]
         [HttpPost]
-        public ActionResult<User> Update(User user)
+        public ActionResult<User> ProfileUpdate(User user)
         {
-            service.Update(user);
-            return Json(user);
+
+            var userBeforeUpdate = service.GetUser(user.Id);
+            string invalidItem = "";
+
+            // if user wanted to update username, validate if username is unique
+            if (user.Username != userBeforeUpdate.Username)
+            {
+                if (!service.ValidateUsername(user.Username)) invalidItem += nameof(user.Username);
+            }
+
+            // if user wanted to update email, validate if email is unique
+            if (user.Email != userBeforeUpdate.Email)
+            {
+                if (!service.ValidateEmail(user.Email)) invalidItem += nameof(user.Email);
+            }
+
+            if (String.IsNullOrEmpty(invalidItem))
+            {
+                service.ProfileUpdate(user);
+                return Ok(user);
+            }
+            return Conflict(invalidItem);
         }
     }
 }
