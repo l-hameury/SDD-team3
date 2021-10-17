@@ -43,6 +43,20 @@ namespace rtchatty.Controllers
             return service.searchUsers(query);
         }
 
+        [Route("banUser")]
+        [HttpPost]
+        public ActionResult<User> banUser(User user)
+        {
+            return service.BanUser(user.Email);
+        }
+
+        [Route("deleteUser")]
+        [HttpPost]
+        public ActionResult<Boolean> DeleteUser(User user)
+        {
+            return service.DeleteUser(user.Email);
+        }
+
 
         [AllowAnonymous]
         [Route("register")]
@@ -69,10 +83,11 @@ namespace rtchatty.Controllers
         [HttpPost]
         public ActionResult Login([FromBody] User user)
         {
+            var tempUser = service.searchUsers(user.Email);
             var token = service.Authenticate(user.Email, user.Password);
 
             // TODO: Add proper error handling
-            if (token == null) return Unauthorized();
+            if (token == null || tempUser[0].Banned == true) return Unauthorized();
 
             return Ok(new { token });
         }
@@ -81,20 +96,24 @@ namespace rtchatty.Controllers
         [HttpPost]
         public ActionResult<User> ProfileUpdate(User user)
         {
+
             var userBeforeUpdate = service.GetUser(user.Id);
             string invalidItem = "";
 
             // if user wanted to update username, validate if username is unique
-            if(user.Username != userBeforeUpdate.Username){
+            if (user.Username != userBeforeUpdate.Username)
+            {
                 if (!service.ValidateUsername(user.Username)) invalidItem += nameof(user.Username);
             }
 
             // if user wanted to update email, validate if email is unique
-            if(user.Email != userBeforeUpdate.Email){
-                if(!service.ValidateEmail(user.Email)) invalidItem += nameof(user.Email);
+            if (user.Email != userBeforeUpdate.Email)
+            {
+                if (!service.ValidateEmail(user.Email)) invalidItem += nameof(user.Email);
             }
-            
-            if(String.IsNullOrEmpty(invalidItem)){
+
+            if (String.IsNullOrEmpty(invalidItem))
+            {
                 service.ProfileUpdate(user);
                 return Ok(user);
             }

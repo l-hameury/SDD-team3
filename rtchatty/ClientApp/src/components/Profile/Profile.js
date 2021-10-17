@@ -1,30 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Alert,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardImg,
-  CardText,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  ListGroup,
-  ListGroupItem,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
-  Container,
-  Row,
-  Col,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-} from "reactstrap";
+import { Alert, Button, Card, CardBody,
+  CardFooter, CardImg, CardText, Form,
+  FormGroup, Label, Input, ListGroup,
+  ListGroupItem, Modal, ModalBody, ModalHeader,
+  ModalFooter, Container, Row, Col, Dropdown,
+  DropdownToggle, DropdownMenu, DropdownItem, } from "reactstrap";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import defaultProfilePic from "../../Assets/Images/defaultProfilePic.png";
@@ -41,10 +21,12 @@ const Profile = () => {
     canSearch: false,
     statusShow: false,
     canMessage: false,
+    status: ""
   });
   const [currentInfo, setCurrentInfo] = useState({ ...userInfo });
   const [editInfoModal, setEditInfoModal] = useState(false);
   const [settingsDropdown, setSettingsDropdown] = useState(false);
+  const [statusOnline, setStatusOnline] = useState("");
   const [passwordModal, setPasswordModal] = useState(false);
   const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -73,8 +55,7 @@ const Profile = () => {
 
     if (key === "username") validateUsername(value);
     if (key === "email") validateEmail(value);
-    if (!usernameError || !emailError)
-      setUserInfo({ ...userInfo, [key]: value });
+    if (!usernameError || !emailError) setUserInfo({ ...userInfo, [key]: value });
   };
 
   // to update userInfo booleans on input change
@@ -85,19 +66,21 @@ const Profile = () => {
     setUserInfo({ ...userInfo, [key]: value });
   };
 
+  const handleStatus = () => {
+    setUserInfo(userInfo.status, statusOnline);
+  }
+
   // validation for username
   const validateUsername = (username) => {
     if (username.trim() === "") setUsernameError("Username is required");
-    else if (username.length < 3)
-      setUsernameError("Username must be at least 3 characters long");
+    else if (username.length < 3) setUsernameError("Username must be at least 3 characters long");
     else setUsernameError("");
   };
 
   // validation for email
   const validateEmail = (email) => {
     if (email.length === 0) setEmailError("Email is required");
-    else if (!email.match("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[.][a-zA-Z]{2,4}$"))
-      setEmailError("Invalid Email Format");
+    else if (!email.match("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[.][a-zA-Z]{2,4}$")) setEmailError("Invalid Email Format");
     else setEmailError("");
   };
 
@@ -115,17 +98,17 @@ const Profile = () => {
         canSearch: userInfo.canSearch,
         statusShow: userInfo.statusShow,
         canMessage: userInfo.canMessage,
+        status: userInfo.status
       })
-      .then(function () {
+      .then(function (res) {
         setEditInfoModal(!editInfoModal);
         setCurrentInfo({ ...userInfo });
         setSuccess("Profile successfully updated");
+        localStorage.setItem('email', res.data.email)
       })
       .catch(function (error) {
-        if (error.response.data.includes("Username"))
-          setUsernameError("Username is already taken.");
-        if (error.response.data.includes("Email"))
-          setEmailError("Email is already taken.");
+        if (error.response.data.includes("Username")) setUsernameError("Username is already taken.");
+        if (error.response.data.includes("Email")) setEmailError("Email is already taken.");
       });
   };
 
@@ -152,12 +135,8 @@ const Profile = () => {
               <CardImg
                 className="rounded-circle"
                 style={{ padding: "5px" }}
-                onError={(event) => {
-                  event.target.src = defaultProfilePic;
-                }}
-                src={
-                  currentInfo.avatar ? currentInfo.avatar : defaultProfilePic
-                }
+                onError={(event) => { event.target.src = defaultProfilePic }}
+                src={ currentInfo.avatar ? currentInfo.avatar : defaultProfilePic }
               ></CardImg>
             </Col>
             <Col xs="9">
@@ -167,23 +146,19 @@ const Profile = () => {
                     <ListGroupItem style={{ display: "inherit" }}>
                       <Col xs="2"> Username: </Col>
                       <Col style={{ textAlign: "right" }}>
-                        <strong>
-                          {" "}
-                          <CardText id="userName" name="userName">
-                            {currentInfo.username}
-                          </CardText>{" "}
-                        </strong>
+                        <strong> <CardText id="userName" name="userName"> {currentInfo.username}</CardText> </strong>
                       </Col>
                     </ListGroupItem>
                     <ListGroupItem style={{ display: "inherit" }}>
                       <Col xs="2"> Email: </Col>
                       <Col style={{ textAlign: "right" }}>
-                        <strong>
-                          {" "}
-                          <CardText id="email" name="email">
-                            {currentInfo.email}
-                          </CardText>{" "}
-                        </strong>
+                        <strong> <CardText id="email" name="email"> {currentInfo.email}</CardText> </strong>
+                      </Col>
+                    </ListGroupItem>
+                    <ListGroupItem style={{ display: "inherit" }}>
+                      <Col xs="2"> Status: </Col>
+                      <Col style={{ textAlign: "right" }}>
+                        <strong> <CardText id="status" name="status">{currentInfo.status}</CardText> </strong>
                       </Col>
                     </ListGroupItem>
                   </ListGroup>
@@ -191,143 +166,78 @@ const Profile = () => {
               </Row>
               <Row>
                 <CardBody>
-                  <CardText name="bio">
-                    {currentInfo.bio ? currentInfo.bio : "Hello"}
-                  </CardText>
+                  <CardText name="bio"> {currentInfo.bio ? currentInfo.bio : "Hello"} </CardText>
                 </CardBody>
               </Row>
             </Col>
           </Row>
           <CardFooter style={{ textAlign: "right" }}>
-            <Dropdown
-              isOpen={settingsDropdown}
-              toggle={toggleSettingsDropdown}
-              size="sm"
-            >
+            <Dropdown isOpen={settingsDropdown} toggle={toggleSettingsDropdown} size="sm">
               <DropdownToggle color="secondary">Settings</DropdownToggle>
               <DropdownMenu>
-                <DropdownItem onClick={toggleEditInfoModal}>
-                  Edit Profile
-                </DropdownItem>
-                <DropdownItem onClick={togglePasswordModal}>
-                  Change Password
-                </DropdownItem>
+                <DropdownItem onClick={toggleEditInfoModal}>Edit Profile</DropdownItem>
+                <DropdownItem onClick={togglePasswordModal}>Change Password</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </CardFooter>
         </Card>
-        <Alert className="rounded" color="success" hidden={!success}>
-          {success}
-        </Alert>
+        <Alert className="rounded" color="success" hidden={!success}>{success}</Alert>
       </Container>
 
-      <Modal isOpen={editInfoModal} toggle={resetInfo} className="updateModal">
+      <Modal isOpen={editInfoModal} toggle={resetInfo}>
         <ModalHeader toggle={resetInfo}>Update your information</ModalHeader>
         <ModalBody>
           <Form>
             <FormGroup>
-              <Label for="username">
-                {" "}
-                Username:
-                <Input
-                  name={"username"}
-                  id="username"
-                  defaultValue={currentInfo.username}
-                  onChange={handleChange}
-                ></Input>
+              <Label for="username">{" "} Username:
+                <Input name={"username"} id="username" defaultValue={currentInfo.username} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
             <FormGroup>
-              <Label for="email">
-                {" "}
-                Email:
-                <Input
-                  type="email"
-                  name={"email"}
-                  id="email"
-                  defaultValue={currentInfo.email}
-                  onChange={handleChange}
-                ></Input>
+              <Label for="email">{" "} Email:
+                <Input type="email" name={"email"} id="email" defaultValue={currentInfo.email} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
             <FormGroup>
-              <Label for="bio">
-                {" "}
-                Bio:
-                <Input
-                  style={{ width: "150%", height: "10rem" }}
-                  type="textarea"
-                  name={"bio"}
-                  id="bio"
-                  defaultValue={currentInfo.bio}
-                  onChange={handleChange}
-                ></Input>
+              <Label for="bio">{" "} Bio:
+                <Input style={{ width: "150%", height: "10rem" }} type="textarea" name={"bio"} id="bio" defaultValue={currentInfo.bio} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
             <FormGroup>
-              <Label for="avatar">
-                {" "}
-                Avatar Link:
-                <Input
-                  style={{ width: "150%" }}
-                  name={"avatar"}
-                  id="avatar"
-                  defaultValue={currentInfo.avatar}
-                  onChange={handleChange}
-                ></Input>
+              <Label for="avatar">{" "} Avatar Link:
+                <Input style={{ width: "150%" }} name={"avatar"} id="avatar" defaultValue={currentInfo.avatar} onChange={handleChange}></Input>
+              </Label>
+            </FormGroup>
+            <FormGroup>
+              <Label for="status"> Status:
+                <Input style={{ width: "150%", height: "10rem" }} type="textarea" name={"status"} id="status" defaultValue={currentInfo.status} onChange={handleChange}></Input>
               </Label>
             </FormGroup>
             <FormGroup>
               <Label for="canSearch">
-                <Input
-                  type="checkbox"
-                  name={"canSearch"}
-                  id="canSearch"
-                  defaultChecked={currentInfo.canSearch}
-                  onChange={handleBool}
-                />{" "}
-                Searchable
+                <Input type="checkbox" name={"canSearch"} id="canSearch" defaultChecked={currentInfo.canSearch} onChange={handleBool}/>
+                {" "} Searchable
               </Label>
             </FormGroup>
             <FormGroup>
               <Label for="statusShow">
-                <Input
-                  type="checkbox"
-                  name={"statusShow"}
-                  id="statusShow"
-                  defaultChecked={currentInfo.statusShow}
-                  onChange={handleBool}
-                />{" "}
-                Show Status
+                <Input type="checkbox" name={"statusShow"} id="statusShow" defaultChecked={currentInfo.statusShow} onChange={handleBool}/>
+                {" "} Show Status
               </Label>
             </FormGroup>
             <FormGroup>
               <Label for="canMessage">
-                <Input
-                  type="checkbox"
-                  name={"canMessage"}
-                  id="canMessage"
-                  defaultChecked={currentInfo.canMessage}
-                  onChange={handleBool}
-                />{" "}
-                Allow Messages From Anyone
+                <Input type="checkbox" name={"canMessage"} id="canMessage" defaultChecked={currentInfo.canMessage} onChange={handleBool}/>
+                {" "} Allow Messages From Anyone
               </Label>
             </FormGroup>
           </Form>
-          <Alert color="danger" hidden={!usernameError}>
-            {usernameError}
-          </Alert>
-          <Alert color="danger" hidden={!emailError}>
-            {emailError}
-          </Alert>
+          <Alert color="danger" hidden={!usernameError}>{usernameError}</Alert>
+          <Alert color="danger" hidden={!emailError}>{emailError}</Alert>
         </ModalBody>
         <ModalFooter>
-          <Button color="success" onClick={updateInfo}>
-            Submit
-          </Button>
-          <Button color="danger" onClick={resetInfo}>
-            Cancel
-          </Button>
+          <Button color="success" onClick={updateInfo}>Submit</Button>
+          <Button color="danger" onClick={resetInfo}>Cancel</Button>
         </ModalFooter>
       </Modal>
 

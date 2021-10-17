@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";
-// import Row from "reactstrap/lib/Row";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
-//const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNsdXR6MTJAdGVzdC5jb20iLCJuYmYiOjE2MzQwMDIxODMsImV4cCI6MTYzNDAwNTc4MywiaWF0IjoxNjM0MDAyMTgzfQ.9EAuALxhu1CVtlPr-f2KSeomPMdbIUYE3GbVtsUunIk`;
-const token = localStorage.getItem("token");
-// var displayUsers = [];
+
+
 var sideProfilePicStyle = {
   width: "64px",
   height: "64px",
@@ -32,6 +30,7 @@ export default function UserNav() {
   const [q, setQ] = useState("");
 
   useEffect(() => {
+    const token = localStorage.getItem("token").toString();
     // i wrapped the api request into a function
     // const search = async () => {
     fetch(`https://localhost:5001/api/User/searchUsers/`, {
