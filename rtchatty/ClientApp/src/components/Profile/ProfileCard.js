@@ -1,11 +1,8 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
-import { Card, CardBody, CardFooter, CardImg, CardText, ListGroup, ListGroupItem, Row, Col} from "reactstrap";
+import { Card, CardBody, CardImg, CardText, ListGroup, ListGroupItem, Row, Col} from "reactstrap";
 import defaultProfilePic from "../../Assets/Images/defaultProfilePic.png";
-import SettingsDropdown from './SettingsDropdown';
 
 const ProfileCard = (props) => {
-	const location = useLocation()
 	return (
     	<Card>
         	<Row>
