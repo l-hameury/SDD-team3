@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Container } from "reactstrap";
+import { Alert, Card, CardFooter } from "reactstrap";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ProfileCard from "./ProfileCard"
@@ -55,14 +55,14 @@ const Profile = () => {
   };
 
   return (
-    <div>
-      <Container fluid="sm">
+    <>
+      <Card>
         <ProfileCard user={userInfo}/>
-        <div style={{textAlign: "right"}}>
+        <CardFooter style={{ textAlign: "right" }}>
           <SettingsDropdown open={settingsDropdown} toggle={toggleSettingsDropdown} editModal={toggleEditInfoModal} pwModal={togglePasswordModal}/>
-        </div>
-        <Alert className="rounded" color="success" hidden={!success}>{success}</Alert>
-      </Container>
+        </CardFooter>
+      </Card>
+      <Alert className="rounded" color="success" hidden={!success}>{success}</Alert>
 
       <EditModal 
       user={userInfo}
@@ -74,12 +74,12 @@ const Profile = () => {
       />
 
       <PasswordModal
-        user={userInfo}
-        toggle={togglePasswordModal}
-        open={passwordModal}
-        success={setSuccess}
+      user={userInfo}
+      toggle={togglePasswordModal}
+      open={passwordModal}
+      success={setSuccess}
       />
-    </div>
+    </>
   );
 };
 

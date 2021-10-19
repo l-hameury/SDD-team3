@@ -7,28 +7,25 @@ import axios from 'axios'
 const EditModal = (props) => {
 	const [usernameError, setUsernameError] = useState("");
 	const [emailError, setEmailError] = useState("");
-
-	const [infoToUpdate, setInfoToUpdate] = useState({...props.user})
+	const [infoToUpdate, setInfoToUpdate] = useState({ ...props.user })
 
 	useEffect(() => {
-		setInfoToUpdate({...props.user})
+		setInfoToUpdate({ ...props.user })
 	}, [props.user])
+
 	const handleChange = (event) => {
 		const key = event.target.name;
 		const value = event.target.value;
 	
 		if (key === "username") validateUsername(value);
 		if (key === "email") validateEmail(value);
-		// if (!usernameError || !emailError) setUserInfo({ ...userInfo, [key]: value });
-		if (!usernameError || !emailError) setInfoToUpdate({...infoToUpdate, [key]: value})
+		if (!usernameError || !emailError) setInfoToUpdate({ ...infoToUpdate, [key]: value })
 	};
 	
 	// to update userInfo booleans on input change
 	const handleBool = (event) => {
 		const key = event.target.name;
 		const value = event.target.checked;
-	
-		// setUserInfo({ ...userInfo, [key]: value });
 		setInfoToUpdate({...infoToUpdate, [key]: value})
 	};
 
