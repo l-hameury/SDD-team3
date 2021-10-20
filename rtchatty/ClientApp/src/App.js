@@ -11,7 +11,7 @@ import Profile from "./components/Profile/Profile";
 import UserNav from "./components/UserNav";
 import Login from "./components/Login";
 import useToken from "./components/Auth/useToken";
-import { BrowserRouter, Route, Switch, Link } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import "./custom.css";
 import axios from "axios";
 import AdminPage from "./components/Admin";
@@ -23,10 +23,14 @@ function App() {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   // if token doesn't exist, redirect back to login page,
   // sending token to prop in Login
-  // TODO: Remove Debug
-  // console.log(token); // debugging
-  if (!token) {
-    // console.log("inside token if statment") //debugging
+
+  // Return register page if the pathname matches and there is no token
+  if(useLocation().pathname === "/register" && !token){
+    // This is missing the Layout component, so it will not have the Nav bar.
+    return <Route exact path="/register" component={Register} />
+  } 
+  // Else return login page if no token.
+  else if (!token){
     return <Login setToken={setToken} />;
   }
 
