@@ -37,6 +37,10 @@ const PasswordModal = (props) => {
 			id: props.user.id,
 			bio: props.user.bio,
 			avatar: props.user.avatar,
+			canSearch: props.user.canSearch,
+        	statusShow: props.user.statusShow,
+        	canMessage: props.user.canMessage,
+        	status: props.user.status,
 			password: newPass
 		})
 		.then(function (){
