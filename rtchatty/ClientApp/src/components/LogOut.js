@@ -2,7 +2,6 @@ import {NavLink} from "reactstrap";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 import React from 'react'
-import { Alert} from "reactstrap";
 /*Routing for LogOut added in App.js and Component call from NavMenu */
 
 function LogOut() {
@@ -26,14 +25,6 @@ function LogOut() {
             </NavLink>
         );
     }
-    // else render the message before user logs out
-    return(
-     
-       <div>
-           <Alert color="success">
-               <h4 className="text-center alert-heading">Logging Out</h4>
-           </Alert>
-       </div>
-    )
+
 }
 export default LogOut;
