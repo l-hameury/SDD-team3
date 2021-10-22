@@ -1,4 +1,6 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { Button } from "reactstrap";
 import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import Media from "reactstrap/lib/Media";
@@ -28,6 +30,77 @@ require("isomorphic-fetch");
 export default function UserNav() {
   const [userData, setUserData] = useState([]);
   const [q, setQ] = useState("");
+
+  //Send request
+
+  const sendRequest = (user) => {
+
+    axios.post("https://localhost:5001/api/user/sendFriendRequest", {
+      email: localStorage.getItem("email"),
+      outgoingFriendRequests: [
+         user.email
+      ]
+    })
+    .then(function (res){
+      console.log(res);
+    })
+    .catch(function (error){
+      console.log(`An error occurred: ${error}`)
+    })
+    //console.log(user.email);
+  };
+
+  //confirm request
+
+  const confirmRequest = (user) => {
+    axios.post("https://localhost:5001/api/user/confirmFriendRequest", {
+      email: localStorage.getItem("email"),
+      incomingFriendRequests: [
+         user.email
+      ]
+    })
+    .then(function (res){
+      console.log(res);
+    })
+    .catch(function (error){
+      console.log(`An error occurred: ${error}`)
+    })
+  };
+
+  //delete request
+
+  const deleteRequest = (user) => {
+    axios.post("https://localhost:5001/api/user/deleteFriendRequest", {
+      email: localStorage.getItem("email"),
+      incomingFriendRequests: [
+         user.email
+      ]
+    })
+    .then(function (res){
+      console.log(res);
+    })
+    .catch(function (error){
+      console.log(`An error occurred: ${error}`)
+    })
+  };
+
+  //Unfriend
+
+  const unfriend = (user) => {
+    axios.post("https://localhost:5001/api/user/unfriend", {
+      email: localStorage.getItem("email"),
+      friendList: [
+         user.email
+      ]
+    })
+    .then(function (res){
+      console.log(res);
+    })
+    .catch(function (error){
+      console.log(`An error occurred: ${error}`)
+    })
+  };
+
 
   useEffect(() => {
     const token = localStorage.getItem("token").toString();
@@ -61,13 +134,34 @@ export default function UserNav() {
           if (user.canSearch)
             return (
               <ListGroupItem style={listGroupStyle} key={user.id}>
-                <Media middle left>
+                <Media hidden={user.email === localStorage.email} middle left>
                   <Media
                     className="m-1"
                     src={user.avatar ? user.avatar : defaultProfilePic}
                     style={sideProfilePicStyle}
                   />
                   <span>{user.email}</span>
+                  <Button 
+                    hidden = {false}
+                    className = "btn-primary"
+                    onClick = {() => sendRequest(user)}
+                  >Send friend request</Button>
+                  <Button 
+                    hidden = {false}
+                    className = "btn-secondary"
+                    onClick = {()=> unfriend(user)}
+                  >Unfriend</Button>
+                  <Button 
+                    hidden = {false}
+                    className = "btn-danger"
+                    onClick = {() => deleteRequest(user)}
+                  >Delete request</Button>
+                  <Button 
+                    hidden = {false}
+                    className = "btn-success"
+                    onClick = {()=> confirmRequest(user)}
+                  >Confirm request</Button>
+
                 </Media>
               </ListGroupItem>
             );
