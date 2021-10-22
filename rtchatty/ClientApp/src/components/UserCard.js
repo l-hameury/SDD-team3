@@ -5,7 +5,7 @@ import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
 const UserCard = (props) => {
 	return (
 		<div>
-			<Card className="public-card">
+			{/* <Card className="public-card"> */}
 				<div>
 				<CardImg
 					className="rounded-circle"
@@ -20,11 +20,11 @@ const UserCard = (props) => {
 					<p>{props.user.status ? props.user.status : 'No Status'}</p>
 					<p>{props.user.bio ? props.user.bio : 'Hello, I am new'}</p>
 				</CardBody>
-				<CardFooter>
+				<CardFooter style={{textAlign: "left"}}>
 					{props.user.canMessage? <Button>Message</Button> : ''}
 					<Button color="primary">Add Friend</Button>
 				</CardFooter>
-			</Card>
+			{/* </Card> */}
 		</div>
 	)
 }

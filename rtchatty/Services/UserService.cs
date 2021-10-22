@@ -135,7 +135,7 @@ namespace rtchatty.Services
                     new Claim(ClaimTypes.Email, email),
                 }),
 
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddHours(3),
 
                 SigningCredentials = new SigningCredentials
                 (
