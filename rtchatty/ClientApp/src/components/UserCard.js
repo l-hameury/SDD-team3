@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, CardBody, CardImg, CardFooter, Button } from "reactstrap";
+import { Card, CardBody, CardImg, Button } from "reactstrap";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
 
 const UserCard = (props) => {
@@ -20,10 +20,10 @@ const UserCard = (props) => {
 					<p>{props.user.status ? props.user.status : 'No Status'}</p>
 					<p>{props.user.bio ? props.user.bio : 'Hello, I am new'}</p>
 				</CardBody>
-				<CardFooter style={{textAlign: "left"}}>
-					{props.user.canMessage? <Button>Message</Button> : ''}
-					<Button color="primary">Add Friend</Button>
-				</CardFooter>
+				<CardBody style={{textAlign: "center"}}>
+					{props.user.canMessage? <Button size="sm">Message</Button> : ''}
+					<Button size="sm" color="primary">Add Friend</Button>
+				</CardBody>
 			{/* </Card> */}
 		</div>
 	)
