@@ -250,6 +250,29 @@ namespace rtchatty.Services
 
             var currentUser =  _users.Find<User>( user => user.Email.ToLower().Contains(currentEmail.ToLower())).FirstOrDefault();
             var requestingUser =  _users.Find<User>( user => user.Email.ToLower().Contains(requestingEmail.ToLower())).FirstOrDefault();
+            
+            //Remove requestingUser from currentUser's outgoingFriendList
+            if(currentUser.OutgoingFriendRequests.Contains(requestingEmail)){
+                currentUser.OutgoingFriendRequests.Remove(requestingEmail);
+            }
+            
+            //remove currentUser from requestingUser's incominglist.
+            if(requestingUser.IncomingFriendRequests.Contains(currentEmail)){
+                requestingUser.IncomingFriendRequests.Remove(currentEmail);
+            }
+
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(currentEmail.ToLower()), currentUser);
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(requestingEmail.ToLower()), requestingUser);
+
+            return currentUser;
+        }
+
+        public User ignoreRequest(User user){
+             string currentEmail = user.Email;
+            string requestingEmail = user.IncomingFriendRequests[0];
+
+            var currentUser =  _users.Find<User>( user => user.Email.ToLower().Contains(currentEmail.ToLower())).FirstOrDefault();
+            var requestingUser =  _users.Find<User>( user => user.Email.ToLower().Contains(requestingEmail.ToLower())).FirstOrDefault();
 
             //Remove requestingUser from currentUser's incomingFriendList
             if(currentUser.IncomingFriendRequests.Contains(requestingEmail)){
@@ -260,7 +283,7 @@ namespace rtchatty.Services
             if(requestingUser.OutgoingFriendRequests.Contains(currentEmail)){
                 requestingUser.OutgoingFriendRequests.Remove(currentEmail);
             }
-
+            
             _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(currentEmail.ToLower()), currentUser);
             _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(requestingEmail.ToLower()), requestingUser);
 

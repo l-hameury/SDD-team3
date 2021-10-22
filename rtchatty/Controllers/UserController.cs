@@ -141,6 +141,13 @@ namespace rtchatty.Controllers
         {
             return service.deleteFriendRequest(user);
         }
+        
+        [Route("ignoreRequest")]
+        [HttpPost]
+        public ActionResult<User> IgnoreRequest(User user)
+        {
+            return service.ignoreRequest(user);
+        }
 
         [Route("unfriend")]
         [HttpPost]

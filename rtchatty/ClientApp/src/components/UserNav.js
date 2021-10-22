@@ -5,6 +5,7 @@ import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
+//import List from "collections/list"
 
 
 var sideProfilePicStyle = {
@@ -28,8 +29,18 @@ require("es6-promise").polyfill();
 require("isomorphic-fetch");
 
 export default function UserNav() {
+  var canSendRequest = true;
+  var canConfirmRequest = false;
+  var canDeleteRequest = false;
+  var canIgnoreRequest = false;
+  var canUnfriend = false;
+
+
+  const requestState = [canSendRequest, canConfirmRequest, canDeleteRequest, canIgnoreRequest, canUnfriend]
+  var incomingFriendRequests = []
   const [userData, setUserData] = useState([]);
   const [q, setQ] = useState("");
+  const [sentRequest, updateSentRequest] = useState(false);
 
   //Send request
 
@@ -42,6 +53,12 @@ export default function UserNav() {
       ]
     })
     .then(function (res){
+      incomingFriendRequests = user.incomingFriendRequests
+      console.log(incomingFriendRequests)
+      console.log(incomingFriendRequests.includes(localStorage.getItem("email")))
+      var flag = user.incomingFriendRequests.includes(localStorage.getItem("email"))
+        || user.friendList.includes(localStorage.getItem("email"))
+      updateSentRequest(flag)
       console.log(res);
     })
     .catch(function (error){
@@ -71,6 +88,23 @@ export default function UserNav() {
 
   const deleteRequest = (user) => {
     axios.post("https://localhost:5001/api/user/deleteFriendRequest", {
+      email: localStorage.getItem("email"),
+      incomingFriendRequests: [
+         user.email
+      ]
+    })
+    .then(function (res){
+      console.log(res);
+    })
+    .catch(function (error){
+      console.log(`An error occurred: ${error}`)
+    })
+  };
+
+  //ignore request
+
+  const ignoreRequest = (user) => {
+    axios.post("https://localhost:5001/api/user/ignoreRequest", {
       email: localStorage.getItem("email"),
       incomingFriendRequests: [
          user.email
@@ -142,25 +176,31 @@ export default function UserNav() {
                   />
                   <span>{user.email}</span>
                   <Button 
-                    hidden = {false}
+                    hidden = {((user.friendList.includes(localStorage.getItem("email")) || user.outgoingFriendRequests.includes(localStorage.getItem("email"))
+                      || user.incomingFriendRequests.includes(localStorage.getItem("email"))))}
                     className = "btn-primary"
                     onClick = {() => sendRequest(user)}
                   >Send friend request</Button>
                   <Button 
-                    hidden = {false}
-                    className = "btn-secondary"
+                    hidden = {!user.friendList.includes(localStorage.getItem("email"))}
+                    className = "btn-warning"
                     onClick = {()=> unfriend(user)}
                   >Unfriend</Button>
                   <Button 
-                    hidden = {false}
+                    hidden = {!user.incomingFriendRequests.includes(localStorage.getItem("email"))}
                     className = "btn-danger"
                     onClick = {() => deleteRequest(user)}
                   >Delete request</Button>
                   <Button 
-                    hidden = {false}
+                    hidden = {!user.outgoingFriendRequests.includes(localStorage.getItem("email"))}
                     className = "btn-success"
                     onClick = {()=> confirmRequest(user)}
                   >Confirm request</Button>
+                  <Button 
+                    hidden = {!user.outgoingFriendRequests.includes(localStorage.getItem("email"))}
+                    className = "btn-secondary"
+                    onClick = {()=> ignoreRequest(user)}
+                  >Ignore</Button>
 
                 </Media>
               </ListGroupItem>
