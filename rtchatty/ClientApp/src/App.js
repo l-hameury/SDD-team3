@@ -15,6 +15,7 @@ import { Route, Switch, useLocation } from "react-router-dom";
 import "./custom.css";
 import axios from "axios";
 import AdminPage from "./components/Admin";
+import LogOut from "./components/LogOut";
 
 // refactoring App.js
 function App() {
@@ -45,6 +46,7 @@ function App() {
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/user-nav" component={UserNav} />
         <Route exact path="/admin" component={AdminPage} />
+        <Route exact path="/logout" component={LogOut} />
       </Switch>
     </Layout>
   );
