@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardText, CardTitle, Col, Container, Row, Popover, PopoverBody } from 'reactstrap';
+import React, { useState } from 'react';
+import { Card, CardText, CardTitle, Col, Container, Row, Modal, ModalBody } from 'reactstrap';
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
 import axios from 'axios'
 import UserCard from './UserCard';
@@ -7,11 +7,13 @@ import UserCard from './UserCard';
 // Rendering a message box
 const Message = (props) => {
 	const [user, setUser] = useState({})
-	const [userCardPopover, setUserCardPopover] = useState(false)
+	const [userCardModal, setUserCardModal] = useState(false)
+	const [usernameUnderline, setUsernameUnderline] = useState(false)
 
 	const toggleCard = async (event) => {
-		setUserCardPopover(!userCardPopover)
-		if(userCardPopover === false){
+		event.persist()
+		setUserCardModal(!userCardModal)
+		if(userCardModal === false){
 			await axios.get('https://localhost:5001/api/User/getUserInfo', {
 				params: {
 					username: event.target.innerText
@@ -19,14 +21,14 @@ const Message = (props) => {
 			})
 			.then(function (res){
 				setUser(res.data)
-				return res.data
 			})
-			.catch(function (err){
-				console.log(err)
+			.catch(function (){
+				setUserCardModal(false)
 			})
 		}
-		else return null
 	}
+
+	const toggleUnderline = () => setUsernameUnderline(!usernameUnderline)
 
 	return(
 		<div /* style={{ background: "#eee", borderRadius: '5px', padding: '0 10px' }} */>
@@ -37,10 +39,10 @@ const Message = (props) => {
 							<img width="40em" src={props.user.profilePic ? props.user.profilePic : defaultProfilePic} alt="profile pic"></img>
 						</Col>
 						<Col>
-							<CardTitle><small>{props.date}</small><strong id={"popoverFocus"}>{props.user}</strong>:</CardTitle>
-							<Popover toggle={(e) => toggleCard(e)} placement={"right"} target="popoverFocus" isOpen={userCardPopover}> 
-								{userCardPopover && user ? <PopoverBody><UserCard user={user}/></PopoverBody> : ''}
-							</Popover>  
+							<CardTitle><small>{props.date}</small><strong className={usernameUnderline ? 'username': ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.user}</strong>:</CardTitle>
+							<Modal style={{ width: "350px" }} isOpen={userCardModal} toggle={() => setUserCardModal(!userCardModal)}>
+								<ModalBody><UserCard user={user}/></ModalBody>
+							</Modal>
 							<CardText>{props.message}</CardText>
 						</Col>
 					</Row>
