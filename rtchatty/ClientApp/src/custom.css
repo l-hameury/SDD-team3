@@ -64,4 +64,5 @@ code {
 
 .username:hover{
   text-decoration: underline;
+  cursor: pointer !important;
 }
