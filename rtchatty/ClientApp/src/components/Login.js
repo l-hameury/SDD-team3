@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Col, Form, Input, Label, Row } from "reactstrap";
+import { useHistory } from 'react-router';
 
 
 
@@ -19,6 +20,9 @@ const Login = ({setToken}) => {
 
     // var the 401 error
     const [showAuthError, setShowAuthError] = useState(false);
+
+    //var for useHistory object
+    const history = useHistory();
 
     const handleInput = (e) =>{
         const field = e.target.name;
@@ -114,6 +118,11 @@ const Login = ({setToken}) => {
     
     }
 
+    // redirects to register page
+    const registerPage = () =>{
+            history.push("/register");
+    }
+
     const getUsername = async (email) => {
 
         let returnUsername;
@@ -165,7 +174,8 @@ const Login = ({setToken}) => {
                         </Col>
                     </Row>
                     <br></br>
-                    <Button color="primary" type="submit" value="Submit">Login</Button>
+                        <Button color="primary" type="submit" value="Submit">Login</Button>{' '}
+                        <Button color="primary" type="submit" onClick={registerPage}>Register</Button>{' '}
                 </Form>
             </div>
 
