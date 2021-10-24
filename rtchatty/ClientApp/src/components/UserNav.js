@@ -47,7 +47,7 @@ export default function UserNav() {
           // if statement checking if user has chosen to be searchable
           if (user.canSearch)
             return (
-              <UserTile user={user}></UserTile>
+              <UserTile user={user} key = {user.id}></UserTile>
             );
         })}
       </ListGroup>
