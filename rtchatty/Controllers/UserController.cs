@@ -35,6 +35,14 @@ namespace rtchatty.Controllers
             return service.GetUserByEmail(email);
         }
 
+        [HttpGet]
+        [Route("getUserInfo")]
+        public ActionResult<User> GetPublicUserInfo(string username)
+        {
+            var user = service.GetPublicUserInfo(username);
+            return Ok(new {user.Username, user.Status, user.Bio, user.Avatar, user.CanMessage});
+        }
+
 
         [Route("searchUsers")]
         [HttpPost]

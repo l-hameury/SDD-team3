@@ -39,6 +39,7 @@ namespace rtchatty.Services
 
         public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
         public User GetUserByEmail(string email) => _users.Find<User>(user => user.Email == email).FirstOrDefault();
+        public User GetPublicUserInfo(string username) => _users.Find<User>(user => user.Username == username).FirstOrDefault();
 
         public List<User> searchUsers(string query)
         {
@@ -134,7 +135,7 @@ namespace rtchatty.Services
                     new Claim(ClaimTypes.Email, email),
                 }),
 
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddHours(3),
 
                 SigningCredentials = new SigningCredentials
                 (
@@ -175,7 +176,6 @@ namespace rtchatty.Services
             update = update.Set(p => p.CanSearch, user.CanSearch);
             update = update.Set(p => p.StatusShow, user.StatusShow);
             update = update.Set(p => p.CanMessage, user.CanMessage);
-
             update = update.Set(p => p.Status, user.Status);
 
             // if there is a username to be updated, add it to the update operation that I defined above
