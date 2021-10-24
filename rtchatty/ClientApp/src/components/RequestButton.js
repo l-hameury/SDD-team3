@@ -3,8 +3,21 @@ import { Button } from "reactstrap";
 import axios from "axios";
 
 const RequestButton = (props) =>{
+
     var incomingFriendRequests
     var user = props.user
+    var suggestFlag = ((user.friendList.includes(localStorage.getItem("email")) || user.outgoingFriendRequests.includes(localStorage.getItem("email"))
+    || user.incomingFriendRequests.includes(localStorage.getItem("email"))))
+    var unfriendFlag = !user.friendList.includes(localStorage.getItem("email"))
+    var confirmFlag = !user.outgoingFriendRequests.includes(localStorage.getItem("email"))
+    var deleteFlag = !user.incomingFriendRequests.includes(localStorage.getItem("email"))
+    var ignoreFLag = !user.outgoingFriendRequests.includes(localStorage.getItem("email"))
+
+    const [suggestState, setSuggestState] = useState(suggestFlag)
+    const [unfriendState, setUnfriendState] = useState(unfriendFlag)
+    const [confirmState, setConfirmState] = useState(confirmFlag)
+    const [deleteState, setDeleteState] = useState(deleteFlag)
+    const [ignoreState, setIgnoreState] = useState(ignoreFLag)
   //Send request
 
   const sendRequest = (user) => {
@@ -16,15 +29,13 @@ const RequestButton = (props) =>{
       ]
     })
     .then(function (res){
+      setSuggestState(!suggestState);
+      setDeleteState(!deleteState)
       incomingFriendRequests = user.incomingFriendRequests
-      console.log(incomingFriendRequests)
-      console.log(incomingFriendRequests.includes(localStorage.getItem("email")))
-      console.log(res);
     })
     .catch(function (error){
       console.log(`An error occurred: ${error}`)
     })
-    //console.log(user.email);
   };
 
   //confirm request
@@ -37,7 +48,9 @@ const RequestButton = (props) =>{
       ]
     })
     .then(function (res){
-      console.log(res);
+      setConfirmState(!confirmState)
+      setUnfriendState(!unfriendState)
+      setIgnoreState(!ignoreState)
     })
     .catch(function (error){
       console.log(`An error occurred: ${error}`)
@@ -54,7 +67,8 @@ const RequestButton = (props) =>{
       ]
     })
     .then(function (res){
-      console.log(res);
+      setSuggestState(!suggestState);
+      setDeleteState(!deleteState)
     })
     .catch(function (error){
       console.log(`An error occurred: ${error}`)
@@ -71,7 +85,9 @@ const RequestButton = (props) =>{
       ]
     })
     .then(function (res){
-      console.log(res);
+      setIgnoreState(!ignoreState)
+      setSuggestState(!suggestState)
+      setConfirmState(!confirmState)
     })
     .catch(function (error){
       console.log(`An error occurred: ${error}`)
@@ -88,7 +104,8 @@ const RequestButton = (props) =>{
       ]
     })
     .then(function (res){
-      console.log(res);
+      setUnfriendState(!unfriendState)
+      setSuggestState(!suggestState)
     })
     .catch(function (error){
       console.log(`An error occurred: ${error}`)
@@ -97,24 +114,23 @@ const RequestButton = (props) =>{
 
     return (
         <><Button
-            hidden={((user.friendList.includes(localStorage.getItem("email")) || user.outgoingFriendRequests.includes(localStorage.getItem("email"))
-                || user.incomingFriendRequests.includes(localStorage.getItem("email"))))}
+            hidden={suggestState}
             className="btn-primary"
             onClick={() => sendRequest(user)}
         >Send friend request</Button><Button
-            hidden={!user.friendList.includes(localStorage.getItem("email"))}
+            hidden={unfriendState}
             className="btn-warning"
             onClick={() => unfriend(user)}
         >Unfriend</Button><Button
-            hidden={!user.incomingFriendRequests.includes(localStorage.getItem("email"))}
+            hidden={deleteState}
             className="btn-danger"
             onClick={() => deleteRequest(user)}
         >Delete request</Button><Button
-            hidden={!user.outgoingFriendRequests.includes(localStorage.getItem("email"))}
+            hidden={confirmState}
             className="btn-success"
             onClick={() => confirmRequest(user)}
         >Confirm request</Button><Button
-            hidden={!user.outgoingFriendRequests.includes(localStorage.getItem("email"))}
+            hidden={ignoreState}
             className="btn-secondary"
             onClick={() => ignoreRequest(user)}
         >Ignore</Button>

@@ -33,11 +33,11 @@ namespace rtchatty.Models
         [BsonElement("IsAdmin")]
         public bool IsAdmin { get; set; }
 		[BsonElement("FriendList")]
-		public List<string> FriendList { get; set; }
+		public List<string> FriendList { get; set; } = new List<string>();
 		[BsonElement("IncomingFriendRequests")]
-		public List<string> IncomingFriendRequests { get; set; }
+		public List<string> IncomingFriendRequests { get; set; } = new List<string>();
 		[BsonElement("OutgoingFriendRequests")]
-		public List<string> OutgoingFriendRequests { get; set; }
+		public List<string> OutgoingFriendRequests { get; set; }  = new List<string>();
 
 		[BsonElement("isOnline")]
 		public bool isOnline { get; set; }
