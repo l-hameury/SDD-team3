@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
@@ -27,6 +28,13 @@ namespace rtchatty.Services
 			_messages.InsertOne(message);
 
 			return true;
+		}
+
+		public List<ChatMessage> searchMessages(string keyword){
+			if(keyword != null){
+				return _messages.Find<ChatMessage>(searchMsg => searchMsg.Message.ToLower().Contains(keyword.ToLower())).ToList();
+			}
+			return GetMessages();
 		}
 	}
 }

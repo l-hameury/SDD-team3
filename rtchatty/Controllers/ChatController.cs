@@ -45,6 +45,12 @@ namespace rtchatty.Controllers
             await chatHub.Clients.All.PopulateMessages(messageList);
         }
 
+        [Route("searchMessages")]
+        [HttpPost]
+        public ActionResult<List<ChatMessage>> searchMessages([FromBody] string keyword){
+            return service.searchMessages(keyword);
+        }
+
         // TODO: Implement users and Groups for sending DMs
 		// Source for this sample: 
 		// https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/signalr/groups/sample/Hubs/ChatHub.cs
