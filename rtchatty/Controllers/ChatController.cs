@@ -48,9 +48,9 @@ namespace rtchatty.Controllers
         // TODO: Implement users and Groups for sending DMs
 		// Source for this sample: 
 		// https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/signalr/groups/sample/Hubs/ChatHub.cs
-		// public Task SendPrivateMessage(string user, string message)
-		// {
-		// 	return Clients.User(user).SendAsync("ReceiveMessage", message);
-		// }
+		public Task SendPrivateMessage(string user, string message)
+		{
+			return chatHub.Clients.User(user).SendPrivateMessage("ReceiveMessage", message);
+		}
     }
 }

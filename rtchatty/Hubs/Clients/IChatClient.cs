@@ -8,5 +8,6 @@ namespace rtchatty.Hubs.Clients
 	{
 		Task ReceiveMessage(ChatMessage message);
 		Task PopulateMessages(List<ChatMessage> messageList);
+		Task SendPrivateMessage(string user, string message);
 	}
 }

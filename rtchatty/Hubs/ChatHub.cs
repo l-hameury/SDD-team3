@@ -22,11 +22,11 @@ namespace rtchatty.Hubs
 		// public async Task SaveMessage(ChatMessage message)
 
 
-		// // public ActionResult<List<ChatMessage>> GetMessages(ChatMessage message){
-		// // 	// string group = message.Group;
-		// // 	// string user = message.user;
-		// // 	return service.GetMessages();
-		// // }
+		// public ActionResult<List<ChatMessage>> GetMessages(ChatMessage message){
+		// 	// string group = message.Group;
+		// 	// string user = message.user;
+		// 	return service.GetMessages();
+		// }
 
 
 		// public string GetMessages(ChatMessage message){

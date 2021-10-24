@@ -78,11 +78,14 @@ const Chat = () => {
 
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
+			
 			const updatedChat = [...latestChat.current];
 			updatedChat.push(message);
 
 			setChat(updatedChat);
 		});
+
+
 	}
 
 	/**
