@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import { Card, CardBody, CardImg, CardText, CardTitle, Col, Container, Row } from 'reactstrap';
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
@@ -9,10 +10,10 @@ const Message = (props) => (
 			<Container>
 				<Row noGutters>
 					<Col xs="auto">
-						<img width="40em" src={props.user.profilePic ? props.user.profilePic : defaultProfilePic} alt="profile pic"></img>
+						<img width="40em" src={props.avatar ? props.avatar : defaultProfilePic} alt="profile pic"></img>
 					</Col>
 					<Col>
-						<CardTitle><small>{props.date}</small> <strong>{props.user}</strong>:</CardTitle>
+						<CardTitle><small>{moment(props.timestamp).format('LT')}</small> <strong>{props.user}</strong>:</CardTitle>
 						<CardText>{props.message}</CardText>
 					</Col>
 				</Row>

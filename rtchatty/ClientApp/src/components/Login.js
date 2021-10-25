@@ -67,6 +67,25 @@ const Login = ({setToken}) => {
         // Clear 401 error alert box
         setShowAuthError(false);
 
+        const authData = await loginUser({
+            email: inputs.email,
+            password: inputs.password
+        });
+        localStorage.setItem("email", inputs.email);
+        // if authData is null then show the error
+        if(!authData){ 
+            setShowAuthError(true)
+            return;
+        }
+        //else set the token for login
+        setToken(authData.token);
+
+        // get the username and avatar for the authenticated user
+        let userInfo = await getUserInfo(inputs.email);
+        localStorage.setItem("username", userInfo.username);
+        localStorage.setItem("avatar", userInfo.avatar);
+    }
+
         //axios call to login user
         async function loginUser(credentials){
             // Hold returnData for... returning. :)
@@ -95,28 +114,9 @@ const Login = ({setToken}) => {
             return returnData;
         }
 
+    const getUserInfo = async (email) => {
 
-        const authData = await loginUser({
-            email: inputs.email,
-            password: inputs.password
-        });
-        localStorage.setItem("email", inputs.email);
-        // if authData is null then show the error
-        if(!authData){ 
-            setShowAuthError(true)
-            return;
-        }
-        //else set the token for login
-        setToken(authData.token);
-
-        // get the username for the authenticated user
-        localStorage.setItem("username", await getUsername(inputs.email));
-    
-    }
-
-    const getUsername = async (email) => {
-
-        let returnUsername;
+        let returnUserInfo;
     
         await axios.get('https://localhost:5001/api/user/getUserByEmail/', {
             params: {
@@ -125,14 +125,14 @@ const Login = ({setToken}) => {
         })
         .then(function (res) {
             console.log(res.data.username);
-            returnUsername = res.data.username;
+            returnUserInfo = res.data;
         })
         .catch(function (error) {
             console.log(error);
             return error;
         })
     
-        return returnUsername;
+        return returnUserInfo;
     }
 
     const errorClass = (error) => {
