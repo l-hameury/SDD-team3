@@ -40,9 +40,11 @@ export default function AdminPage() {
   const [showBanSuccess, setBanSuccess] = useState(false);
   const [banMessage, setBanMessage] = useState("");
   const [error, setError] = useState("");
+  const [canAccess, setAccess] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token").toString();
+    isAdmin();
     fetch(`https://localhost:5001/api/User/searchUsers/`, {
       method: "POST",
       headers: new Headers({
@@ -91,66 +93,93 @@ export default function AdminPage() {
       });
   };
 
-  return (
-    <div>
-      <div
-        className="alert alert-success"
-        hidden={!showBanSuccess}
-        name="successAlert"
-      >
-        Success! {banMessage}
-      </div>
+  const isAdmin = async () => {
+    const email = localStorage.getItem("email").toString();
 
-      <div className="alert alert-danger" hidden={!error} name="Error">
-        {error}
-      </div>
+    axios
+      .post("https://localhost:5001/api/user/isAdmin", {
+        email: email,
+      })
+      .then(function (res) {
+        setAccess(res.data);
+      })
+      .catch(function (error) {
+        setError(`Error Checking Admin Status for User ${email}`);
+      });
+  };
 
-      <input
-        style={searchStyle}
-        type="text"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-      />
-      <div className="d-flex flex-wrap">
-        {userData.map((user) => {
-          return (
-            <Card key={user.id} className="m-3" style={profileTitle}>
-              <CardBody>
-                <CardTitle>
-                  <CardImg
-                    className="float-start m-2"
-                    variant="start"
-                    src={user.avatar ? user.avatar : defaultProfilePic}
-                    style={sideProfilePicStyle}
-                  />
-                  {user.username} <br />
-                  <small>{user.email}</small>
-                </CardTitle>
-                <CardText>This is a placeholder, {user.bio}</CardText>
-              </CardBody>
-              <CardFooter>
-                <Button
-                  hidden={user.banned}
-                  className="btn-warning"
-                  onClick={() => banUser(user)}
-                >
-                  Ban
-                </Button>
-                <Button
-                  hidden={!user.banned}
-                  className="btn-warning"
-                  onClick={() => banUser(user)}
-                >
-                  Unban
-                </Button>
-                <Button className="btn-danger" onClick={() => deleteUser(user)}>
-                  Delete
-                </Button>
-              </CardFooter>
-            </Card>
-          );
-        })}
+  if (canAccess) {
+    return (
+      <div>
+        <div
+          className="alert alert-success"
+          hidden={!showBanSuccess}
+          name="successAlert"
+        >
+          Success! {banMessage}
+        </div>
+
+        <div className="alert alert-danger" hidden={!error} name="Error">
+          {error}
+        </div>
+
+        <input
+          style={searchStyle}
+          type="text"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
+        <div className="d-flex flex-wrap">
+          {userData.map((user) => {
+            return (
+              <Card key={user.id} className="m-3" style={profileTitle}>
+                <CardBody>
+                  <CardTitle>
+                    <CardImg
+                      className="float-start m-2"
+                      variant="start"
+                      src={user.avatar ? user.avatar : defaultProfilePic}
+                      style={sideProfilePicStyle}
+                    />
+                    {user.username} <br />
+                    <small>{user.email}</small>
+                  </CardTitle>
+                  <CardText>This is a placeholder, {user.bio}</CardText>
+                </CardBody>
+                <CardFooter>
+                  <Button
+                    hidden={user.banned}
+                    className="btn-warning"
+                    onClick={() => banUser(user)}
+                  >
+                    Ban
+                  </Button>
+                  <Button
+                    hidden={!user.banned}
+                    className="btn-warning"
+                    onClick={() => banUser(user)}
+                  >
+                    Unban
+                  </Button>
+                  <Button
+                    className="btn-danger"
+                    onClick={() => deleteUser(user)}
+                  >
+                    Delete
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div>
+        <h1>Unauthorized, Admins Only</h1>
+        <h3>Please request admin status from another admin</h3>
+      </div>
+    );
+  }
 }
