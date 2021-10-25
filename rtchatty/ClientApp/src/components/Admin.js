@@ -60,9 +60,11 @@ export default function AdminPage() {
   }, [q]);
 
   const banUser = async (user) => {
+    const email = localStorage.getItem("email").toString();
     axios
       .post("https://localhost:5001/api/user/banUser", {
-        email: user.email,
+        UserEmail: user.email,
+        AdminEmail: email,
       })
       .then(function (res) {
         setBanSuccess(true);
@@ -79,9 +81,11 @@ export default function AdminPage() {
   };
 
   const deleteUser = async (user) => {
+    const email = localStorage.getItem("email").toString();
     axios
       .post("https://localhost:5001/api/user/deleteUser", {
-        email: user.email,
+        UserEmail: user.email,
+        AdminEmail: email,
       })
       .then(function (res) {
         userData.splice(userData.indexOf(user), 1);
@@ -95,7 +99,6 @@ export default function AdminPage() {
 
   const isAdmin = async () => {
     const email = localStorage.getItem("email").toString();
-
     axios
       .post("https://localhost:5001/api/user/isAdmin", {
         email: email,
