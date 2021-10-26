@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Button, Modal, ModalHeader, ModalBody, Row  } from 'reactstrap';
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
+import SearchKeyword from './SearchKeyword';
 import { Container } from 'reactstrap';
 
 const Chat = () => {
@@ -16,7 +17,6 @@ const Chat = () => {
 	const avatar = localStorage.getItem('avatar');
 
 	latestChat.current = chat;
-	console.log(latestChat.current)
 
 	/**
 	 * This declares the Hub Connection
@@ -149,10 +149,13 @@ const Chat = () => {
 			<h1>General Chat</h1>
 			<Button onClick={toggle}>Search</Button>
 			<Modal isOpen={modal} toggle={toggle}>
-				<Row><ModalHeader>Search for Messages{'        '}
-					<Button color="danger" onClick={toggle}>Close</Button></ModalHeader>
+				<Row>
+					<ModalHeader>Search for Messages{'        '}
+						<Button color="danger" onClick={toggle}>Close</Button>
+					</ModalHeader>
 				</Row>
 				<ModalBody>
+					<SearchKeyword chat={chat}/>
 				</ModalBody>
 			</Modal>
 			<hr />
