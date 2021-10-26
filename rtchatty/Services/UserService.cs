@@ -39,6 +39,7 @@ namespace rtchatty.Services
 
         public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
         public User GetUserByEmail(string email) => _users.Find<User>(user => user.Email == email).FirstOrDefault();
+        public User GetPublicUserInfo(string username) => _users.Find<User>(user => user.Username == username).FirstOrDefault();
 
         public List<User> searchUsers(string query)
         {
@@ -134,7 +135,7 @@ namespace rtchatty.Services
                     new Claim(ClaimTypes.Email, email),
                 }),
 
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddHours(3),
 
                 SigningCredentials = new SigningCredentials
                 (

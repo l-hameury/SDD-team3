@@ -5,7 +5,7 @@ import defaultProfilePic from "../../Assets/Images/defaultProfilePic.png";
 const ProfileCard = (props) => {
 	return (
         <Row>
-            <Col xs="3">
+            <Col xs="3" style={{margin: "auto"}}>
               	<CardImg
                 className="rounded-circle"
                 style={{ padding: "5px" }}
@@ -23,12 +23,15 @@ const ProfileCard = (props) => {
                     				<strong> <CardText id="userName" name="userName"> {props.user.username}</CardText> </strong>
                   				</Col>
                     		</ListGroupItem>
-                    		<ListGroupItem style={{ display: "inherit" }}>
-                      			<Col xs="2"> Email: </Col>
-                      			<Col style={{ textAlign: "right" }}>
-                        			<strong> <CardText id="email" name="email"> {props.user.email}</CardText> </strong>
-                      			</Col>
-                    		</ListGroupItem>
+							{props.user.email 
+							?	<ListGroupItem style={{ display: "inherit" }}>
+                      				<Col xs="2"> Email: </Col>
+                      				<Col style={{ textAlign: "right" }}>
+                        				<strong> <CardText id="email" name="email"> {props.user.email}</CardText> </strong>
+                      				</Col>
+                    			</ListGroupItem>
+							: ''}
+                    		
                     		<ListGroupItem style={{ display: "inherit" }}>
                       			<Col xs="2"> Status: </Col>
                       			<Col style={{ textAlign: "right" }}>

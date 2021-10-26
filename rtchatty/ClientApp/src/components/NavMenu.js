@@ -81,11 +81,6 @@ export class NavMenu extends Component {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/register">
-                    Register
-                  </NavLink>
-                </NavItem>
-                <NavItem>
                   <LogOut/>
                 </NavItem>
               </ul>
