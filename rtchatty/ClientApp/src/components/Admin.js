@@ -60,6 +60,7 @@ export default function AdminPage() {
   }, [q]);
 
   const banUser = async (user) => {
+    const email = localStorage.getItem("email").toString();
     axios
       .post("https://localhost:5001/api/admin/banUser", {
         UserEmail: user.email,
@@ -98,6 +99,7 @@ export default function AdminPage() {
   };
 
   const deleteUser = async (user) => {
+    const email = localStorage.getItem("email").toString();
     axios
       .post("https://localhost:5001/api/admin/deleteUser", {
         UserEmail: user.email,

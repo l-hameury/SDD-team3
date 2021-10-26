@@ -34,6 +34,12 @@ namespace rtchatty.Services
 
         }
 
+        public bool IsAdmin(string email)
+        {
+            var user = GetUserByEmail(email);
+            return user.IsAdmin;
+        }
+
         public List<User> GetUsers() =>
             _users.Find(user => true).ToList();
 
