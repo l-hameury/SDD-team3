@@ -35,6 +35,20 @@ namespace rtchatty.Controllers
             return service.GetUserByEmail(email);
         }
 
+        [HttpGet]
+        [Route("getUserInfo")]
+        public ActionResult<User> GetPublicUserInfo(string username)
+        {
+            var user = service.GetPublicUserInfo(username);
+            return Ok(new { user.Username, user.Status, user.Bio, user.Avatar, user.CanMessage });
+        }
+
+        [Route("isAdmin")]
+        [HttpPost]
+        public ActionResult<Boolean> isAdmin(User user)
+        {
+            return service.IsAdmin(user.Email);
+        }
 
         [Route("searchUsers")]
         [HttpPost]
@@ -45,16 +59,18 @@ namespace rtchatty.Controllers
 
         [Route("banUser")]
         [HttpPost]
-        public ActionResult<User> banUser(User user)
+        public ActionResult<User> banUser(AdminRequest adminRequest)
         {
-            return service.BanUser(user.Email);
+            var canBan = service.IsAdmin(adminRequest.AdminEmail);
+            return canBan == true ? service.BanUser(adminRequest.UserEmail) : Unauthorized();
         }
 
         [Route("deleteUser")]
         [HttpPost]
-        public ActionResult<Boolean> DeleteUser(User user)
+        public ActionResult<Boolean> DeleteUser(AdminRequest adminRequest)
         {
-            return service.DeleteUser(user.Email);
+            var canDelete = service.IsAdmin(adminRequest.AdminEmail);
+            return canDelete == true ? service.DeleteUser(adminRequest.UserEmail) : Unauthorized();
         }
 
 
