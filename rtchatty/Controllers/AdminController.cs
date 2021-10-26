@@ -42,6 +42,14 @@ namespace rtchatty.Controllers
             return canBan.Value == true ? service.BanUser(adminRequest.UserEmail) : Unauthorized();
         }
 
+        [Route("setAdminStatus")]
+        [HttpPost]
+        public ActionResult<User> addAdmin(AdminRequest adminRequest)
+        {
+            var canAdd = isAdmin();
+            return canAdd.Value == true ? service.SetAdminStatus(adminRequest.UserEmail) : Unauthorized();
+        }
+
         [Route("deleteUser")]
         [HttpPost]
         public ActionResult<Boolean> DeleteUser(AdminRequest adminRequest)

@@ -65,5 +65,21 @@ namespace rtchatty.Services
             return null;
 
         }
+
+        public User SetAdminStatus(string email)
+        {
+            if (email != "")
+            {
+                var user = _users.Find<User>(user => user.Email.ToLower().Contains(email.ToLower())).FirstOrDefault();
+                if (user != null)
+                {
+                    user.IsAdmin = !user.IsAdmin;
+                    _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(email.ToLower()), user);
+                    return user;
+                }
+            }
+            return null;
+
+        }
     }
 }
