@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import "./NavMenu.css";
 import LogOut from "./LogOut";
+import Notification from "./Notification"
 
 export class NavMenu extends Component {
   static displayName = NavMenu.name;
@@ -67,7 +68,10 @@ export class NavMenu extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/chat">
-                    Chat
+                    <div className="chat">
+                      <Notification></Notification>
+                      Chat
+                    </div>
                   </NavLink>
                 </NavItem>
                 <NavItem>

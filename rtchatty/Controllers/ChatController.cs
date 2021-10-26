@@ -15,6 +15,7 @@ namespace rtchatty.Controllers
     public class ChatController : ControllerBase
     {
 
+        List<object> list;
         private readonly ChatService chatService;
         private readonly UserService userService;
 
@@ -38,11 +39,23 @@ namespace rtchatty.Controllers
             await chatHub.Clients.All.ReceiveMessage(message);
         }
 
+        
+        [HttpPost("notification")]
+        public int GetNotification()
+        {
+            
+            Console.WriteLine(list.Count);
+            if(list!= null)
+                return list.Count;
+            return 0;
+        }
+
         // TODO: Add `group` property to allow sending to specific groups/chats
         [HttpGet("getAll")]
         public async Task GetMessages()
         {
             List<object> messageList = chatService.GetMessages();
+            list = messageList;
 
             await chatHub.Clients.All.PopulateMessages(messageList);
         }
