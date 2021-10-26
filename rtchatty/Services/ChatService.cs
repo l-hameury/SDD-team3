@@ -48,11 +48,6 @@ namespace rtchatty.Services
 			return true;
 		}
 
-		public List<ChatMessage> searchMessages(string keyword){
-			if(keyword != null){
-				return _messages.Find<ChatMessage>(searchMsg => searchMsg.Message.ToLower().Contains(keyword.ToLower())).ToList();
-			}
-			return GetMessages();
-		}
+
 	}
 }
