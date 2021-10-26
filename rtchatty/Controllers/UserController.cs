@@ -45,40 +45,12 @@ namespace rtchatty.Controllers
             return Ok(new { user.Username, user.Status, user.Bio, user.Avatar, user.CanMessage });
         }
 
-        [Route("isAdmin")]
-        [HttpPost]
-        public ActionResult<Boolean> isAdmin()
-        {
-
-            ClaimsIdentity identity = User.Identity as ClaimsIdentity;
-            IEnumerable<Claim> claims = identity.Claims;
-            var email = claims.FirstOrDefault().Value;
-            return service.IsAdmin(email);
-        }
-
         [Route("searchUsers")]
         [HttpPost]
         public ActionResult<List<User>> searchUsers([FromBody] string query)
         {
             return service.searchUsers(query);
         }
-
-        [Route("banUser")]
-        [HttpPost]
-        public ActionResult<User> banUser(AdminRequest adminRequest)
-        {
-            var canBan = isAdmin();
-            return canBan.Value == true ? service.BanUser(adminRequest.UserEmail) : Unauthorized();
-        }
-
-        [Route("deleteUser")]
-        [HttpPost]
-        public ActionResult<Boolean> DeleteUser(AdminRequest adminRequest)
-        {
-            var canDelete = isAdmin();
-            return canDelete.Value == true ? service.DeleteUser(adminRequest.UserEmail) : Unauthorized();
-        }
-
 
         [AllowAnonymous]
         [Route("register")]
