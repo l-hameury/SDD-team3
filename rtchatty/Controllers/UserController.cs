@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver.Core.Authentication;
 using rtchatty.Models;
 using rtchatty.Services;
+using System.Linq;
 
 
 namespace rtchatty.Controllers
@@ -45,9 +47,13 @@ namespace rtchatty.Controllers
 
         [Route("isAdmin")]
         [HttpPost]
-        public ActionResult<Boolean> isAdmin(User user)
+        public ActionResult<Boolean> isAdmin()
         {
-            return service.IsAdmin(user.Email);
+
+            ClaimsIdentity identity = User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claims = identity.Claims;
+            var email = claims.FirstOrDefault().Value;
+            return service.IsAdmin(email);
         }
 
         [Route("searchUsers")]
@@ -61,16 +67,16 @@ namespace rtchatty.Controllers
         [HttpPost]
         public ActionResult<User> banUser(AdminRequest adminRequest)
         {
-            var canBan = service.IsAdmin(adminRequest.AdminEmail);
-            return canBan == true ? service.BanUser(adminRequest.UserEmail) : Unauthorized();
+            var canBan = isAdmin();
+            return canBan.Value == true ? service.BanUser(adminRequest.UserEmail) : Unauthorized();
         }
 
         [Route("deleteUser")]
         [HttpPost]
         public ActionResult<Boolean> DeleteUser(AdminRequest adminRequest)
         {
-            var canDelete = service.IsAdmin(adminRequest.AdminEmail);
-            return canDelete == true ? service.DeleteUser(adminRequest.UserEmail) : Unauthorized();
+            var canDelete = isAdmin();
+            return canDelete.Value == true ? service.DeleteUser(adminRequest.UserEmail) : Unauthorized();
         }
 
 

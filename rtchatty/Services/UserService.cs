@@ -37,7 +37,7 @@ namespace rtchatty.Services
         public bool IsAdmin(string email)
         {
             var user = GetUserByEmail(email);
-            return user.IsAdmin;
+            return user != null ? user.IsAdmin : false;
         }
 
         public List<User> GetUsers() =>
@@ -64,7 +64,6 @@ namespace rtchatty.Services
             if (email != "")
             {
                 var user = _users.FindOneAndDelete<User>(user => user.Email.ToLower().Contains(email.ToLower()));
-                // var user = _users.DeleteOne<User>(user => user.Email.ToLower().Contains(email.ToLower()));
                 if (user != null)
                 {
                     return true;
