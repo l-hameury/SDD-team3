@@ -10,7 +10,7 @@ const SearchKeyword = (props) => {
   
    
 
-    // if no input is entered, show all the messages, else show messages with keyword
+    // if no input is entered, don't show any messages, else show messages with keyword
      const searchMessage = searchText.length === 0 ?  [] : 
     messages.filter(msg => msg.message.toLowerCase().includes(searchText.toLowerCase())) 
 
