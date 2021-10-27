@@ -7,7 +7,7 @@ import { Button, Container, Input, InputGroup, InputGroupAddon, Navbar, NavbarTe
 const ChatInput = (props) => {
 	// default state for message field, get user from props
 	const [message, setMessage] = useState('');
-	const username = props.username[0];
+	const username = props.user[0];
 
 	const onSubmit = (e) => {
 		// Prevent refresh
