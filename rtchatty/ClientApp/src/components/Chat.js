@@ -11,9 +11,10 @@ const Chat = () => {
 	const [chat, setChat] = useState([]);
 	const [messagesEnd, setMessagesEnd] = useState();
 	const latestChat = useRef(null);
-	const user = useState(localStorage.getItem('username'));
 	const [chatNavOpen, setChatNav] = useState();
 	const toggleChatNav = () => setChatNav(!chatNavOpen);
+	const username = useState(localStorage.getItem('username'));
+	const avatar = localStorage.getItem('avatar');
 
 	latestChat.current = chat;
 
@@ -69,7 +70,7 @@ const Chat = () => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.user, message: element.message }
+					let messages = { user: element.message.user, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp }
 					const updatedChat = [...latestChat.current];
 					updatedChat.push(messages);
 					setChat(updatedChat);
@@ -79,6 +80,7 @@ const Chat = () => {
 
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
+			message.avatar = avatar;
 			const updatedChat = [...latestChat.current];
 			updatedChat.push(message);
 
@@ -151,7 +153,7 @@ const Chat = () => {
 						<hr />
 						<Container>
 							<ChatWindow chat={chat} />
-							<ChatInput user={user} sendMessage={sendMessage} />
+							<ChatInput user={username} sendMessage={sendMessage} />
 							<div className="pb-5 mb-5" ref={(el) => { setMessagesEnd(el); }} />
 						</Container>
 					</div >

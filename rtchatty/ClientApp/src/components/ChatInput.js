@@ -7,7 +7,7 @@ import { Button, Container, Input, InputGroup, InputGroupAddon, Navbar, NavbarTe
 const ChatInput = (props) => {
 	// default state for message field, get user from props
 	const [message, setMessage] = useState('');
-	const user = props.user[0];
+	const username = props.username[0];
 
 	const onSubmit = (e) => {
 		// Prevent refresh
@@ -20,7 +20,7 @@ const ChatInput = (props) => {
 		const isMessageProvided = message && message !== '';
 
 		if (isMessageProvided) {
-			props.sendMessage(user, message);
+			props.sendMessage(username, message);
 			// clear the input box
 			setMessage('');
 		}
