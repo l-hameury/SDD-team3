@@ -135,5 +135,41 @@ namespace rtchatty.Controllers
             }
             return Conflict(invalidItem);
         }
+
+        
+        [Route("sendFriendRequest")]
+        [HttpPost]
+        public ActionResult<User> SendFriendRequest(User user)
+        {
+            return service.sendFriendRequest(user);
+        }
+        
+        [Route("confirmFriendRequest")]
+        [HttpPost]
+        public ActionResult<User> ConfirmFriendRequest(User user)
+        {
+            return service.confirmFriendRequest(user);
+        }
+
+        [Route("deleteFriendRequest")]
+        [HttpPost]
+        public ActionResult<User> DeleteFriendRequest(User user)
+        {
+            return service.deleteFriendRequest(user);
+        }
+        
+        [Route("ignoreRequest")]
+        [HttpPost]
+        public ActionResult<User> IgnoreRequest(User user)
+        {
+            return service.ignoreRequest(user);
+        }
+
+        [Route("unfriend")]
+        [HttpPost]
+        public ActionResult<User> Unfriend(User user)
+        {
+            return service.unfriend(user);
+        }
     }
 }

@@ -197,5 +197,128 @@ namespace rtchatty.Services
             _users.UpdateOne(filter, update);
             return user;
         }
+
+        public User sendFriendRequest(User user)
+        {
+            string senderEmail = user.Email;
+            string recipientEmail = user.OutgoingFriendRequests[0];
+
+            var sender =  _users.Find<User>( user => user.Email.ToLower().Contains(senderEmail.ToLower())).FirstOrDefault();
+            var recipient =  _users.Find<User>( user => user.Email.ToLower().Contains(recipientEmail.ToLower())).FirstOrDefault();
+
+            //Add sender to receiver's list of incoming requests, if absent.
+            if( !sender.OutgoingFriendRequests.Contains(recipientEmail)){
+                sender.OutgoingFriendRequests.Add(recipientEmail.ToLower());
+            }
+            //Add recipient to sender's list of outgoing requests.
+            if(!recipient.IncomingFriendRequests.Contains(senderEmail)){
+                recipient.IncomingFriendRequests.Add(senderEmail.ToLower());
+            }
+
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(senderEmail.ToLower()), sender);
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(recipientEmail.ToLower()), recipient);
+
+            return user;
+        }
+
+        public User confirmFriendRequest(User user)
+        {
+            string currentEmail = user.Email;
+            string requestingEmail = user.IncomingFriendRequests[0];
+
+            var currentUser =  _users.Find<User>( user => user.Email.ToLower().Contains(currentEmail.ToLower())).FirstOrDefault();
+            var requestingUser =  _users.Find<User>( user => user.Email.ToLower().Contains(requestingEmail.ToLower())).FirstOrDefault();
+
+            //Add requestingUser to currentUser's friendlist and then
+            //Remove requestingUser from currentUser's incomingFriendList
+            if(currentUser.IncomingFriendRequests.Contains(requestingEmail)){
+                currentUser.FriendList.Add(requestingEmail);
+                currentUser.IncomingFriendRequests.Remove(requestingEmail);
+            }
+
+            //Add currentUser to requestingUser's friendlist and then
+            //remove currentUser from requestingUser's outgoinglist.
+            if(requestingUser.OutgoingFriendRequests.Contains(currentEmail)){
+                requestingUser.FriendList.Add(currentEmail);
+                requestingUser.OutgoingFriendRequests.Remove(currentEmail);
+            }
+
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(currentEmail.ToLower()), currentUser);
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(requestingEmail.ToLower()), requestingUser);
+
+            return currentUser;
+        }
+
+        public User deleteFriendRequest(User user)
+        {
+            string currentEmail = user.Email;
+            string requestingEmail = user.IncomingFriendRequests[0];
+
+            var currentUser =  _users.Find<User>( user => user.Email.ToLower().Contains(currentEmail.ToLower())).FirstOrDefault();
+            var requestingUser =  _users.Find<User>( user => user.Email.ToLower().Contains(requestingEmail.ToLower())).FirstOrDefault();
+            
+            //Remove requestingUser from currentUser's outgoingFriendList
+            if(currentUser.OutgoingFriendRequests.Contains(requestingEmail)){
+                currentUser.OutgoingFriendRequests.Remove(requestingEmail);
+            }
+            
+            //remove currentUser from requestingUser's incominglist.
+            if(requestingUser.IncomingFriendRequests.Contains(currentEmail)){
+                requestingUser.IncomingFriendRequests.Remove(currentEmail);
+            }
+
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(currentEmail.ToLower()), currentUser);
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(requestingEmail.ToLower()), requestingUser);
+
+            return currentUser;
+        }
+
+        public User ignoreRequest(User user){
+             string currentEmail = user.Email;
+            string requestingEmail = user.IncomingFriendRequests[0];
+
+            var currentUser =  _users.Find<User>( user => user.Email.ToLower().Contains(currentEmail.ToLower())).FirstOrDefault();
+            var requestingUser =  _users.Find<User>( user => user.Email.ToLower().Contains(requestingEmail.ToLower())).FirstOrDefault();
+
+            //Remove requestingUser from currentUser's incomingFriendList
+            if(currentUser.IncomingFriendRequests.Contains(requestingEmail)){
+                currentUser.IncomingFriendRequests.Remove(requestingEmail);
+            }
+
+            //remove currentUser from requestingUser's outgoinglist.
+            if(requestingUser.OutgoingFriendRequests.Contains(currentEmail)){
+                requestingUser.OutgoingFriendRequests.Remove(currentEmail);
+            }
+            
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(currentEmail.ToLower()), currentUser);
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(requestingEmail.ToLower()), requestingUser);
+
+            return currentUser;
+        }
+
+        public User unfriend(User user)
+        {
+            string currentEmail = user.Email;
+            string friendEmail = user.FriendList[0];
+
+            var currentUser =  _users.Find<User>( user => user.Email.ToLower().Contains(currentEmail.ToLower())).FirstOrDefault();
+            var friendUser =  _users.Find<User>( user => user.Email.ToLower().Contains(friendEmail.ToLower())).FirstOrDefault();
+
+            //Remove friendUser from currentUser's friendlist
+            if(currentUser.FriendList.Contains(friendEmail)){
+                currentUser.FriendList.Remove(friendEmail);
+            }
+
+            //remove currentUser from friendUser's friendlist
+            if(friendUser.FriendList.Contains(currentEmail)){
+                friendUser.FriendList.Remove(currentEmail);
+            }
+
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(currentEmail.ToLower()), currentUser);
+            _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(friendEmail.ToLower()), friendUser);
+
+            return currentUser;
+
+        }
     }
 }
