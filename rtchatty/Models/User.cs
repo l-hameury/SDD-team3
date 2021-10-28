@@ -31,5 +31,7 @@ namespace rtchatty.Models
         public bool Banned { get; set; }
         [BsonElement("IsAdmin")]
         public bool IsAdmin { get; set; }
+        [BsonElement("ConnectionID")]
+        public string ConnectionID { get; set; }
     }
 }

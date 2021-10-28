@@ -9,7 +9,6 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System;
 
-
 namespace rtchatty.Services
 {
     public class UserService
@@ -39,6 +38,8 @@ namespace rtchatty.Services
 
         public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
         public User GetUserByEmail(string email) => _users.Find<User>(user => user.Email == email).FirstOrDefault();
+
+        public User GetUserByConnectionID(string connectionId) => _users.Find<User>(user => user.ConnectionID == connectionId).FirstOrDefault();
         public User GetPublicUserInfo(string username) => _users.Find<User>(user => user.Username == username).FirstOrDefault();
 
         public List<User> searchUsers(string query)
@@ -133,9 +134,11 @@ namespace rtchatty.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.NameIdentifier, email)
                 }),
 
                 Expires = DateTime.UtcNow.AddHours(3),
+
 
                 SigningCredentials = new SigningCredentials
                 (
@@ -143,7 +146,8 @@ namespace rtchatty.Services
                     SecurityAlgorithms.HmacSha256Signature
                 )
             };
-
+            
+            
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
@@ -190,6 +194,20 @@ namespace rtchatty.Services
             // invoke update operation
             _users.UpdateOne(filter, update);
             return user;
+        }
+        public void setConnectionID(string username, string connectionId) {
+            // Thanks to Jonathan for doing the research on updating values. :)
+
+            // // prepare document filter by ID for update operation
+            var filter = Builders<User>.Filter.Eq(updateUser => updateUser.Username, username);
+            
+            // // grabbing current user username in mongodb
+            var usernameProjection = Builders<User>.Projection.Include("Username");
+            var mongoUsername = _users.Find<User>(filter).Project(usernameProjection).First()["Username"].ToString();
+
+            var update = Builders<User>.Update.Set(updateUser => updateUser.ConnectionID, connectionId);
+
+            _users.UpdateOne(filter, update);
         }
     }
 }

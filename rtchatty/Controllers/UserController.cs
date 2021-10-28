@@ -127,5 +127,16 @@ namespace rtchatty.Controllers
             }
             return Conflict(invalidItem);
         }
+
+        [AllowAnonymous]
+        [HttpPut("updateConnection")]
+        public ActionResult<User> UpdateConnection(User user)
+        {
+            var username = user.Username;
+            var connectionId = user.ConnectionID;
+            service.setConnectionID(username, connectionId);
+            return Ok();
+        }
+
     }
 }

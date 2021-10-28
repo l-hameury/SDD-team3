@@ -38,7 +38,12 @@ const Chat = () => {
 				await connection.start();
 				try {
 					console.log('connected')
+
+					console.log('ConnectionId is: ', connection.connectionId)
 					
+					// connection.invoke("Join");
+					updateConnectionID();
+
 					// Prepare Client methods for Hub
 					prepareClientHubMethods();
 
@@ -83,6 +88,8 @@ const Chat = () => {
 			updatedChat.push(message);
 
 			setChat(updatedChat);
+
+			scrollToBottom();
 		});
 
 
@@ -90,15 +97,16 @@ const Chat = () => {
 
 	/**
 	 * Call Hub endpoint to send a message
-	 * TODO: Add specific User & Group to the Hub server side
+	 * Add specific User & Group to the Hub server side
 	 * 		For chat rooms, DMs, etc.
 	 */
 	const sendMessage = async (user, message) => {
+		// TODO: Add recipient email for private messages
+		// Maybe nullable field in object? I dunno yet
 		const chatMessage = {
 			user: user,
 			message: message
 		};
-
 		if (connection.connectionStarted) {
 			try {
 				await axios.post('https://localhost:5001/Chat/messages', chatMessage);
@@ -138,6 +146,22 @@ const Chat = () => {
 	 */
 	const scrollToBottom = () => {
 		messagesEnd.scrollIntoView({ behavior: "smooth"});
+	}
+
+	/**
+	 * Provide connectionID and username to the user DB
+	 */
+	const updateConnectionID = async () => {
+		if(connection.connectionStarted){
+			let connectionId = connection.connectionId
+			let userName = user[0];
+			try {
+				await axios.put('https://localhost:5001/api/user/updateConnection', {userName, connectionId});
+			}
+			catch (e) {
+				console.log('Updating connection failed', e);
+			}
+		}
 	}
 
 	return (
