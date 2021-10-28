@@ -13,7 +13,6 @@ const UserCard = (props) => {
 			/>
 			<CardBody className="second">
 				<h3>{props.user.username}</h3>
-				<p>{props.user.statusShow ? 'The statusShow is functioning as true' : 'this is the false side or it is not working'}</p>
 				<p>{props.user.statusShow ? props.user.status : 'No Status'}</p>
 				<p>{props.user.bio ? props.user.bio : 'Hello, I am new'}</p>
 			</CardBody>
