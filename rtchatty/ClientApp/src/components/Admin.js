@@ -37,8 +37,8 @@ var searchStyle = {
 export default function AdminPage() {
   const [userData, setUserData] = useState([]);
   const [q, setQ] = useState("");
-  const [showBanSuccess, setBanSuccess] = useState(false);
-  const [banMessage, setBanMessage] = useState("");
+  const [showSuccess, setSuccess] = useState(false);
+  const [actionMessage, setActionMessage] = useState("");
   const [error, setError] = useState("");
   const [canAccess, setAccess] = useState(false);
 
@@ -62,14 +62,13 @@ export default function AdminPage() {
   const banUser = async (user) => {
     const email = localStorage.getItem("email").toString();
     axios
-      .post("https://localhost:5001/api/user/banUser", {
+      .post("https://localhost:5001/api/admin/banUser", {
         UserEmail: user.email,
-        AdminEmail: email,
       })
       .then(function (res) {
-        setBanSuccess(true);
+        setSuccess(true);
         user.banned = !user.banned;
-        setBanMessage(
+        setActionMessage(
           user.banned
             ? `${user.email} successfully banned`
             : `${user.email} successfully unbanned`
@@ -80,17 +79,35 @@ export default function AdminPage() {
       });
   };
 
+  const setAdminStatus = async (user) => {
+    axios
+      .post("https://localhost:5001/api/admin/setAdminStatus", {
+        UserEmail: user.email,
+      })
+      .then(function (res) {
+        setSuccess(true);
+        user.isAdmin = !user.isAdmin;
+        setActionMessage(
+          user.isAdmin
+            ? `${user.email} is now an admin`
+            : `${user.email} is no longer an admin`
+        );
+      })
+      .catch(function (error) {
+        setError(`Error setting admin status for ${user.email}`);
+      });
+  };
+
   const deleteUser = async (user) => {
     const email = localStorage.getItem("email").toString();
     axios
-      .post("https://localhost:5001/api/user/deleteUser", {
+      .post("https://localhost:5001/api/admin/deleteUser", {
         UserEmail: user.email,
-        AdminEmail: email,
       })
       .then(function (res) {
         userData.splice(userData.indexOf(user), 1);
-        setBanSuccess(true);
-        setBanMessage(`Successfully deleted ${user.email}`);
+        setSuccess(true);
+        setActionMessage(`Successfully deleted ${user.email}`);
       })
       .catch(function (error) {
         setError(`Error deleting ${user.email}`);
@@ -98,11 +115,8 @@ export default function AdminPage() {
   };
 
   const isAdmin = async () => {
-    const email = localStorage.getItem("email").toString();
     axios
-      .post("https://localhost:5001/api/user/isAdmin", {
-        email: email,
-      })
+      .get("https://localhost:5001/api/admin/isAdmin", {})
       .then(function (res) {
         setAccess(res.data);
       })
@@ -116,10 +130,10 @@ export default function AdminPage() {
       <div>
         <div
           className="alert alert-success"
-          hidden={!showBanSuccess}
+          hidden={!showSuccess}
           name="successAlert"
         >
-          Success! {banMessage}
+          Success! {actionMessage}
         </div>
 
         <div className="alert alert-danger" hidden={!error} name="Error">
@@ -150,19 +164,14 @@ export default function AdminPage() {
                   <CardText>This is a placeholder, {user.bio}</CardText>
                 </CardBody>
                 <CardFooter>
-                  <Button
-                    hidden={user.banned}
-                    className="btn-warning"
-                    onClick={() => banUser(user)}
-                  >
-                    Ban
+                  <Button className="btn-warning" onClick={() => banUser(user)}>
+                    {user.banned ? "Unban" : "Ban"}
                   </Button>
                   <Button
-                    hidden={!user.banned}
-                    className="btn-warning"
-                    onClick={() => banUser(user)}
+                    className="btn-primary"
+                    onClick={() => setAdminStatus(user)}
                   >
-                    Unban
+                    {user.isAdmin ? "Remove Admin" : "Make Admin"}
                   </Button>
                   <Button
                     className="btn-danger"

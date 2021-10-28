@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver.Core.Authentication;
 using rtchatty.Models;
 using rtchatty.Services;
+using System.Linq;
 
 
 namespace rtchatty.Controllers
@@ -43,36 +45,12 @@ namespace rtchatty.Controllers
             return Ok(new { user.Username, user.Status, user.Bio, user.Avatar, user.CanMessage });
         }
 
-        [Route("isAdmin")]
-        [HttpPost]
-        public ActionResult<Boolean> isAdmin(User user)
-        {
-            return service.IsAdmin(user.Email);
-        }
-
         [Route("searchUsers")]
         [HttpPost]
         public ActionResult<List<User>> searchUsers([FromBody] string query)
         {
             return service.searchUsers(query);
         }
-
-        [Route("banUser")]
-        [HttpPost]
-        public ActionResult<User> banUser(AdminRequest adminRequest)
-        {
-            var canBan = service.IsAdmin(adminRequest.AdminEmail);
-            return canBan == true ? service.BanUser(adminRequest.UserEmail) : Unauthorized();
-        }
-
-        [Route("deleteUser")]
-        [HttpPost]
-        public ActionResult<Boolean> DeleteUser(AdminRequest adminRequest)
-        {
-            var canDelete = service.IsAdmin(adminRequest.AdminEmail);
-            return canDelete == true ? service.DeleteUser(adminRequest.UserEmail) : Unauthorized();
-        }
-
 
         [AllowAnonymous]
         [Route("register")]
