@@ -42,7 +42,7 @@ namespace rtchatty.Controllers
         public ActionResult<User> GetPublicUserInfo(string username)
         {
             var user = service.GetPublicUserInfo(username);
-            return Ok(new { user.Username, user.Status, user.Bio, user.Avatar, user.CanMessage });
+            return Ok(new { user.Username, user.Status, user.Bio, user.Avatar, user.CanMessage, user.StatusShow });
         }
 
         [Route("searchUsers")]
@@ -114,14 +114,14 @@ namespace rtchatty.Controllers
             return Conflict(invalidItem);
         }
 
-        
+
         [Route("sendFriendRequest")]
         [HttpPost]
         public ActionResult<User> SendFriendRequest(User user)
         {
             return service.sendFriendRequest(user);
         }
-        
+
         [Route("confirmFriendRequest")]
         [HttpPost]
         public ActionResult<User> ConfirmFriendRequest(User user)
@@ -135,7 +135,7 @@ namespace rtchatty.Controllers
         {
             return service.deleteFriendRequest(user);
         }
-        
+
         [Route("ignoreRequest")]
         [HttpPost]
         public ActionResult<User> IgnoreRequest(User user)

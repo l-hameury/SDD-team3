@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import axios from 'axios';
-import { Button, Modal, ModalHeader, ModalBody, Row  } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
 import SearchKeyword from './SearchKeyword';
 import { Container } from 'reactstrap';
+import ChatNavMenu from './ChatNav';
 
 const Chat = () => {
 	const [connection, setConnection] = useState(null);
@@ -13,6 +14,8 @@ const Chat = () => {
 	const [messagesEnd, setMessagesEnd] = useState();
 	const [modal, setModal] = useState(false);
 	const latestChat = useRef(null);
+	const [chatNavOpen, setChatNav] = useState();
+	const toggleChatNav = () => setChatNav(!chatNavOpen);
 	const username = useState(localStorage.getItem('username'));
 	const avatar = localStorage.getItem('avatar');
 
@@ -41,15 +44,14 @@ const Chat = () => {
 				await connection.start();
 				try {
 					console.log('connected')
-					
+
 					// Prepare Client methods for Hub
 					prepareClientHubMethods();
 
 					// Populate with a list of messages
 					getAllMessages();
 				}
-				catch (e) 
-				{
+				catch (e) {
 					console.log('Connection failed: ', e)
 				};
 			}
@@ -63,15 +65,15 @@ const Chat = () => {
 	 * That the Hub (server-side) uses to communicate 
 	 * with the front-end
 	 */
-	function prepareClientHubMethods(){
-		
+	function prepareClientHubMethods() {
+
 		// Populate all message history on load (runs one time)
 		connection.on('PopulateMessages', messageList => {
 			// TODO: Probably do this server-side with connection ID
 			// Only pull all messages if there currently are no messages
-			if(latestChat.current.length === 0){
+			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = {user: element.message.user, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp}
+					let messages = { user: element.message.user, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp }
 					const updatedChat = [...latestChat.current];
 					updatedChat.push(messages);
 					setChat(updatedChat);
@@ -120,7 +122,7 @@ const Chat = () => {
 	 */
 	const getAllMessages = async () => {
 		console.log("Get message called here! \n");
-		if(connection.connectionStarted) {
+		if (connection.connectionStarted) {
 			try {
 				await axios.get('https://localhost:5001/Chat/getAll');
 			}
@@ -138,7 +140,7 @@ const Chat = () => {
 	 * Scroll to the bottom of the chat window
 	 */
 	const scrollToBottom = () => {
-		messagesEnd.scrollIntoView({ behavior: "smooth"});
+		messagesEnd.scrollIntoView({ behavior: "smooth" });
 	}
 
 	//sets the modal status to true(show)/false
@@ -146,25 +148,35 @@ const Chat = () => {
 
 	return (
 		<div>
-			<h1>General Chat</h1>
-			<Button onClick={toggle}>Search</Button>
-			<Modal isOpen={modal} toggle={toggle}>
-				<Row>
-					<ModalHeader>Search for Messages{'        '}
-						<Button color="danger" onClick={toggle}>Close</Button>
-					</ModalHeader>
-				</Row>
-				<ModalBody>
-					<SearchKeyword chat={chat}/>
-				</ModalBody>
-			</Modal>
-			<hr />
-			<Container>
-				<ChatWindow chat={chat} />
-				<ChatInput username={username} sendMessage={sendMessage} />
-				<div className="pb-5 mb-5" ref={(el) => { setMessagesEnd(el); }}/>
-			</Container>
-		</div>
+			<Row>
+				<Col xs="2">
+					<ChatNavMenu />
+				</Col>
+				<div className="vr" style={{ backgroundColor: "white", borderLeft: "1px solid #333" }}></div>
+				<Col>
+					<div>
+						<h1>General Chat</h1>
+						<Button onClick={toggle}>Search</Button>
+						<Modal isOpen={modal} toggle={toggle}>
+							<Row>
+								<ModalHeader>Search for Messages{'        '}
+									<Button color="danger" onClick={toggle}>Close</Button>
+								</ModalHeader>
+							</Row>
+							<ModalBody>
+								<SearchKeyword chat={chat} />
+							</ModalBody>
+						</Modal>
+						<hr />
+						<Container>
+							<ChatWindow chat={chat} />
+							<ChatInput username={username} sendMessage={sendMessage} />
+							<div className="pb-5 mb-5" ref={(el) => { setMessagesEnd(el); }} />
+						</Container>
+					</div >
+				</Col>
+			</Row>
+		</div >
 	);
 };
 
