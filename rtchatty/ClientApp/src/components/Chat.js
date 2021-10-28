@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import axios from 'axios';
-
+import { Button, Modal, ModalHeader, ModalBody, Row  } from 'reactstrap';
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
+import SearchKeyword from './SearchKeyword';
 import { Container } from 'reactstrap';
 
 const Chat = () => {
 	const [connection, setConnection] = useState(null);
 	const [chat, setChat] = useState([]);
 	const [messagesEnd, setMessagesEnd] = useState();
+	const [modal, setModal] = useState(false);
 	const latestChat = useRef(null);
 	const username = useState(localStorage.getItem('username'));
 	const avatar = localStorage.getItem('avatar');
@@ -139,9 +141,23 @@ const Chat = () => {
 		messagesEnd.scrollIntoView({ behavior: "smooth"});
 	}
 
+	//sets the modal status to true(show)/false
+	const toggle = () => setModal(!modal);
+
 	return (
 		<div>
 			<h1>General Chat</h1>
+			<Button onClick={toggle}>Search</Button>
+			<Modal isOpen={modal} toggle={toggle}>
+				<Row>
+					<ModalHeader>Search for Messages{'        '}
+						<Button color="danger" onClick={toggle}>Close</Button>
+					</ModalHeader>
+				</Row>
+				<ModalBody>
+					<SearchKeyword chat={chat}/>
+				</ModalBody>
+			</Modal>
 			<hr />
 			<Container>
 				<ChatWindow chat={chat} />

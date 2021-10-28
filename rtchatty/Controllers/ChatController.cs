@@ -47,6 +47,9 @@ namespace rtchatty.Controllers
             await chatHub.Clients.All.PopulateMessages(messageList);
         }
 
+
+       
+
         // TODO: Implement users and Groups for sending DMs
 		// Source for this sample: 
 		// https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/signalr/groups/sample/Hubs/ChatHub.cs
