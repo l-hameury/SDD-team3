@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import axios from 'axios';
-import { Button, Modal, ModalHeader, ModalBody, Row } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
 import SearchKeyword from './SearchKeyword';
