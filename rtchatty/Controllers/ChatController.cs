@@ -17,11 +17,11 @@ namespace rtchatty.Controllers
     {
 
         private readonly UserService _userService;
-        private readonly ChatService _service;
+        private readonly ChatService _chatService;
         private readonly IHubContext<ChatHub, IChatClient> _chatHub;
-        public ChatController(IHubContext<ChatHub, IChatClient> chatHub, ChatService service, UserService userService)
+        public ChatController(IHubContext<ChatHub, IChatClient> chatHub, ChatService chatService, UserService userService)
         {
-            _service = service;
+            _chatService = chatService;
             _chatHub = chatHub;
             _userService = userService;
         }
@@ -29,7 +29,7 @@ namespace rtchatty.Controllers
         [HttpPost("messages")]
         public async Task SendMessage(ChatMessage message, string email = "")
         {
-            _service.StoreMessage(message);
+            _chatService.StoreMessage(message);
 
             // TODO: Hardcoding test emails here.
             // Uncomment this line to send a private message to the user with this specific email.
@@ -54,7 +54,7 @@ namespace rtchatty.Controllers
         [HttpGet("getAll")]
         public async Task GetMessages()
         {
-            List<ChatMessage> messageList = _service.GetMessages();
+            List<object> messageList = _chatService.GetMessages();
 
             await _chatHub.Clients.All.PopulateMessages(messageList);
             // await _chatHub.GetMessages();

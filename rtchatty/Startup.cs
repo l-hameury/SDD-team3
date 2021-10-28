@@ -12,8 +12,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
 
 namespace rtchatty
 {
@@ -33,6 +31,7 @@ namespace rtchatty
             // DI Explanation from Microsoft: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-5.0
             services.AddScoped<UserService>();
             services.AddScoped<ChatService>();
+            services.AddScoped<AdminService>();
 
             services.AddSingleton<IChattyDatabaseSettings>(
                 db => db.GetRequiredService<IOptions<ChattyDatabaseSettings>>().Value);

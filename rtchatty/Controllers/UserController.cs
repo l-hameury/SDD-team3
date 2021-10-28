@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver.Core.Authentication;
 using rtchatty.Models;
 using rtchatty.Services;
-
 
 namespace rtchatty.Controllers
 {
@@ -40,9 +38,8 @@ namespace rtchatty.Controllers
         public ActionResult<User> GetPublicUserInfo(string username)
         {
             var user = service.GetPublicUserInfo(username);
-            return Ok(new {user.Username, user.Status, user.Bio, user.Avatar, user.CanMessage});
+            return Ok(new { user.Username, user.Status, user.Bio, user.Avatar, user.CanMessage, user.StatusShow });
         }
-
 
         [Route("searchUsers")]
         [HttpPost]
@@ -50,21 +47,6 @@ namespace rtchatty.Controllers
         {
             return service.searchUsers(query);
         }
-
-        [Route("banUser")]
-        [HttpPost]
-        public ActionResult<User> banUser(User user)
-        {
-            return service.BanUser(user.Email);
-        }
-
-        [Route("deleteUser")]
-        [HttpPost]
-        public ActionResult<Boolean> DeleteUser(User user)
-        {
-            return service.DeleteUser(user.Email);
-        }
-
 
         [AllowAnonymous]
         [Route("register")]
@@ -138,5 +120,40 @@ namespace rtchatty.Controllers
             return Ok();
         }
 
+
+        [Route("sendFriendRequest")]
+        [HttpPost]
+        public ActionResult<User> SendFriendRequest(User user)
+        {
+            return service.sendFriendRequest(user);
+        }
+
+        [Route("confirmFriendRequest")]
+        [HttpPost]
+        public ActionResult<User> ConfirmFriendRequest(User user)
+        {
+            return service.confirmFriendRequest(user);
+        }
+
+        [Route("deleteFriendRequest")]
+        [HttpPost]
+        public ActionResult<User> DeleteFriendRequest(User user)
+        {
+            return service.deleteFriendRequest(user);
+        }
+
+        [Route("ignoreRequest")]
+        [HttpPost]
+        public ActionResult<User> IgnoreRequest(User user)
+        {
+            return service.ignoreRequest(user);
+        }
+
+        [Route("unfriend")]
+        [HttpPost]
+        public ActionResult<User> Unfriend(User user)
+        {
+            return service.unfriend(user);
+        }
     }
 }
