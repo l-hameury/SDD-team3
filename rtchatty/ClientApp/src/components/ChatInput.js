@@ -9,7 +9,7 @@ import Emoticons  from '../Assets/Emoticons/Emoticons';
 const ChatInput = (props) => {
 	// default state for message field, get user from props
 	const [message, setMessage] = useState('');
-	const user = props.user[0];
+	const user = props.username[0];
 	const [showCommands, setShowCommands] = useState(false);
 
 	const onSubmit = async (e) => {
@@ -49,14 +49,23 @@ const ChatInput = (props) => {
 	}
 
 	const runCommand = async () => {
-		switch(message) {
+
+		let newMessage;
+		let command = message.substring(0, message.indexOf(' ')) !== '' ? message.substring(0, message.indexOf(' ')) : message;
+
+		switch(command) {
 			case "/happy":
-				return Emoticons[Math.floor(Math.random()*Emoticons.length)];;
+				newMessage = message.replace(command, Emoticons[Math.floor(Math.random()*Emoticons.length)]);
+				break;
 			case "/shrug":
-				return "¯\\\_(ツ)_/¯";
+				newMessage = message.replace(command, "¯\\\_(ツ)_/¯");
+				break;
 			case "/legion":
-				return "(-'(-'(' - ')-')-')";
+				newMessage = message.replace(command, "(-'(-'(' - ')-')-')");
+				break;
 		}
+		
+		return newMessage;
 	}
 
 	// The actual input form
