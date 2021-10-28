@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
@@ -46,5 +47,7 @@ namespace rtchatty.Services
 
 			return true;
 		}
+
+
 	}
 }
