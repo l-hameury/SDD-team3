@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import axios from 'axios';
-
+import { Button, Modal, ModalHeader, ModalBody, Row  } from 'reactstrap';
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
+import SearchKeyword from './SearchKeyword';
 import { Container } from 'reactstrap';
 
 const Chat = () => {
 	const [connection, setConnection] = useState(null);
 	const [chat, setChat] = useState([]);
 	const [messagesEnd, setMessagesEnd] = useState();
+	const [modal, setModal] = useState(false);
 	const latestChat = useRef(null);
-	const user = useState(localStorage.getItem('username'));
+	const username = useState(localStorage.getItem('username'));
+	const avatar = localStorage.getItem('avatar');
 
 	latestChat.current = chat;
 
@@ -68,7 +71,7 @@ const Chat = () => {
 			// Only pull all messages if there currently are no messages
 			if(latestChat.current.length === 0){
 				messageList.forEach(element => {
-					let messages = {user: element.user, message: element.message}
+					let messages = {user: element.message.user, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp}
 					const updatedChat = [...latestChat.current];
 					updatedChat.push(messages);
 					setChat(updatedChat);
@@ -78,6 +81,7 @@ const Chat = () => {
 
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
+			message.avatar = avatar;
 			const updatedChat = [...latestChat.current];
 			updatedChat.push(message);
 
@@ -137,13 +141,27 @@ const Chat = () => {
 		messagesEnd.scrollIntoView({ behavior: "smooth"});
 	}
 
+	//sets the modal status to true(show)/false
+	const toggle = () => setModal(!modal);
+
 	return (
 		<div>
 			<h1>General Chat</h1>
+			<Button onClick={toggle}>Search</Button>
+			<Modal isOpen={modal} toggle={toggle}>
+				<Row>
+					<ModalHeader>Search for Messages{'        '}
+						<Button color="danger" onClick={toggle}>Close</Button>
+					</ModalHeader>
+				</Row>
+				<ModalBody>
+					<SearchKeyword chat={chat}/>
+				</ModalBody>
+			</Modal>
 			<hr />
 			<Container>
 				<ChatWindow chat={chat} />
-				<ChatInput user={user} sendMessage={sendMessage} />
+				<ChatInput username={username} sendMessage={sendMessage} />
 				<div className="pb-5 mb-5" ref={(el) => { setMessagesEnd(el); }}/>
 			</Container>
 		</div>
