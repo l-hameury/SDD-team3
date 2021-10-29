@@ -39,11 +39,11 @@ namespace rtchatty.Services
             return user.IsAdmin;
         }
 
-        public List<User> GetUsers() =>
-            _users.Find(user => true).ToList();
+        public List<User> GetUsers() => _users.Find(user => true).ToList();
 
         public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
         public User GetUserByEmail(string email) => _users.Find<User>(user => user.Email == email).FirstOrDefault();
+        public User GetUserByUsername(string username) => _users.Find<User>(user => user.Username == username).FirstOrDefault();
 
         public User GetUserByConnectionID(string connectionId) => _users.Find<User>(user => user.ConnectionID == connectionId).FirstOrDefault();
         public User GetPublicUserInfo(string username) => _users.Find<User>(user => user.Username == username).FirstOrDefault();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -27,19 +28,21 @@ namespace rtchatty.Controllers
         }
 
         [HttpPost("messages")]
-        public async Task SendMessage(ChatMessage message, string email = "")
+        public async Task SendMessage(ChatMessage message, string username = "", string recipient = "")
         {
             _chatService.StoreMessage(message);
 
-            
+            Console.WriteLine("Recipient pre if is: ", message.recipient);
+
             // TODO: Uncomment this line to send a private message to the user with this specific email.
             // email = "kris@test.com";
 
             // if email was passed, get the corresponding User and connection ID. 
             // Then call Receive Message only on that connection.
-            if(email != "")
+            if(message.recipient != "")
             {
-                User user = _userService.GetUserByEmail(email);
+                Console.WriteLine("Recipient is: ", message.recipient);
+                User user = _userService.GetUserByUsername(message.recipient);
                 await _chatHub.Clients.Client(user.ConnectionID).ReceiveMessage(message);
             }
             else {

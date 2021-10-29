@@ -46,7 +46,5 @@ namespace rtchatty.Services
 
 			return true;
 		}
-
-
 	}
 }

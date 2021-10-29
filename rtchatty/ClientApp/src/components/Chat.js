@@ -107,12 +107,15 @@ const Chat = () => {
 	 * Add specific User & Group to the Hub server side
 	 * 		For chat rooms, DMs, etc.
 	 */
-	const sendMessage = async (user, message) => {
+	const sendMessage = async (user, message, recipient) => {
+		
 		// TODO: Add recipient email for private messages
 		// Maybe nullable field in object? I dunno yet
 		const chatMessage = {
 			user: user,
-			message: message
+			message: message,
+			// TODO: Remove this probably
+			recipient: recipient
 		};
 		if (connection.connectionStarted) {
 			try {
