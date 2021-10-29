@@ -72,7 +72,7 @@ export class NavMenu extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/user-nav">
-                    SideNav
+                    UserNav
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -81,7 +81,7 @@ export class NavMenu extends Component {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <LogOut/>
+                  <LogOut />
                 </NavItem>
               </ul>
             </Collapse>
