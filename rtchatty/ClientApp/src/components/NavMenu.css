@@ -16,3 +16,40 @@ html {
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+
+
+.chat{
+  position: relative;
+}
+
+.online{
+  width: 40px;
+  height: 30px;
+  background-color: green;
+  border-radius: 30%;
+  padding: 5px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 20px;
+  right: 180px;
+  color: white;
+}
+
+.offline{
+  width: 40px;
+  height: 30px;
+  background-color: grey;
+  border-radius: 30%;
+  padding: 5px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 20px;
+  right: 180px;
+  color: white;
+}

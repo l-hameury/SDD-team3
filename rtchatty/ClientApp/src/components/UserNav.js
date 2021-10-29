@@ -3,6 +3,7 @@ import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
+import Online from "./Online";
 
 
 var sideProfilePicStyle = {
@@ -59,6 +60,7 @@ export default function UserNav() {
         {userData.map((user) => {
           // if statement checking if user has chosen to be searchable
           if (user.canSearch)
+                  console.log(user.isOnline)
             return (
               <ListGroupItem style={listGroupStyle} key={user.id}>
                 <Media middle left>
@@ -67,6 +69,7 @@ export default function UserNav() {
                     src={user.avatar ? user.avatar : defaultProfilePic}
                     style={sideProfilePicStyle}
                   />
+                  <Online user = {user} ></Online>
                   <span>{user.email}</span>
                 </Media>
               </ListGroupItem>
