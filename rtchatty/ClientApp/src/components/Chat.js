@@ -17,6 +17,7 @@ const Chat = () => {
 	const [chatNavOpen, setChatNav] = useState();
 	const toggleChatNav = () => setChatNav(!chatNavOpen);
 	const username = useState(localStorage.getItem('username'));
+	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
 
 	latestChat.current = chat;
@@ -160,9 +161,10 @@ const Chat = () => {
 	const updateConnectionID = async () => {
 		if(connection.connectionStarted){
 			let connectionId = connection.connectionId
-			let userName = user[0];
+			let usernameFixed = username[0];
+			console.log(usernameFixed);
 			try {
-				await axios.put('https://localhost:5001/api/user/updateConnection', {userName, connectionId});
+				await axios.put('https://localhost:5001/api/user/updateConnection', {Username: usernameFixed, connectionId});
 			}
 			catch (e) {
 				console.log('Updating connection failed', e);
