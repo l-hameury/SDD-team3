@@ -41,13 +41,9 @@ namespace rtchatty.Controllers
 
         
         [HttpPost("notification")]
-        public int GetNotification()
+        public int GetNotification(User user)
         {
-            
-            Console.WriteLine(list.Count);
-            if(list!= null)
-                return list.Count;
-            return 0;
+            return chatService.countNotification(user);
         }
 
         // TODO: Add `group` property to allow sending to specific groups/chats

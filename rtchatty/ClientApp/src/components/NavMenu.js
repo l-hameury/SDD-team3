@@ -69,7 +69,7 @@ export class NavMenu extends Component {
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/chat">
                     <div className="chat">
-                      <Notification></Notification>
+                      <Notification user={localStorage}></Notification>
                       Chat
                     </div>
                   </NavLink>

@@ -46,5 +46,23 @@ namespace rtchatty.Services
 
 			return true;
 		}
+
+		public void readMessage(User user){
+			//Set isRead to true for the sender of the message
+
+			var messageFilter = Builders<ChatMessage>.Filter.Eq(message => message.User, user.Username);
+			var readMessage = Builders<ChatMessage>.Update.Set(message => message.IsRead, true);
+			_messages.UpdateOne(messageFilter, readMessage);
+		}
+
+		public int countNotification(User user){
+			readMessage(user);
+			var messageFilter = Builders<ChatMessage>.Filter.Eq(message => message.IsRead, false);
+			return (int) _messages.CountDocuments(messageFilter);
+		}
+
+		public void readAll(User user){
+			var readMessage = Builders<ChatMessage>.Update.Set(message => message.IsRead, true);
+		}
 	}
 }

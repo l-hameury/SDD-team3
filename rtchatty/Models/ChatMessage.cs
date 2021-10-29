@@ -15,5 +15,7 @@ namespace rtchatty.Models
 		[BsonElement("Message")]
 		public string Message { get; set; }
 		public DateTime Timestamp { get; set; }
+		[BsonElement("isRead")]
+		public bool IsRead {get; set;} = false;
 	}
 }
