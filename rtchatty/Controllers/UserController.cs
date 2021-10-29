@@ -120,15 +120,17 @@ namespace rtchatty.Controllers
             return Conflict(invalidItem);
         }
 
+        [AllowAnonymous]
         [Route("setOnline")]
         [HttpPost]
-        public ActionResult<User> setOnline(User user){
+        public ActionResult<User> SetOnline(User user){
             return service.setOnline(user.Email);
         }
         
+        [AllowAnonymous]
         [Route("setOffline")]
         [HttpPost]
-        public ActionResult<User> setOffline(User user){
+        public ActionResult<User> SetOffline(User user){
             return service.setOffline(user.Email);
         }
     }

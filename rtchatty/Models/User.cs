@@ -35,6 +35,6 @@ namespace rtchatty.Models
 		public bool FriendList { get; set; }
 
 		[BsonElement("isOnline")]
-		public bool isOnline { get; set; }
+		public bool isOnline { get; set; } = false;
     }
 }

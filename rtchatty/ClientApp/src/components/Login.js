@@ -78,6 +78,7 @@ const Login = ({setToken}) => {
         })
         .then(function (res) {
           returnData = res.data;
+          setOnline({user: localStorage.getItem("email")})
         })
         // TODO: Implement error handling
         .catch(function (error) {
@@ -95,7 +96,15 @@ const Login = ({setToken}) => {
         return returnData;
     }
 
-
+    
+        const setOnline = async () => {
+            await axios.post('https://localhost:5001/api/user/setOnline', {
+                email: inputs.email
+            })
+            .catch(function (error) {
+                console.log(`An error occured in set-online function of User navcomponent: ${error}`)
+            })
+        }
         const authData = await loginUser({
             email: inputs.email,
             password: inputs.password
