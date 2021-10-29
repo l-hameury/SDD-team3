@@ -15,20 +15,22 @@ namespace rtchatty.Controllers
     public class ChatController : ControllerBase
     {
 
-        private readonly ChatService service;
+        private readonly ChatService chatService;
+        private readonly UserService userService;
 
         private readonly IHubContext<ChatHub, IChatClient> chatHub;
 
-        public ChatController(IHubContext<ChatHub, IChatClient> _chatHub, ChatService _service)
+        public ChatController(IHubContext<ChatHub, IChatClient> _chatHub, ChatService _chatService, UserService _userService)
         {
-            service = _service;
+            chatService = _chatService;
+            userService = _userService;
             chatHub = _chatHub;
         }
 
         [HttpPost("messages")]
         public async Task SendMessage(ChatMessage message)
         {
-            service.StoreMessage(message);
+            chatService.StoreMessage(message);
 
             Console.WriteLine(message);
 
@@ -40,10 +42,13 @@ namespace rtchatty.Controllers
         [HttpGet("getAll")]
         public async Task GetMessages()
         {
-            List<ChatMessage> messageList = service.GetMessages();
+            List<object> messageList = chatService.GetMessages();
 
             await chatHub.Clients.All.PopulateMessages(messageList);
         }
+
+
+       
 
         // TODO: Implement users and Groups for sending DMs
 		// Source for this sample: 
