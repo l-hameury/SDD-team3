@@ -120,14 +120,13 @@ namespace rtchatty.Controllers
             return Conflict(invalidItem);
         }
 
-        [Route("setonline")]
+        [Route("setOnline")]
         [HttpPost]
         public ActionResult<User> setOnline(User user){
-            Console.WriteLine(user.Email);
             return service.setOnline(user.Email);
         }
         
-        [Route("setoffline")]
+        [Route("setOffline")]
         [HttpPost]
         public ActionResult<User> setOffline(User user){
             return service.setOffline(user.Email);

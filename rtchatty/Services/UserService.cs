@@ -195,25 +195,23 @@ namespace rtchatty.Services
         public User setOnline(string email){
             
             var user = _users.Find<User>(user => user.Email.ToLower().Contains(email.ToLower())).FirstOrDefault();
-            if (user != null)
+            if(!user.isOnline)
             {
                 user.isOnline= true;
                 _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(email.ToLower()), user);
-                return user;
             }
-            return null;
+            return user;
         }
         
         public User setOffline(string email){
             
             var user = _users.Find<User>(user => user.Email.ToLower().Contains(email.ToLower())).FirstOrDefault();
-            if (user != null)
+            if(user.isOnline)
             {
                 user.isOnline= false;
                 _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(email.ToLower()), user);
-                return user;
             }
-            return null;
+            return user;
         }
     }
 }
