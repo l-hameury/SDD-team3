@@ -191,5 +191,29 @@ namespace rtchatty.Services
             _users.UpdateOne(filter, update);
             return user;
         }
+
+        public User setOnline(string email){
+            
+            var user = _users.Find<User>(user => user.Email.ToLower().Contains(email.ToLower())).FirstOrDefault();
+            if (user != null)
+            {
+                user.isOnline= true;
+                _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(email.ToLower()), user);
+                return user;
+            }
+            return null;
+        }
+        
+        public User setOffline(string email){
+            
+            var user = _users.Find<User>(user => user.Email.ToLower().Contains(email.ToLower())).FirstOrDefault();
+            if (user != null)
+            {
+                user.isOnline= false;
+                _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(email.ToLower()), user);
+                return user;
+            }
+            return null;
+        }
     }
 }

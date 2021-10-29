@@ -4,6 +4,7 @@ import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
 import Online from "./Online";
+import axios from "axios";
 
 
 var sideProfilePicStyle = {
@@ -30,8 +31,18 @@ export default function UserNav() {
   const [userData, setUserData] = useState([]);
   const [q, setQ] = useState("");
 
+    
+  const setOnline = async (email) => {
+    await axios.post('https://localhost:5001/api/user/setonline', {
+        email: email
+    })
+    .catch(function (error) {
+        console.log(`An error occured in set-online function of User navcomponent: ${error}`)
+    })
+  }
   useEffect(() => {
     const token = localStorage.getItem("token").toString();
+    setOnline({user: localStorage.getItem("email")})
     // i wrapped the api request into a function
     // const search = async () => {
     fetch(`https://localhost:5001/api/User/searchUsers/`, {
