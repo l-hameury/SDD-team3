@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver.Core.Authentication;
 using rtchatty.Models;
 using rtchatty.Services;
-using System.Linq;
-
 
 namespace rtchatty.Controllers
 {
@@ -127,13 +123,21 @@ namespace rtchatty.Controllers
         public ActionResult<User> SetOffline(User user){
             return service.setOffline(user.Email);
         }
+        [HttpPut("updateConnection")]
+        public ActionResult<User> UpdateConnection(User user)
+        {
+            var username = user.Username;
+            var connectionId = user.ConnectionID;
+            service.setConnectionID(username, connectionId);
+            return Ok();
+        }
+
         [Route("sendFriendRequest")]
         [HttpPost]
         public ActionResult<User> SendFriendRequest(User user)
         {
             return service.sendFriendRequest(user);
         }
-
         [Route("confirmFriendRequest")]
         [HttpPost]
         public ActionResult<User> ConfirmFriendRequest(User user)
@@ -147,7 +151,6 @@ namespace rtchatty.Controllers
         {
             return service.deleteFriendRequest(user);
         }
-
         [Route("ignoreRequest")]
         [HttpPost]
         public ActionResult<User> IgnoreRequest(User user)

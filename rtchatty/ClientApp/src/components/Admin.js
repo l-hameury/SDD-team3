@@ -115,6 +115,7 @@ export default function AdminPage() {
   };
 
   const isAdmin = async () => {
+    const email = localStorage.getItem("email").toString();
     axios
       .get("https://localhost:5001/api/admin/isAdmin", {})
       .then(function (res) {

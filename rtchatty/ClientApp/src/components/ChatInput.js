@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHandPointRight, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
-import { Button, Container, Input, InputGroup, InputGroupAddon, Navbar, NavbarText } from 'reactstrap';
+import { faBlackboard, faCny, faHandHoldingHeart, faHandPointRight, faHotTubPerson, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { Button, Collapse, Container, Input, InputGroup, InputGroupAddon, Navbar, NavbarText, } from 'reactstrap';
+import ChatCmdTable from './ChatCmdTable';
+import Emoticons  from '../Assets/Emoticons/Emoticons';
 // File to render our User and message inputs at the top of the screen
 
 const ChatInput = (props) => {
 	// default state for message field, get user from props
 	const [message, setMessage] = useState('');
 	const username = props.username[0];
+	const [recipient, setRecipient] = useState('');
+	const [showCommands, setShowCommands] = useState(false);
 
-	const onSubmit = (e) => {
+	const onSubmit = async (e) => {
 		// Prevent refresh
 		e.preventDefault();
 
@@ -18,25 +22,73 @@ const ChatInput = (props) => {
 
 		// Determine that the message field is not empty
 		const isMessageProvided = message && message !== '';
+		let msgToSend = message; //Doing this since setState(message) doesn't update before the render
+
+		// Check if the user sent a command
+		if (message.charAt(0) === "/") {
+			msgToSend = await runCommand();
+		}
 
 		if (isMessageProvided) {
-			props.sendMessage(username, message);
+			props.sendMessage(username, message, recipient);
 			// clear the input box
 			setMessage('');
+			setShowCommands(false);
 		}
 	}
 
+	const onRecipientUpdate = (e) => {
+		setRecipient(e.target.value);
+	}
+
 	// Update the Message variable value based on the input field
-	const onMessageUpdate = (e) => {
+	const onMessageUpdate = async (e) => {
 		setMessage(e.target.value);
+		
+		// While the first character is a "/" pull up the command list
+		if (e.target.value.charAt(0) === "/") {
+			setShowCommands(true);
+		} else {
+			setShowCommands(false);
+		}
+	}
+
+	const runCommand = async () => {
+
+		let newMessage;
+		let command = message.substring(0, message.indexOf(' ')) !== '' ? message.substring(0, message.indexOf(' ')) : message;
+
+		switch(command) {
+			case "/happy":
+				newMessage = message.replace(command, Emoticons[Math.floor(Math.random()*Emoticons.length)]);
+				break;
+			case "/shrug":
+				newMessage = message.replace(command, "¯\\\_(ツ)_/¯");
+				break;
+			case "/legion":
+				newMessage = message.replace(command, "(-'(-'(' - ')-')-')");
+				break;
+		}
+		
+		return newMessage;
 	}
 
 	// The actual input form
 	return (
 		<form onSubmit={onSubmit} autoComplete="off">
 			<Navbar color="dark" dark fixed="bottom">
+				<Collapse navbar isOpen={showCommands}>
+					<ChatCmdTable/>
+				</Collapse>
 				<NavbarText className="flex-fill">
 					<Container className="rounded bg-secondary pe-0">
+						<InputGroup>
+							<InputGroupAddon addonType="prepend">
+								<FontAwesomeIcon icon={faHandHoldingHeart} transform="grow-5 left-10 down-8" className="ps-2" />
+							</InputGroupAddon>
+							<Input type="text" id="direct-message" name="direct-message" value={recipient} onChange={onRecipientUpdate} className="chatMessageBos bg-secondary border-0 text-light" />
+						</InputGroup>
+						<hr/>
 						<InputGroup>
 							<InputGroupAddon addonType="prepend">
 								<FontAwesomeIcon icon={faHandPointRight} transform="grow-5 left-10 down-8" className="ps-2" />

@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using rtchatty.Models;
@@ -47,7 +46,5 @@ namespace rtchatty.Services
 
 			return true;
 		}
-
-
 	}
 }

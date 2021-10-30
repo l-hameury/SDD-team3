@@ -16,6 +16,9 @@ code {
 .registerContainer{
   max-width: 750px;
   border-radius: 1em;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
 }
 
 /* nothing to see here this is not custom CSS I swear */
