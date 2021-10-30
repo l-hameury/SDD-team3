@@ -17,6 +17,7 @@ const Chat = () => {
 	const [chatNavOpen, setChatNav] = useState();
 	const toggleChatNav = () => setChatNav(!chatNavOpen);
 	const username = useState(localStorage.getItem('username'));
+	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
 
 	latestChat.current = chat;
@@ -44,6 +45,11 @@ const Chat = () => {
 				await connection.start();
 				try {
 					console.log('connected')
+
+					console.log('ConnectionId is: ', connection.connectionId)
+					
+					// connection.invoke("Join");
+					updateConnectionID();
 
 					// Prepare Client methods for Hub
 					prepareClientHubMethods();
@@ -73,7 +79,7 @@ const Chat = () => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.message.user, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp }
+					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp }
 					const updatedChat = [...latestChat.current];
 					updatedChat.push(messages);
 					setChat(updatedChat);
@@ -83,25 +89,34 @@ const Chat = () => {
 
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
+			
 			message.avatar = avatar;
 			const updatedChat = [...latestChat.current];
 			updatedChat.push(message);
 
 			setChat(updatedChat);
+
+			scrollToBottom();
 		});
+
+
 	}
 
 	/**
 	 * Call Hub endpoint to send a message
-	 * TODO: Add specific User & Group to the Hub server side
+	 * Add specific User & Group to the Hub server side
 	 * 		For chat rooms, DMs, etc.
 	 */
-	const sendMessage = async (user, message) => {
+	const sendMessage = async (user, message, recipient) => {
+		
+		// TODO: Add recipient email for private messages
+		// Maybe nullable field in object? I dunno yet
 		const chatMessage = {
 			user: user,
-			message: message
+			message: message,
+			// TODO: Remove this probably
+			recipient: recipient
 		};
-
 		if (connection.connectionStarted) {
 			try {
 				await axios.post('https://localhost:5001/Chat/messages', chatMessage);
@@ -143,6 +158,22 @@ const Chat = () => {
 		messagesEnd.scrollIntoView({ behavior: "smooth" });
 	}
 
+	/**
+	 * Provide connectionID and username to the user DB
+	 */
+	const updateConnectionID = async () => {
+		if(connection.connectionStarted){
+			let connectionId = connection.connectionId
+			let usernameFixed = username[0];
+			console.log(usernameFixed);
+			try {
+				await axios.put('https://localhost:5001/api/user/updateConnection', {Username: usernameFixed, connectionId});
+			}
+			catch (e) {
+				console.log('Updating connection failed', e);
+			}
+		}
+	}
 	//sets the modal status to true(show)/false
 	const toggle = () => setModal(!modal);
 

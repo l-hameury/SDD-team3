@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHandPointRight, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faBlackboard, faCny, faHandHoldingHeart, faHandPointRight, faHotTubPerson, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { Button, Collapse, Container, Input, InputGroup, InputGroupAddon, Navbar, NavbarText, } from 'reactstrap';
 import ChatCmdTable from './ChatCmdTable';
 import Emoticons  from '../Assets/Emoticons/Emoticons';
@@ -9,7 +9,8 @@ import Emoticons  from '../Assets/Emoticons/Emoticons';
 const ChatInput = (props) => {
 	// default state for message field, get user from props
 	const [message, setMessage] = useState('');
-	const user = props.username[0];
+	const username = props.username[0];
+	const [recipient, setRecipient] = useState('');
 	const [showCommands, setShowCommands] = useState(false);
 
 	const onSubmit = async (e) => {
@@ -29,11 +30,15 @@ const ChatInput = (props) => {
 		}
 
 		if (isMessageProvided) {
-			props.sendMessage(user, msgToSend);
+			props.sendMessage(username, message, recipient);
 			// clear the input box
 			setMessage('');
 			setShowCommands(false);
 		}
+	}
+
+	const onRecipientUpdate = (e) => {
+		setRecipient(e.target.value);
 	}
 
 	// Update the Message variable value based on the input field
@@ -77,6 +82,13 @@ const ChatInput = (props) => {
 				</Collapse>
 				<NavbarText className="flex-fill">
 					<Container className="rounded bg-secondary pe-0">
+						<InputGroup>
+							<InputGroupAddon addonType="prepend">
+								<FontAwesomeIcon icon={faHandHoldingHeart} transform="grow-5 left-10 down-8" className="ps-2" />
+							</InputGroupAddon>
+							<Input type="text" id="direct-message" name="direct-message" value={recipient} onChange={onRecipientUpdate} className="chatMessageBos bg-secondary border-0 text-light" />
+						</InputGroup>
+						<hr/>
 						<InputGroup>
 							<InputGroupAddon addonType="prepend">
 								<FontAwesomeIcon icon={faHandPointRight} transform="grow-5 left-10 down-8" className="ps-2" />

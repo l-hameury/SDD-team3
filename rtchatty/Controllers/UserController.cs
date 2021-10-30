@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver.Core.Authentication;
 using rtchatty.Models;
 using rtchatty.Services;
-using System.Linq;
-
 
 namespace rtchatty.Controllers
 {
@@ -112,6 +108,16 @@ namespace rtchatty.Controllers
                 return Ok(user);
             }
             return Conflict(invalidItem);
+        }
+
+        [AllowAnonymous]
+        [HttpPut("updateConnection")]
+        public ActionResult<User> UpdateConnection(User user)
+        {
+            var username = user.Username;
+            var connectionId = user.ConnectionID;
+            service.setConnectionID(username, connectionId);
+            return Ok();
         }
 
         [Route("sendFriendRequest")]
