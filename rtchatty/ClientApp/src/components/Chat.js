@@ -79,7 +79,7 @@ const Chat = () => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.message.user, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp }
+					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp }
 					const updatedChat = [...latestChat.current];
 					updatedChat.push(messages);
 					setChat(updatedChat);

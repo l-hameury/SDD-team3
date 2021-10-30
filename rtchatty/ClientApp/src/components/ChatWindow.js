@@ -9,6 +9,7 @@ const ChatWindow = (props) => {
 			timestamp={m.timestamp}
 			avatar={m.avatar}
 			user={m.user}
+			recipient={m.recipient}
 			message={m.message} />);
 
 	return (

@@ -40,7 +40,12 @@ const Message = (props) => {
 							<img width="40em" src={props.user.avatar ? props.user.avatar : defaultProfilePic} alt="profile pic" ></img>
 						</Col>
 						<Col>
-							<CardTitle><small>{moment(props.timestamp).format('LT')}</small><strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.user}</strong>:</CardTitle>
+							<CardTitle>
+								<small>{moment(props.timestamp).format('LT')}</small>
+								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>
+									{props.user} to {props.recipient ? props.recipient : "general chat"}
+								</strong>:
+							</CardTitle>
 							<Modal style={{ width: "350px" }} isOpen={userCardModal} toggle={() => setUserCardModal(!userCardModal)}>
 								<ModalBody><UserCard user={user} /></ModalBody>
 							</Modal>
