@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Col, Form, Input, Label, Row } from "reactstrap";
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
 
 
