@@ -12,6 +12,12 @@ const Message = (props) => {
 	const [usernameUnderline, setUsernameUnderline] = useState(false)
 
 	const toggleCard = async (event) => {
+
+		// In case the recipient is null
+		if(!props.recipient) {
+			return;
+		}
+
 		event.persist()
 		setUserCardModal(!userCardModal)
 		if (userCardModal === false) {
@@ -41,10 +47,10 @@ const Message = (props) => {
 						</Col>
 						<Col>
 							<CardTitle>
-								<small>{moment(props.timestamp).format('LT')}</small>
-								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>
-									{props.user} to {props.recipient ? props.recipient : "general chat"}
-								</strong>:
+								<small>{moment(props.timestamp).format('LT')} </small>
+								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.user}</strong>
+								<p style={{display:"inline"}}> to </p>
+								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.recipient ? props.recipient : "General Chat"}</strong>:
 							</CardTitle>
 							<Modal style={{ width: "350px" }} isOpen={userCardModal} toggle={() => setUserCardModal(!userCardModal)}>
 								<ModalBody><UserCard user={user} /></ModalBody>
