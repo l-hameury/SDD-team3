@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Col, Form, Input, Label, Row } from "reactstrap";
-import { useHistory } from 'react-router';
+import { Button, CardImg, Col, Form, Input, Label, Row } from "reactstrap";
+import defaultProfilePic from "./images/logo.png";
+import { useHistory } from 'react-router-dom';
 
 
 
-const Login = ({setToken}) => {
+const Login = ({ setToken }) => {
 
-	const[inputs, setInputs] = useState({
+    const [inputs, setInputs] = useState({
         email: "",
         password: "",
     });
@@ -24,22 +25,22 @@ const Login = ({setToken}) => {
     //var for useHistory object
     const history = useHistory();
 
-    const handleInput = (e) =>{
+    const handleInput = (e) => {
         const field = e.target.name;
         const value = e.target.value;
 
         validateField(field, value)
     }
 
-    const validateField = (field, value) =>{
-        switch(field){
+    const validateField = (field, value) => {
+        switch (field) {
             case 'email':
                 if (value.trim() === "" || value.length === 0) {
                     errors.email = "Email is required";
                 } else {
                     errors.email = "";
                 }
-            break;
+                break;
             case 'password':
                 // Password meets security requirements
                 if (!value.match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")) {
@@ -47,22 +48,22 @@ const Login = ({setToken}) => {
                 } else {
                     errors.password = "";
                 }
-            break;
+                break;
         }
         // Update the corresponding field in the state
-         setInputs({ ...inputs, [field]: value });
+        setInputs({ ...inputs, [field]: value });
     }
 
-    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-         // Make sure no fields are currently invalid
+        // Make sure no fields are currently invalid
         for (const [key, value] of Object.entries(inputs)) {
             validateField(key, value);
         }
 
-        errors.fieldErrors = (errors.email || errors.password );
+        errors.fieldErrors = (errors.email || errors.password);
 
         if (errors.fieldErrors) {
             return;
@@ -77,7 +78,7 @@ const Login = ({setToken}) => {
         });
         localStorage.setItem("email", inputs.email);
         // if authData is null then show the error
-        if(!authData){ 
+        if (!authData) {
             setShowAuthError(true)
             return;
         }
@@ -90,15 +91,15 @@ const Login = ({setToken}) => {
         localStorage.setItem("avatar", userInfo.avatar);
     }
 
-        //axios call to login user
-        async function loginUser(credentials){
-            // Hold returnData for... returning. :)
-            let returnData;
-        
-            await axios.post('https://localhost:5001/api/user/authenticate', {
-                email: credentials.email,
-                password: credentials.password
-            })
+    //axios call to login user
+    async function loginUser(credentials) {
+        // Hold returnData for... returning. :)
+        let returnData;
+
+        await axios.post('https://localhost:5001/api/user/authenticate', {
+            email: credentials.email,
+            password: credentials.password
+        })
             .then(function (res) {
                 returnData = res.data;
             })
@@ -106,7 +107,7 @@ const Login = ({setToken}) => {
             .catch(function (error) {
                 console.log(error);
                 // if there is a 401 response, log it
-                if (error.response.status ==='401') {
+                if (error.response.status === '401') {
                     console.log(error.response.data);
                     console.log(error.response.status);
                     // returns null to authData
@@ -114,45 +115,54 @@ const Login = ({setToken}) => {
                 }
                 return error
             })
-        
-            return returnData;
-        }
+
+        return returnData;
+    }
 
     const getUserInfo = async (email) => {
 
         let returnUserInfo;
-    
+
         await axios.get('https://localhost:5001/api/user/getUserByEmail/', {
             params: {
                 email: email
             }
         })
-        .then(function (res) {
-            console.log(res.data.username);
-            returnUserInfo = res.data;
-        })
-        .catch(function (error) {
-            console.log(error);
-            return error;
-        })
-    
+            .then(function (res) {
+                console.log(res.data.username);
+                returnUserInfo = res.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+                return error;
+            })
+
         return returnUserInfo;
     }
 
     // redirects to register page
-    const registerPage = () =>{
+    const registerPage = () => {
         history.push("/register");
-}
+    }
 
     const errorClass = (error) => {
         return (error.length === 0 ? '' : 'is-invalid');
     }
 
-    return(
+    return (
         <div>
-             <h1 className="mb-3">Please Log In</h1>
-             <div className="container registerContainer border border-dark rounded">
-             <div className="alert alert-danger" hidden={!showAuthError} name="authAlert">401 Error: Not Authorized. Wrong Email or Password</div>
+            <Row xs="auto">
+                <CardImg
+                    className="mx-auto d-block"
+                    src={defaultProfilePic}
+                    style={{
+                        width: "15em"
+                    }}
+                />
+            </Row>
+
+            <div className="container registerContainer border border-dark rounded">
+                <div className="alert alert-danger" hidden={!showAuthError} name="authAlert">401 Error: Not Authorized. Wrong Email or Password</div>
                 <Form className="p-3 needs-validation" onSubmit={handleSubmit} noValidate>
                     <Row>
                         <Col>
@@ -174,13 +184,13 @@ const Login = ({setToken}) => {
                         </Col>
                     </Row>
                     <br></br>
-                        <Button color="primary" type="submit" value="Submit">Login</Button>{' '}
-                        <Button color="primary" type="submit" onClick={registerPage}>Register</Button>{' '}
+                    <Button color="primary" type="submit" value="Submit">Login</Button>{' '}
+                    <Button color="primary" type="submit" onClick={registerPage}>Register</Button>{' '}
                 </Form>
             </div>
 
         </div>
     )
-	
+
 }
 export default Login;

@@ -2,6 +2,19 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import ListGroup from "reactstrap/lib/ListGroup";
 import UserTile from "./UserTile";
+import { Link } from 'react-router-dom';
+import {
+  Card,
+  Col,
+  Row,
+  CardTitle,
+  CardBody,
+  CardImg,
+  CardText,
+  Container,
+  CardFooter,
+  Button,
+} from "reactstrap";
 
 var searchStyle = {
   width: "100%",
@@ -36,6 +49,13 @@ export default function UserNav() {
 
   return (
     <div className="min-w-25 min-vh-100 bg black float-start">
+      <Container>
+        <div className="block-example border border-success">
+          <CardBody>
+            <Link to="/profile">Leticia</Link>
+          </CardBody>
+        </div>
+      </Container>
       <input
         style={searchStyle}
         type="text"
@@ -47,7 +67,7 @@ export default function UserNav() {
           // if statement checking if user has chosen to be searchable
           if (user.canSearch)
             return (
-              <UserTile user={user} key = {user.id}></UserTile>
+              <UserTile user={user} key={user.id}></UserTile>
             );
         })}
       </ListGroup>
