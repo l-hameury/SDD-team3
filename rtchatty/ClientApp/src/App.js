@@ -3,7 +3,6 @@ import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
 import { FetchData } from "./components/FetchData";
 import { Counter } from "./components/Counter";
-import  Conversation  from "./components/Conversation";
 // Export default means that you don't need to use braces around the class name
 // Source: https://stackoverflow.com/questions/47619405/why-does-my-react-component-export-not-work
 import Chat from "./components/Chat";
