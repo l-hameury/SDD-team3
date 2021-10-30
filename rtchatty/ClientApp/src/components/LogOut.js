@@ -25,5 +25,7 @@ function LogOut() {
         );
     }
 
+    else return null;
+
 }
 export default LogOut;
