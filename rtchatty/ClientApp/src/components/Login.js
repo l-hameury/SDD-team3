@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, CardImg, Col, Form, Input, Label, Row } from "reactstrap";
-import { useHistory } from 'react-router';
 import defaultProfilePic from "./images/logo.png";
+import { useHistory } from 'react-router-dom';
 
 
 
