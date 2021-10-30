@@ -63,7 +63,7 @@ export default function UserNav() {
         value={q}
         onChange={(e) => setQ(e.target.value)}
       />
-      <ListGroup>
+      <ListGroup p>
         {userData.map((user) => {
           // if statement checking if user has chosen to be searchable
           if (user.canSearch)
