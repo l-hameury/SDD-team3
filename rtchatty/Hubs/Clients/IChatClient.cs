@@ -7,6 +7,6 @@ namespace rtchatty.Hubs.Clients
 	public interface IChatClient
 	{
 		Task ReceiveMessage(ChatMessage message);
-		Task PopulateMessages(List<ChatMessage> messageList);
+		Task PopulateMessages(List<object> messageList);
 	}
 }

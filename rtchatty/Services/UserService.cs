@@ -34,6 +34,12 @@ namespace rtchatty.Services
 
         }
 
+        public bool IsAdmin(string email)
+        {
+            var user = GetUserByEmail(email);
+            return user.IsAdmin;
+        }
+
         public List<User> GetUsers() =>
             _users.Find(user => true).ToList();
 
@@ -52,38 +58,6 @@ namespace rtchatty.Services
                 return GetUsers();
             }
         }
-
-        public bool DeleteUser(string email)
-        {
-            if (email != "")
-            {
-                var user = _users.FindOneAndDelete<User>(user => user.Email.ToLower().Contains(email.ToLower()));
-                // var user = _users.DeleteOne<User>(user => user.Email.ToLower().Contains(email.ToLower()));
-                if (user != null)
-                {
-                    return true;
-                }
-            }
-            return false;
-
-        }
-
-        public User BanUser(string email)
-        {
-            if (email != "")
-            {
-                var user = _users.Find<User>(user => user.Email.ToLower().Contains(email.ToLower())).FirstOrDefault();
-                if (user != null)
-                {
-                    user.Banned = !user.Banned;
-                    _users.ReplaceOne<User>(user => user.Email.ToLower().Contains(email.ToLower()), user);
-                    return user;
-                }
-            }
-            return null;
-
-        }
-
 
         // Register new user
         public User CreateUser(User user)

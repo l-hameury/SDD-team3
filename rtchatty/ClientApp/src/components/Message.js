@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { useState } from 'react';
 import { Card, CardText, CardTitle, Col, Container, Row, Modal, ModalBody } from 'reactstrap';
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
@@ -13,35 +14,35 @@ const Message = (props) => {
 	const toggleCard = async (event) => {
 		event.persist()
 		setUserCardModal(!userCardModal)
-		if(userCardModal === false){
+		if (userCardModal === false) {
 			await axios.get('https://localhost:5001/api/User/getUserInfo', {
 				params: {
 					username: event.target.innerText
 				}
 			})
-			.then(function (res){
-				setUser(res.data)
-			})
-			.catch(function (){
-				setUserCardModal(false)
-			})
+				.then(function (res) {
+					setUser(res.data)
+				})
+				.catch(function () {
+					setUserCardModal(false)
+				})
 		}
 	}
 
 	const toggleUnderline = () => setUsernameUnderline(!usernameUnderline)
 
-	return(
+	return (
 		<div /* style={{ background: "#eee", borderRadius: '5px', padding: '0 10px' }} */>
 			<Card body>
 				<Container>
 					<Row noGutters>
 						<Col xs="auto">
-							<img width="40em" src={props.user.profilePic ? props.user.profilePic : defaultProfilePic} alt="profile pic"></img>
+							<img width="40em" src={props.user.avatar ? props.user.avatar : defaultProfilePic} alt="profile pic" ></img>
 						</Col>
 						<Col>
-							<CardTitle><small>{props.date}</small><strong className={usernameUnderline ? 'username': ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.user}</strong>:</CardTitle>
+							<CardTitle><small>{moment(props.timestamp).format('LT')}</small><strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.user}</strong>:</CardTitle>
 							<Modal style={{ width: "350px" }} isOpen={userCardModal} toggle={() => setUserCardModal(!userCardModal)}>
-								<ModalBody><UserCard user={user}/></ModalBody>
+								<ModalBody><UserCard user={user} /></ModalBody>
 							</Modal>
 							<CardText>{props.message}</CardText>
 						</Col>
