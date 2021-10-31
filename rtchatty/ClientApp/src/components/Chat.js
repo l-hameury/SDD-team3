@@ -199,7 +199,7 @@ const Chat = () => {
 							</ModalBody>
 						</Modal>
 						<hr />
-						<Container>
+						<Container className="pb-1 mb-5">
 							<ChatWindow chat={chat} />
 							<ChatInput username={username} sendMessage={sendMessage} />
 							<div className="pb-5 mb-5" ref={(el) => { setMessagesEnd(el); }} />

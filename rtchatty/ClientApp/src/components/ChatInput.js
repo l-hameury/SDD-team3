@@ -30,7 +30,7 @@ const ChatInput = (props) => {
 		}
 
 		if (isMessageProvided) {
-			props.sendMessage(username, message, recipient);
+			props.sendMessage(username, msgToSend, recipient);
 			// clear the input box
 			setMessage('');
 			setShowCommands(false);
