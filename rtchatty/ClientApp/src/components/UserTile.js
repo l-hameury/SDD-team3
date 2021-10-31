@@ -3,6 +3,7 @@ import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import Media from "reactstrap/lib/Media";
 import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
 import RequestButton from "./RequestButton";
+import Online from "./Online";
 
 var sideProfilePicStyle = {
     width: "64px",
@@ -20,8 +21,8 @@ const UserTile = (props) => {
     var user = props.user
 
   return (
-    <ListGroupItem style={listGroupStyle} key={user.id}>
-    <Media hidden={user.email === localStorage.email} middle left>
+    <ListGroupItem  hidden={user.email === localStorage.email} style={listGroupStyle} key={user.id}>
+    <Media middle left>
         <Media
         className="m-1"
         src={user.avatar ? user.avatar : defaultProfilePic}
@@ -31,6 +32,7 @@ const UserTile = (props) => {
         <RequestButton user = {user}></RequestButton>
 
     </Media>
+    <Online user={user}></Online>
     </ListGroupItem>
   );
 

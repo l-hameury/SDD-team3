@@ -29,6 +29,7 @@ export default function UserNav() {
   const [userData, setUserData] = useState([]);
   const [q, setQ] = useState("");
 
+
   useEffect(() => {
     const token = localStorage.getItem("token").toString();
     // i wrapped the api request into a function
@@ -62,10 +63,11 @@ export default function UserNav() {
         value={q}
         onChange={(e) => setQ(e.target.value)}
       />
-      <ListGroup>
+      <ListGroup p>
         {userData.map((user) => {
           // if statement checking if user has chosen to be searchable
           if (user.canSearch)
+                  console.log(user.isOnline)
             return (
               <UserTile user={user} key={user.id}></UserTile>
             );
