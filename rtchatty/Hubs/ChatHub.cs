@@ -1,13 +1,9 @@
 
-using System.Net.WebSockets;
-using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
-using rtchatty.Hubs.Clients;
-using rtchatty.Models;
-using rtchatty.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using rtchatty.Hubs.Clients;
+using rtchatty.Services;
 
 namespace rtchatty.Hubs
 {
@@ -15,25 +11,27 @@ namespace rtchatty.Hubs
 	// To allow for HTTP requests and to provide an API endpoint
 	public class ChatHub : Hub<IChatClient>
 	{
-		public ChatHub(ChatService _service)
-        { }
+		private readonly UserService _userService;
+		private readonly ChatService _service;
+		public ChatHub(ChatService service, UserService userService)
+		{
+			_service = service;
+			_userService = userService;
+		}
+
+		// Overriding On Connected Task to maybe add connectionIDs to groups or... something.
+		// Not sure what to do here just yet.
+		public override Task OnConnectedAsync()
+		{
+			return base.OnConnectedAsync();
+		}
+
+		// Overriding disconnected task to possibly update the DB. 
+		// Not necessary right now though.
+		public override Task OnDisconnectedAsync(Exception exception)
+		{
+			return base.OnDisconnectedAsync(exception);
+		}
 	}
-		//TODO: Move this logic to the ChatController
-		// public async Task SaveMessage(ChatMessage message)
 
-
-		// // public ActionResult<List<ChatMessage>> GetMessages(ChatMessage message){
-		// // 	// string group = message.Group;
-		// // 	// string user = message.user;
-		// // 	return service.GetMessages();
-		// // }
-
-
-		// public string GetMessages(ChatMessage message){
-		// 	// string group = message.Group;
-		// 	// string user = message.user;
-		// 	// return service.GetMessages();
-		// 	Console.WriteLine("GetMessages function hit! \n");
-		// 	return service.GetMessages();
-		// }
 }

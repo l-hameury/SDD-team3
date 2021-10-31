@@ -1,8 +1,5 @@
-using System.Runtime.Serialization;
-using System.Net.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,21 +31,18 @@ namespace rtchatty
             // DI Explanation from Microsoft: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-5.0
             services.AddScoped<UserService>();
             services.AddScoped<ChatService>();
+            services.AddScoped<AdminService>();
 
             services.AddSingleton<IChattyDatabaseSettings>(
                 db => db.GetRequiredService<IOptions<ChattyDatabaseSettings>>().Value);
-
-            services.AddControllers();
-
             services.Configure<ChattyDatabaseSettings>(
                 Configuration.GetSection(nameof(ChattyDatabaseSettings)));
 
-
             services.AddAuthentication(x =>
-           {
+            {
                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-           })
+            })
                 .AddJwtBearer(x =>
                 {
                     x.RequireHttpsMetadata = false;
@@ -61,9 +55,28 @@ namespace rtchatty
                         ValidateAudience = false
                     };
 
+                    x.Events = new JwtBearerEvents
+                    {
+                        // TODO: This is ugly and I'm sorry but I might need it later.
+                        // OnMessageReceived = context =>
+                        // {
+                        //     var accessToken = context.Request.Query["Authorization"];
+
+                        //     // If the request is for the chat hub...
+                        //     var path = context.HttpContext.Request.Path;
+                        //     if(!string.IsNullOrEmpty(accessToken) &&
+                        //         (path.StartsWithSegments("/chatHub")))
+                        //     {
+                        //         // Read the token out of the query string
+                        //         context.Token = accessToken;
+                        //     }
+                        //     return Task.CompletedTask;
+                        // }
+                    };
+
                 });
 
-
+            services.AddControllers();
             services.AddControllersWithViews();
             services.AddSignalR();
             //if you have issues with this make sure to go to api proj folder in terminal and run "dotnet add rtchatty.csproj package Swashbuckle.AspNetCore -v 5.6.3" to download swagger
@@ -120,7 +133,7 @@ namespace rtchatty
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseAuthentication(); //authentication
+                
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -140,6 +153,7 @@ namespace rtchatty
             });
 
             app.UseRouting();
+            app.UseAuthentication(); //authentication
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -1,3 +1,4 @@
+using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 namespace rtchatty.Models
@@ -11,7 +12,11 @@ namespace rtchatty.Models
 		public string Group { get; set; }
 		[BsonElement("User")]
 		public string User { get; set; }
+		//TODO: Probably delete this 
+		[BsonElement("Recipient")]
+		public string recipient { get; set; }
 		[BsonElement("Message")]
 		public string Message { get; set; }
+		public DateTime Timestamp { get; set; }
 	}
 }

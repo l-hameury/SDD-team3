@@ -37,12 +37,14 @@ var searchStyle = {
 export default function AdminPage() {
   const [userData, setUserData] = useState([]);
   const [q, setQ] = useState("");
-  const [showBanSuccess, setBanSuccess] = useState(false);
-  const [banMessage, setBanMessage] = useState("");
+  const [showSuccess, setSuccess] = useState(false);
+  const [actionMessage, setActionMessage] = useState("");
   const [error, setError] = useState("");
+  const [canAccess, setAccess] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token").toString();
+    isAdmin();
     fetch(`https://localhost:5001/api/User/searchUsers/`, {
       method: "POST",
       headers: new Headers({
@@ -58,14 +60,15 @@ export default function AdminPage() {
   }, [q]);
 
   const banUser = async (user) => {
+    const email = localStorage.getItem("email").toString();
     axios
-      .post("https://localhost:5001/api/user/banUser", {
-        email: user.email,
+      .post("https://localhost:5001/api/admin/banUser", {
+        UserEmail: user.email,
       })
       .then(function (res) {
-        setBanSuccess(true);
+        setSuccess(true);
         user.banned = !user.banned;
-        setBanMessage(
+        setActionMessage(
           user.banned
             ? `${user.email} successfully banned`
             : `${user.email} successfully unbanned`
@@ -76,81 +79,120 @@ export default function AdminPage() {
       });
   };
 
-  const deleteUser = async (user) => {
+  const setAdminStatus = async (user) => {
     axios
-      .post("https://localhost:5001/api/user/deleteUser", {
-        email: user.email,
+      .post("https://localhost:5001/api/admin/setAdminStatus", {
+        UserEmail: user.email,
+      })
+      .then(function (res) {
+        setSuccess(true);
+        user.isAdmin = !user.isAdmin;
+        setActionMessage(
+          user.isAdmin
+            ? `${user.email} is now an admin`
+            : `${user.email} is no longer an admin`
+        );
+      })
+      .catch(function (error) {
+        setError(`Error setting admin status for ${user.email}`);
+      });
+  };
+
+  const deleteUser = async (user) => {
+    const email = localStorage.getItem("email").toString();
+    axios
+      .post("https://localhost:5001/api/admin/deleteUser", {
+        UserEmail: user.email,
       })
       .then(function (res) {
         userData.splice(userData.indexOf(user), 1);
-        setBanSuccess(true);
-        setBanMessage(`Successfully deleted ${user.email}`);
+        setSuccess(true);
+        setActionMessage(`Successfully deleted ${user.email}`);
       })
       .catch(function (error) {
         setError(`Error deleting ${user.email}`);
       });
   };
 
-  return (
-    <div>
-      <div
-        className="alert alert-success"
-        hidden={!showBanSuccess}
-        name="successAlert"
-      >
-        Success! {banMessage}
-      </div>
+  const isAdmin = async () => {
+    const email = localStorage.getItem("email").toString();
+    axios
+      .get("https://localhost:5001/api/admin/isAdmin", {})
+      .then(function (res) {
+        setAccess(res.data);
+      })
+      .catch(function (error) {
+        setError(`Error Checking Admin Status for User ${email}`);
+      });
+  };
 
-      <div className="alert alert-danger" hidden={!error} name="Error">
-        {error}
-      </div>
+  if (canAccess) {
+    return (
+      <div>
+        <div
+          className="alert alert-success"
+          hidden={!showSuccess}
+          name="successAlert"
+        >
+          Success! {actionMessage}
+        </div>
 
-      <input
-        style={searchStyle}
-        type="text"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-      />
-      <div className="d-flex flex-wrap">
-        {userData.map((user) => {
-          return (
-            <Card key={user.id} className="m-3" style={profileTitle}>
-              <CardBody>
-                <CardTitle>
-                  <CardImg
-                    className="float-start m-2"
-                    variant="start"
-                    src={user.avatar ? user.avatar : defaultProfilePic}
-                    style={sideProfilePicStyle}
-                  />
-                  {user.username} <br />
-                  <small>{user.email}</small>
-                </CardTitle>
-                <CardText>This is a placeholder, {user.bio}</CardText>
-              </CardBody>
-              <CardFooter>
-                <Button
-                  hidden={user.banned}
-                  className="btn-warning"
-                  onClick={() => banUser(user)}
-                >
-                  Ban
-                </Button>
-                <Button
-                  hidden={!user.banned}
-                  className="btn-warning"
-                  onClick={() => banUser(user)}
-                >
-                  Unban
-                </Button>
-                <Button className="btn-danger" onClick={() => deleteUser(user)}>
-                  Delete
-                </Button>
-              </CardFooter>
-            </Card>
-          );
-        })}
+        <div className="alert alert-danger" hidden={!error} name="Error">
+          {error}
+        </div>
+
+        <input
+          style={searchStyle}
+          type="text"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
+        <div className="d-flex flex-wrap">
+          {userData.map((user) => {
+            return (
+              <Card key={user.id} className="m-3" style={profileTitle}>
+                <CardBody>
+                  <CardTitle>
+                    <CardImg
+                      className="float-start m-2"
+                      variant="start"
+                      src={user.avatar ? user.avatar : defaultProfilePic}
+                      style={sideProfilePicStyle}
+                    />
+                    {user.username} <br />
+                    <small>{user.email}</small>
+                  </CardTitle>
+                  <CardText>This is a placeholder, {user.bio}</CardText>
+                </CardBody>
+                <CardFooter>
+                  <Button className="btn-warning" onClick={() => banUser(user)}>
+                    {user.banned ? "Unban" : "Ban"}
+                  </Button>
+                  <Button
+                    className="btn-primary"
+                    onClick={() => setAdminStatus(user)}
+                  >
+                    {user.isAdmin ? "Remove Admin" : "Make Admin"}
+                  </Button>
+                  <Button
+                    className="btn-danger"
+                    onClick={() => deleteUser(user)}
+                  >
+                    Delete
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div>
+        <h1>Unauthorized, Admins Only</h1>
+        <h3>Please request admin status from another admin</h3>
+      </div>
+    );
+  }
 }

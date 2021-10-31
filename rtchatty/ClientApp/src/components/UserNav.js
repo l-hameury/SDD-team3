@@ -1,21 +1,20 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import ListGroup from "reactstrap/lib/ListGroup";
-import ListGroupItem from "reactstrap/lib/ListGroupItem";
-import Media from "reactstrap/lib/Media";
-import defaultProfilePic from "../Assets/Images/defaultProfilePic.png";
-
-
-var sideProfilePicStyle = {
-  width: "64px",
-  height: "64px",
-  borderRadius: "50%",
-  display: "inline",
-  backgroundColor: "#70a7ff",
-};
-
-var listGroupStyle = {
-  backgroundColor: "#70a7ff",
-};
+import UserTile from "./UserTile";
+import { Link } from 'react-router-dom';
+import {
+  Card,
+  Col,
+  Row,
+  CardTitle,
+  CardBody,
+  CardImg,
+  CardText,
+  Container,
+  CardFooter,
+  Button,
+} from "reactstrap";
 
 var searchStyle = {
   width: "100%",
@@ -26,6 +25,7 @@ require("es6-promise").polyfill();
 require("isomorphic-fetch");
 
 export default function UserNav() {
+
   const [userData, setUserData] = useState([]);
   const [q, setQ] = useState("");
 
@@ -49,6 +49,13 @@ export default function UserNav() {
 
   return (
     <div className="min-w-25 min-vh-100 bg black float-start">
+      <Container>
+        <div className="block-example border border-success">
+          <CardBody>
+            <Link to="/profile">Leticia</Link>
+          </CardBody>
+        </div>
+      </Container>
       <input
         style={searchStyle}
         type="text"
@@ -60,16 +67,7 @@ export default function UserNav() {
           // if statement checking if user has chosen to be searchable
           if (user.canSearch)
             return (
-              <ListGroupItem style={listGroupStyle} key={user.id}>
-                <Media middle left>
-                  <Media
-                    className="m-1"
-                    src={user.avatar ? user.avatar : defaultProfilePic}
-                    style={sideProfilePicStyle}
-                  />
-                  <span>{user.email}</span>
-                </Media>
-              </ListGroupItem>
+              <UserTile user={user} key={user.id}></UserTile>
             );
         })}
       </ListGroup>
