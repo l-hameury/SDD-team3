@@ -14,7 +14,7 @@ const Message = (props) => {
 	const toggleCard = async (event) => {
 
 		// In case the recipient is null
-		if(!props.recipient) {
+		if(event.target.innerText === 'General Chat') {
 			return;
 		}
 
