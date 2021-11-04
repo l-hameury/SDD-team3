@@ -12,7 +12,8 @@ const Chat = () => {
 	const [connection, setConnection] = useState(null);
 	const [chat, setChat] = useState([]);
 	const [messagesEnd, setMessagesEnd] = useState();
-	const [modal, setModal] = useState(false);
+	const [searchmodal, setSearchModal] = useState(false);
+	const [sortmodal, setSortModal] = useState(false);
 	const latestChat = useRef(null);
 	const [chatNavOpen, setChatNav] = useState();
 	const toggleChatNav = () => setChatNav(!chatNavOpen);
@@ -175,7 +176,10 @@ const Chat = () => {
 		}
 	}
 	//sets the modal status to true(show)/false
-	const toggle = () => setModal(!modal);
+	const toggleSearch = () => setSearchModal(!searchmodal);
+
+	//sets the modal status to true or false for sorting
+	const toggleSort = () => setSortModal(!sortmodal);
 
 	return (
 		<div>
@@ -187,15 +191,27 @@ const Chat = () => {
 				<Col>
 					<div>
 						<h1>General Chat</h1>
-						<Button onClick={toggle}>Search</Button>
-						<Modal isOpen={modal} toggle={toggle}>
+						<span>
+							<Button onClick={toggleSearch}>Search</Button> {'  '}
+							<Button onClick={toggleSort} >Sort</Button> 
+						</span>
+						<Modal isOpen={searchmodal} toggleSearch={toggleSearch}>
 							<Row>
 								<ModalHeader>Search for Messages{'        '}
-									<Button color="danger" onClick={toggle}>Close</Button>
+									<Button color="danger" onClick={toggleSearch}>Close</Button>
 								</ModalHeader>
 							</Row>
 							<ModalBody>
 								<SearchKeyword chat={chat} />
+							</ModalBody>
+						</Modal>
+						<Modal isOpen={sortmodal} toggleSort={toggleSort}>
+							<Row>
+								<ModalHeader>Sort Messages{'        '}
+									<Button color="danger" onClick={toggleSort}>Close</Button>
+								</ModalHeader>
+							</Row>
+							<ModalBody>
 							</ModalBody>
 						</Modal>
 						<hr />
