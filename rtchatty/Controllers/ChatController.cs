@@ -58,12 +58,16 @@ namespace rtchatty.Controllers
         public async Task GetMessages()
         {
             List<object> messageList = _chatService.GetMessages();
-
             await _chatHub.Clients.All.PopulateMessages(messageList);
             // await _chatHub.GetMessages();
         }
 
-        
+        [Route("editMessage")]
+        [HttpPost]
+        public ActionResult<ChatMessage> EditMessage(ChatMessage message)
+        {
+            return _chatService.EditMessage(message);
+        }
 
         // TODO: Implement users and Groups for sending DMs
 		// Source for this sample: 
