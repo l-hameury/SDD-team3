@@ -13,9 +13,7 @@ const Message = (props) => {
 	const [usernameUnderline, setUsernameUnderline] = useState(false)
 	const [editMessageButton, setEditButton] = useState(false)
 	const [editMsgModal, setEditMsgModal] = useState(false)
-
 	const toggleCard = async (event) => {
-
 		// In case the recipient is null
 		if(event.target.innerText === 'General Chat') return;
 
@@ -66,7 +64,7 @@ const Message = (props) => {
 					</Row>
 				</Container>
 			</Card>
-			<EditMessageModal text={props.message} open={editMsgModal} toggle={toggleMsgModal} username={props.user} timestamp={props.timestamp}/>
+			<EditMessageModal text={props.message} open={editMsgModal} toggle={toggleMsgModal} username={props.user} timestamp={props.timestamp} setchat={props.setchat} latestchat={props.latestchat}/>
 		</div>
 	)
 }

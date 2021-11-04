@@ -176,7 +176,6 @@ const Chat = () => {
 	}
 	//sets the modal status to true(show)/false
 	const toggle = () => setModal(!modal);
-
 	return (
 		<div>
 			<Row>
@@ -200,7 +199,7 @@ const Chat = () => {
 						</Modal>
 						<hr />
 						<Container className="pb-1 mb-5">
-							<ChatWindow chat={chat} />
+							<ChatWindow chat={chat} setchat={setChat} latestchat={latestChat}/>
 							<ChatInput username={username} sendMessage={sendMessage} />
 							<div className="pb-5 mb-5" ref={(el) => { setMessagesEnd(el); }} />
 						</Container>

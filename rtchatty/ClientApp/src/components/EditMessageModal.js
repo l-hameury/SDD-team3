@@ -2,32 +2,36 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import {Modal, ModalBody, Button, Input} from 'reactstrap'
 
-const EditMessageModal = ({ text, open, toggle, username, timestamp }) => {
-	const [newMsg, setNewMsg] = useState(text)
+const EditMessageModal = (props) => {
+	const [newMsg, setNewMsg] = useState(props.text)
+	const updatedChat = [...props.latestchat.current]
+	const index = updatedChat.map(function(x){return x.message;}).indexOf(props.text)
 
 	const handleChange = (event) => setNewMsg(event.target.value)
 
-	const submitChange = (event) => {
+	const submitChange = async (event) => {
 		event.preventDefault()
-		axios.post('https://localhost:5001/Chat/editMessage', {
-			User: username,
+		await axios.post('https://localhost:5001/Chat/editMessage', {
+			User: props.username,
 			Message: newMsg,
-			Timestamp: timestamp
+			Timestamp: props.timestamp
 		})
 		.then(function (res){
-			console.log(res)
-			toggle()
+			updatedChat.splice(index, 1, res.data)
+			props.setchat(updatedChat)
+			props.toggle()
 		})
 		.catch(function (err){
 			console.log(err)
+			props.toggle()
 		})
 	}
 
 	return(
 		<div>
-			<Modal isOpen={open} toggle={toggle}>
+			<Modal isOpen={props.open} toggle={props.toggle}>
 				<ModalBody>
-					<Input defaultValue={text} onChange={handleChange}></Input>
+					<Input defaultValue={props.text} onChange={handleChange}></Input>
 					<Button size="sm" onClick={submitChange}>Submit</Button>
 				</ModalBody>
 			</Modal>
