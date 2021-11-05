@@ -4,9 +4,6 @@ import {Modal, ModalBody, Button, Input} from 'reactstrap'
 
 const EditMessageModal = (props) => {
 	const [newMsg, setNewMsg] = useState(props.text)
-	const updatedChat = [...props.latestchat.current]
-	const index = updatedChat.map(function(x){return x.message;}).indexOf(props.text)
-
 	const handleChange = (event) => setNewMsg(event.target.value)
 
 	const submitChange = async (event) => {
@@ -16,9 +13,7 @@ const EditMessageModal = (props) => {
 			Message: newMsg,
 			Timestamp: props.timestamp
 		})
-		.then(function (res){
-			updatedChat.splice(index, 1, res.data)
-			props.setchat(updatedChat)
+		.then(function (){
 			props.toggle()
 		})
 		.catch(function (err){

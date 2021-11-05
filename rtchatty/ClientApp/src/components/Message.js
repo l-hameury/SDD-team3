@@ -64,7 +64,7 @@ const Message = (props) => {
 					</Row>
 				</Container>
 			</Card>
-			<EditMessageModal text={props.message} open={editMsgModal} toggle={toggleMsgModal} username={props.user} timestamp={props.timestamp} setchat={props.setchat} latestchat={props.latestchat}/>
+			<EditMessageModal text={props.message} open={editMsgModal} toggle={toggleMsgModal} username={props.user} timestamp={props.timestamp}/>
 		</div>
 	)
 }
