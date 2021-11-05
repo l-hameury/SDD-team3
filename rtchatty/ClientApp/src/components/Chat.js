@@ -103,7 +103,7 @@ const Chat = () => {
 			newMsg.avatar = avatar
 			newMsg.recipient = oldMsg.recipient
 			const updatedChat = [...latestChat.current]
-			const index = updatedChat.map(function(x){return x}).indexOf(oldMsg)
+			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
 			updatedChat.splice(index, 1, newMsg)
 			setChat(updatedChat)
 		})
