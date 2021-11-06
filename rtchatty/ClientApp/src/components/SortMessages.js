@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {Table} from 'reactstrap'
+import moment from 'moment'
 
 const SortMessages = (props) =>{
     
@@ -25,7 +26,7 @@ const SortMessages = (props) =>{
     }
 
     return(
-            <Table hover>
+            <Table hover bordered>
                 <thead>
                     <tr>
                     <th>
@@ -44,7 +45,7 @@ const SortMessages = (props) =>{
                        <tr key={m.timestamp}>
                            <td>{m.message}</td>
                            <td>{m.user}</td>
-                           <td>{m.timestamp}</td>
+                           <td>{moment(m.timestamp).format('YYYY-MM-DD h:mm:ss a')}</td>
                        </tr>
                    ))}
                 </tbody>
