@@ -5,6 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
 import SearchKeyword from './SearchKeyword';
+import SortMessages from './SortMessages';
 import { Container } from 'reactstrap';
 import ChatNavMenu from './ChatNav';
 
@@ -212,6 +213,7 @@ const Chat = () => {
 								</ModalHeader>
 							</Row>
 							<ModalBody>
+								<SortMessages chat={chat}/>
 							</ModalBody>
 						</Modal>
 						<hr />
