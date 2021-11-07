@@ -101,7 +101,14 @@ const Chat = () => {
 			scrollToBottom();
 		});
 
-
+		connection.on('EditMessage', (oldMsg, newMsg) => {
+			newMsg.avatar = avatar
+			newMsg.recipient = oldMsg.recipient
+			const updatedChat = [...latestChat.current]
+			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
+			updatedChat.splice(index, 1, newMsg)
+			setChat(updatedChat)
+		})
 	}
 
 	/**
@@ -218,7 +225,7 @@ const Chat = () => {
 						</Modal>
 						<hr />
 						<Container className="pb-1 mb-5">
-							<ChatWindow chat={chat} />
+							<ChatWindow chat={chat}/>
 							<ChatInput username={username} sendMessage={sendMessage} />
 							<div className="pb-5 mb-5" ref={(el) => { setMessagesEnd(el); }} />
 						</Container>
