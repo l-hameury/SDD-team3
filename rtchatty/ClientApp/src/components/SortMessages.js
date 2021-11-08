@@ -1,29 +1,54 @@
 import React, { useState } from 'react'
 import {Table} from 'reactstrap'
 import moment from 'moment'
+import ImportExportIcon from '@mui/icons-material/ImportExport'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+
+
+
 
 const SortMessages = (props) =>{
     
     const [messages, setMessages] = useState(props.chat)
-    const [order, setOrder] = useState("ascending") // order state is either asc or desc
+    const [userorder, setUserOrder] = useState("ascending") 
+    const [dateorder, setDateOrder] = useState("ascending") 
 
     //sort the user or date in descending/ascending order
-    const sorting = (header) => {
-        if( order === "ascending"){
+    const sortUserMsg = (header) => {
+        if( userorder === "ascending"){
             const sorted = [...messages].sort((a,b)=>
                 a[header].toLowerCase() > b[header].toLowerCase() ? 1 : -1
             );
             setMessages(sorted)
-            setOrder("descending")
+            setUserOrder("descending")
         }
-        if( order === "descending"){
+        if( userorder === "descending"){
             const sorted = [...messages].sort((a,b)=>
                 a[header].toLowerCase() < b[header].toLowerCase() ? 1 : -1
             );
             setMessages(sorted)
-            setOrder("ascending")
+            setUserOrder("ascending")
         }
     }
+
+    const sortDateMsg = (header) => {
+        if( dateorder === "ascending"){
+            const sorted = [...messages].sort((a,b)=>
+                a[header].toLowerCase() > b[header].toLowerCase() ? 1 : -1
+            );
+            setMessages(sorted)
+            setDateOrder("descending")
+        }
+        if( dateorder === "descending"){
+            const sorted = [...messages].sort((a,b)=>
+                a[header].toLowerCase() < b[header].toLowerCase() ? 1 : -1
+            );
+            setMessages(sorted)
+            setDateOrder("ascending")
+        }
+    }
+ 
 
     return(
             <Table hover bordered>
@@ -32,11 +57,13 @@ const SortMessages = (props) =>{
                     <th>
                         Message
                     </th>
-                    <th onClick={()=>sorting("user")}>
+                    <th onClick={()=>sortUserMsg("user")}>
                        User
+                       <span>{userorder === "ascending" ? <KeyboardArrowDownIcon/> : <KeyboardArrowUpIcon/>}</span>
                     </th>
-                    <th onClick={()=>sorting("timestamp")}>
+                    <th onClick={()=>sortDateMsg("timestamp")}>
                         Date
+                        <span>{dateorder === "ascending" ? <KeyboardArrowDownIcon/> : <KeyboardArrowUpIcon/>}</span>
                     </th>
                     </tr>
                 </thead>
