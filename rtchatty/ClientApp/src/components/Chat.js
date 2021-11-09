@@ -19,6 +19,8 @@ const Chat = () => {
 	const username = useState(localStorage.getItem('username'));
 	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
+	// Chat room or Group Name
+	const [groupName, setGroupName] = useState('General Chat');
 
 	latestChat.current = chat;
 
@@ -44,10 +46,14 @@ const Chat = () => {
 			if (connection) {
 				await connection.start();
 				try {
-					console.log('connected')
+					console.log('connected');
 
-					console.log('ConnectionId is: ', connection.connectionId)
+					console.log('ConnectionId is: ', connection.connectionId);
 					
+					// if(!chatRoomName)
+					// setChatRoomName('General Chat');
+					console.log('Group name is: ', groupName);
+
 					// connection.invoke("Join");
 					updateConnectionID();
 
@@ -116,13 +122,20 @@ const Chat = () => {
 	 */
 	const sendMessage = async (user, message, recipient) => {
 		
+		setGroupName('Updated value!');
+
+		console.log('Group name is now: ', groupName);
+
+		// message = groupName;
+
 		// TODO: Add recipient email for private messages
 		// Maybe nullable field in object? I dunno yet
 		const chatMessage = {
 			user: user,
 			message: message,
 			// TODO: Remove this probably
-			recipient: recipient
+			recipient: recipient,
+			group: groupName
 		};
 		if (connection.connectionStarted) {
 			try {
