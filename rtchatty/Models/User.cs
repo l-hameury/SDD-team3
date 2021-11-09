@@ -40,8 +40,9 @@ namespace rtchatty.Models
 		public List<string> IncomingFriendRequests { get; set; } = new List<string>();
 		[BsonElement("OutgoingFriendRequests")]
 		public List<string> OutgoingFriendRequests { get; set; }  = new List<string>();
-
 		[BsonElement("isOnline")]
 		public bool isOnline { get; set; }
+        [BsonElement("Channels")]
+        public List<string> Channels { get; set; } = new List<string>();
     }
 }

@@ -164,5 +164,12 @@ namespace rtchatty.Controllers
         {
             return service.unfriend(user);
         }
+
+        [HttpGet]
+        [Route("getUserChannels")]
+        public ActionResult<List<string>> GetUserChannels(string username) {
+            var channels = service.GetUserChannels(username);
+            return Ok(channels);
+        }
     }
 }
