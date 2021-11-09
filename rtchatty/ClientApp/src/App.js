@@ -41,7 +41,7 @@ function App() {
         <Route exact path="/" component={Home} />
         <Route exact path="/counter" component={Counter} />
         <Route exact path="/fetch-data" component={FetchData} />
-        <Route exact path="/chat" component={Chat} />
+        <Route exact path="/chat/:channel?" component={Chat} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/user-nav" component={UserNav} />

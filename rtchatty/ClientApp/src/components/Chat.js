@@ -8,7 +8,7 @@ import SearchKeyword from './SearchKeyword';
 import { Container } from 'reactstrap';
 import ChatNavMenu from './ChatNav';
 
-const Chat = () => {
+const Chat = (props) => {
 	const [connection, setConnection] = useState(null);
 	const [chat, setChat] = useState([]);
 	const [messagesEnd, setMessagesEnd] = useState();
@@ -19,6 +19,7 @@ const Chat = () => {
 	const username = useState(localStorage.getItem('username'));
 	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
+	const channel = props.match.params.channel;
 
 	latestChat.current = chat;
 
@@ -192,7 +193,7 @@ const Chat = () => {
 				<div className="vr" style={{ backgroundColor: "white", borderLeft: "1px solid #333" }}></div>
 				<Col>
 					<div>
-						<h1>General Chat</h1>
+						<h1>{channel ? channel : "General Chat"}</h1>
 						<Button onClick={toggle}>Search</Button>
 						<Modal isOpen={modal} toggle={toggle}>
 							<Row>
