@@ -12,7 +12,7 @@ function ListMessages({messages}){
                 {
                     messages.length> 0 ?
                     messages.map(msg =>(
-                    <li key={msg.id}>
+                    <li key={msg.timestamp}>
                         User: {' '}
                             <span>{msg.user} {', '}</span>
                         Message: {' '}
