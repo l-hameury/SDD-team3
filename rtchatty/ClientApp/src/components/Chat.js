@@ -99,12 +99,24 @@ const Chat = () => {
 			scrollToBottom();
 		});
 
+		// I think this will need some modification once chat channels are implemented because
+		// as of right now, this functionality will edit the message that is currently on 'General Chat'
+		// so if you edit a message that is not on the 'General Chat'(a message on a chat channel) it will edit the 'General Chat' message regardless, hope that makes sense
+		// I might be able to do conditional statements here to check for group and recipient, then I can update the correct chat accordingly
 		connection.on('EditMessage', (oldMsg, newMsg) => {
 			newMsg.avatar = avatar
 			newMsg.recipient = oldMsg.recipient
 			const updatedChat = [...latestChat.current]
 			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
 			updatedChat.splice(index, 1, newMsg)
+			setChat(updatedChat)
+		})
+
+		// this will also need to be modified after chat channel implementation because of same reason above
+		connection.on('DeleteMessage', message => {
+			const updatedChat = [...latestChat.current]
+			const index = updatedChat.map(function(x){return x.message}).indexOf(message.message)
+			updatedChat.splice(index, 1)
 			setChat(updatedChat)
 		})
 	}

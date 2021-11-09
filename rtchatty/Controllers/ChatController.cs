@@ -67,7 +67,17 @@ namespace rtchatty.Controllers
         public async Task EditMessage(ChatMessage message)
         {
             var msg = _chatService.EditMessage(message);
+            // I think this will need to be modified once chat channels are implemented. I'll leave this here for now as a reminder
             await _chatHub.Clients.All.EditMessage(msg, message);
+        }
+
+        [Route("deleteMessage")]
+        [HttpDelete]
+        public async Task DeleteMessage(ChatMessage message)
+        {
+            _chatService.DeleteMessage(message);
+            // I think this will need to be modified once chat channels are implemented. I'll leave this here for now as a reminder
+            await _chatHub.Clients.All.DeleteMessage(message);
         }
 
         // TODO: Implement users and Groups for sending DMs

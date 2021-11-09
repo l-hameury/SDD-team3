@@ -58,5 +58,12 @@ namespace rtchatty.Services
 
 			return msg;
 		}
+
+		public void DeleteMessage(ChatMessage message){
+			var filter = Builders<ChatMessage>.Filter.Eq(db => db.User, message.User) 
+				& Builders<ChatMessage>.Filter.Eq(db => db.Message, message.Message) 
+				& Builders<ChatMessage>.Filter.Eq(db => db.Timestamp, message.Timestamp);
+			_messages.FindOneAndDelete<ChatMessage>(filter);
+		}
 	}
 }
