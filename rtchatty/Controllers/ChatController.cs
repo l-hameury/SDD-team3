@@ -34,7 +34,7 @@ namespace rtchatty.Controllers
 
             Console.WriteLine("Recipient pre if is: ", message.recipient);
             Console.WriteLine("Chat Room name is : ", chatRoomName);
-            Console.WriteLine("Or maybe group name is : ", message.Group);
+            Console.WriteLine("Or maybe group name is : ", message.Channel);
 
             // TODO: Uncomment this line to send a private message to the user with this specific email.
             // email = "kris@test.com";
@@ -43,8 +43,6 @@ namespace rtchatty.Controllers
             // Then call Receive Message only on that connection.
             if(message.recipient != "")
             {
-                Console.WriteLine("Recipient is: ", message.recipient);
-                Console.WriteLine("Chat Room name is : ", chatRoomName);
                 User user = _userService.GetUserByUsername(message.recipient);
                 await _chatHub.Clients.Client(user.ConnectionID).ReceiveMessage(message);
             }

@@ -19,7 +19,7 @@ const Chat = (props) => {
 	const username = useState(localStorage.getItem('username'));
 	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
-	const channel = props.match.params.channel;
+	const channel = (props.match.params.channel) ? props.match.params.channel : "General Chat";
 
 	latestChat.current = chat;
 
@@ -51,7 +51,7 @@ const Chat = (props) => {
 					
 					// if(!chatRoomName)
 					// setChatRoomName('General Chat');
-					console.log('Group name is: ', groupName);
+					console.log('channel name is: ', channel);
 
 					// connection.invoke("Join");
 					updateConnectionID();
@@ -84,10 +84,12 @@ const Chat = (props) => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp }
+					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp , channel: element.message.Channel}
 					const updatedChat = [...latestChat.current];
-					updatedChat.push(messages);
-					setChat(updatedChat);
+					if(message.channel = channel){
+						updatedChat.push(messages);
+						setChat(updatedChat);
+					}
 				});
 			}
 		});
@@ -120,21 +122,16 @@ const Chat = (props) => {
 	 * 		For chat rooms, DMs, etc.
 	 */
 	const sendMessage = async (user, message, recipient) => {
-		
-		setGroupName('Updated value!');
-
-		console.log('Group name is now: ', groupName);
 
 		// message = groupName;
+		//TODO: Remove debug
+		console.log('Channel name is: ', channel);
 
-		// TODO: Add recipient email for private messages
-		// Maybe nullable field in object? I dunno yet
 		const chatMessage = {
 			user: user,
 			message: message,
-			// TODO: Remove this probably
 			recipient: recipient,
-			group: groupName
+			Channel: channel,
 		};
 		if (connection.connectionStarted) {
 			try {
@@ -145,7 +142,6 @@ const Chat = (props) => {
 			}
 		}
 		else {
-			// TODO: We're not using a separate server here, so.... not super relevant
 			alert('No connection to server yet.');
 		}
 		scrollToBottom();
@@ -155,7 +151,6 @@ const Chat = (props) => {
 	 * Call Hub endpoint to pull all existing messages
 	 */
 	const getAllMessages = async () => {
-		console.log("Get message called here! \n");
 		if (connection.connectionStarted) {
 			try {
 				await axios.get('https://localhost:5001/Chat/getAll');
