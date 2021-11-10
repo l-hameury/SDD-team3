@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Net.Mail;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 using rtchatty.Hubs;
 using rtchatty.Hubs.Clients;
 using rtchatty.Models;
@@ -68,6 +71,17 @@ namespace rtchatty.Controllers
         {
             var msg = _chatService.EditMessage(message);
             await _chatHub.Clients.All.EditMessage(msg, message);
+        }
+
+        [Route("likeMessage")]
+        [HttpPost]
+        public async Task LikeMessage(ChatMessage message)
+        {
+            ClaimsIdentity identity = User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claims = identity.Claims;
+            var email = claims.FirstOrDefault().Value;
+            var msg = _chatService.LikeMessage(message, email);
+            
         }
 
         // TODO: Implement users and Groups for sending DMs

@@ -124,7 +124,9 @@ const Chat = () => {
 			user: user,
 			message: message,
 			// TODO: Remove this probably
-			recipient: recipient
+			recipient: recipient,
+			likes: [],
+			dislikes: [],
 		};
 		if (connection.connectionStarted) {
 			try {

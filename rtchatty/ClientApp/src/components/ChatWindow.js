@@ -10,7 +10,9 @@ const ChatWindow = (props) => {
 			avatar={m.avatar}
 			user={m.user}
 			recipient={m.recipient}
-			message={m.message} />);
+			message={m.message}
+			likes={m.likes}
+			dislikes={m.dislikes} />);
 
 	return (
 		<div>

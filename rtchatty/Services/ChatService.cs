@@ -47,6 +47,35 @@ namespace rtchatty.Services
 			return true;
 		}
 
+		public ChatMessage LikeMessage(ChatMessage message, string email)
+		{
+			// okay ideally I would've filtered by the Message ID, but I couldn't figure out how to get the ID.
+			// so I filtered by what I think is the next best thing which is matching by Username && Timestamp ._.
+			var filter = Builders<ChatMessage>.Filter.Eq(db => db.User, message.User) & Builders<ChatMessage>.Filter.Eq(db => db.Timestamp, message.Timestamp);
+			var msg = _messages.Find(filter).FirstOrDefault();
+			if (msg.Likes.Remove(email)){
+				var update = Builders<ChatMessage>.Update.Set(db => db.Likes, msg.Likes);
+				_messages.UpdateOne(filter,update);
+			} else{
+				msg.Likes.Add(email);
+				var update = Builders<ChatMessage>.Update.Set(db => db.Likes, msg.Likes);
+				_messages.UpdateOne(filter,update);
+			}
+			return msg;
+		}
+
+		public ChatMessage DislikeMessage(ChatMessage message)
+		{
+			// okay ideally I would've filtered by the Message ID, but I couldn't figure out how to get the ID.
+			// so I filtered by what I think is the next best thing which is matching by Username && Timestamp ._.
+			var filter = Builders<ChatMessage>.Filter.Eq(db => db.User, message.User) & Builders<ChatMessage>.Filter.Eq(db => db.Timestamp, message.Timestamp);
+			var msg = _messages.Find(filter).FirstOrDefault();
+			var update = Builders<ChatMessage>.Update.Set(db => db.Message, message.Message);
+			_messages.UpdateOne(filter,update);
+
+			return msg;
+		}
+
 		public ChatMessage EditMessage(ChatMessage message)
 		{
 			// okay ideally I would've filtered by the Message ID, but I couldn't figure out how to get the ID.
