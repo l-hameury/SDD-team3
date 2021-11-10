@@ -327,5 +327,10 @@ namespace rtchatty.Services
             return currentUser;
 
         }
+
+        public List<string> GetUserChannels(string username) {
+            var user = GetUserByUsername(username);
+            return user.Channels;
+        }
     }
 }
