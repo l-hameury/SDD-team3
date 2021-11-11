@@ -5,6 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
 import SearchKeyword from './SearchKeyword';
+import SortMessages from './SortMessages';
 import { Container } from 'reactstrap';
 import ChatNavMenu from './ChatNav';
 
@@ -12,7 +13,8 @@ const Chat = (props) => {
 	const [connection, setConnection] = useState(null);
 	const [chat, setChat] = useState([]);
 	const [messagesEnd, setMessagesEnd] = useState();
-	const [modal, setModal] = useState(false);
+	const [searchmodal, setSearchModal] = useState(false);
+	const [sortmodal, setSortModal] = useState(false);
 	const latestChat = useRef(null);
 	const [chatNavOpen, setChatNav] = useState();
 	const toggleChatNav = () => setChatNav(!chatNavOpen);
@@ -189,7 +191,11 @@ const Chat = (props) => {
 		}
 	}
 	//sets the modal status to true(show)/false
-	const toggle = () => setModal(!modal);
+	const togglesearch = () => setSearchModal(!searchmodal);
+
+	//sets the modal status to true or false for sorting
+	const togglesort = () => setSortModal(!sortmodal);
+
 	return (
 		<div>
 			<Row>
@@ -200,15 +206,28 @@ const Chat = (props) => {
 				<Col>
 					<div>
 						<h1>{channel ? channel : "General Chat"}</h1>
-						<Button onClick={toggle}>Search</Button>
-						<Modal isOpen={modal} toggle={toggle}>
+						<span>
+							<Button onClick={togglesearch}>Search</Button> {'  '}
+							<Button onClick={togglesort} >Sort</Button> 
+						</span>
+						<Modal isOpen={searchmodal} >
 							<Row>
 								<ModalHeader>Search for Messages{'        '}
-									<Button color="danger" onClick={toggle}>Close</Button>
+									<Button color="danger" onClick={togglesearch}>Close</Button>
 								</ModalHeader>
 							</Row>
 							<ModalBody>
 								<SearchKeyword chat={chat} />
+							</ModalBody>
+						</Modal>
+						<Modal isOpen={sortmodal}>
+							<Row>
+								<ModalHeader>Sort Messages By User or Date{'        '}
+									<Button color="danger" onClick={togglesort}>Close</Button>
+								</ModalHeader>
+							</Row>
+							<ModalBody>
+								<SortMessages chat={chat}/>
 							</ModalBody>
 						</Modal>
 						<hr />
