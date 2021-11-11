@@ -43,5 +43,8 @@ namespace rtchatty.Models
 
 		[BsonElement("isOnline")]
 		public bool isOnline { get; set; }
+
+        [BsonElement("NotificationCount")]
+        public int NotificationCount {get; set;} = 0;
     }
 }

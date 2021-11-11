@@ -184,6 +184,35 @@ namespace rtchatty.Services
             _users.UpdateOne(filter, update);
         }
 
+        
+        /**
+         * Notification functions
+        */
+
+        public User notify(string username){
+            List<User> userList = GetUsers();
+            foreach(var user in userList){
+                Console.WriteLine("Sender: " + username);
+                Console.WriteLine("Receiver: " + user.Username);
+                if(!user.Username.Contains(username)){
+                    user.NotificationCount+=1;
+                    _users.ReplaceOne<User>(u => u.Email.ToLower().Contains(user.Email.ToLower()), user);
+                }
+            }
+            return userList[0];
+        }
+
+        public User clearNotification(string username){
+            var updatedUser = GetUserByUsername(username);
+            updatedUser.NotificationCount = 0;
+            _users.ReplaceOne<User>(user => user.Username.ToLower().Contains(username), updatedUser);
+
+            return updatedUser;
+        }
+
+        /**
+         * Online and offline functions
+        */
         public User setOnline(string email){
             
             var user = _users.Find<User>(user => user.Email.ToLower().Contains(email.ToLower())).FirstOrDefault();
@@ -205,6 +234,11 @@ namespace rtchatty.Services
             }
             return user;
         }
+
+        
+        /**
+         * Friend requests functions
+        */
         public User sendFriendRequest(User user)
         {
             string senderEmail = user.Email;

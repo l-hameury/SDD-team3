@@ -8,6 +8,7 @@ import SearchKeyword from './SearchKeyword';
 import SortMessages from './SortMessages';
 import { Container } from 'reactstrap';
 import ChatNavMenu from './ChatNav';
+import ClearNotification from './ClearNotification';
 
 const Chat = () => {
 	const [connection, setConnection] = useState(null);
@@ -133,6 +134,14 @@ const Chat = () => {
 			catch (e) {
 				console.log('Sending message failed', e);
 			}
+
+			//notify everyone after sending the message...
+			try {
+				await axios.post('https://localhost:5001/api/user/notify', chatMessage);
+			}
+			catch (e) {
+				console.log('Failed to notify users about the sent message', e);
+			}
 		}
 		else {
 			// TODO: We're not using a separate server here, so.... not super relevant
@@ -224,6 +233,7 @@ const Chat = () => {
 							</ModalBody>
 						</Modal>
 						<hr />
+						<ClearNotification username={username}></ClearNotification>
 						<Container className="pb-1 mb-5">
 							<ChatWindow chat={chat}/>
 							<ChatInput username={username} sendMessage={sendMessage} />

@@ -10,6 +10,7 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import "./NavMenu.css";
+import Notification from "./Notification"
 import LogOut from "./LogOut";
 
 export class NavMenu extends Component {
@@ -67,7 +68,10 @@ export class NavMenu extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/chat">
-                    Chat
+                    <div className="chat">
+                      <Notification user={localStorage}></Notification>
+                      Chat
+                    </div>
                   </NavLink>
                 </NavItem>
                 <NavItem>

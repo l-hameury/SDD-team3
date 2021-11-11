@@ -69,3 +69,24 @@ code {
   text-decoration: underline;
   cursor: pointer !important;
 }
+
+
+.chat{
+  position: relative;
+}
+
+.counter{
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -5px;
+  right: -15px;
+  color: white;
+}
