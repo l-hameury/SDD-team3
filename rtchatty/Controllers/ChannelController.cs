@@ -18,6 +18,13 @@ namespace rtchatty.Controllers
             service = _service;
         }
 
+        [HttpGet]
+        [Route("getChannels")]
+        public ActionResult<List<Channel>> GetChannels()
+        {
+            return service.GetChannels();
+        }
+
         [HttpPost]
         [Route("create")]
         public ActionResult<Channel> CreateChannel(Channel channel) 

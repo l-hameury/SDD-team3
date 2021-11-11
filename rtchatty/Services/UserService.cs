@@ -332,5 +332,23 @@ namespace rtchatty.Services
             var user = GetUserByUsername(username);
             return user.Channels;
         }
+
+        public bool JoinChannel(User user) {
+            
+            string username = user.Username;
+            string channel = user.Channels[0];
+            var currentUser = _users.Find<User>(user => user.Username == username).FirstOrDefault();
+
+            if(!currentUser.Channels.Contains(channel))
+            {
+                currentUser.Channels.Add(channel);
+                _users.ReplaceOne<User>(user => user.Username == username, currentUser);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

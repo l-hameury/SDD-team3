@@ -171,5 +171,15 @@ namespace rtchatty.Controllers
             var channels = service.GetUserChannels(username);
             return Ok(channels);
         }
+
+        [HttpPost]
+        [Route("joinChannel")]
+        public ActionResult<Channel> JoinChannel(User user)
+        {
+            if(service.JoinChannel(user))
+                return Ok();
+            else
+                return Conflict(nameof(user));
+        }
     }
 }

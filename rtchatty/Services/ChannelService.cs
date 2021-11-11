@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using rtchatty.Models;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
+using System.Collections.Generic;
 
 namespace rtchatty.Services
 {
@@ -22,6 +23,8 @@ namespace rtchatty.Services
 
             this.key = configuration.GetSection("JwtKey").ToString();
         }
+
+        public List<Channel> GetChannels() => _channels.Find(channel => true).ToList();
 
         public Channel CreateChannel(Channel channel)
         {
