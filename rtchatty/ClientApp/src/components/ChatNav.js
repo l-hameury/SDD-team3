@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     NavItem,
     NavLink,
@@ -16,23 +16,20 @@ const ChatNavMenu = () => {
     const [createModal, setCreateModal] = useState(false);
 
     // Get the list of groups the current user is in
-    /* const getUserChannels = async () => {
-        await axios.get('https://localhost:5001/api/user/getUserChannels/', {
+    useEffect(() => {
+        axios.get('https://localhost:5001/api/user/getUserChannels/', {
             params: {
                 username: username,
             }
         })
-            .then(function (res) {
-                setChannelList(res.data);
-            })
-            .catch(function (error) {
-                console.log(error);
-                return error;
-            });
-
-
-    }
-    getUserChannels(); */ // commented out rn because it keeps sending out requests
+        .then(function (res) {
+            setChannelList(res.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+            return error;
+        });
+    }, []);
 
     // Mapping the list of channels from the array to a linkable list rendered for the user to click on
     const channels = channelList.map((channel) =>
