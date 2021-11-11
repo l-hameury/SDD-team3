@@ -53,6 +53,7 @@ const ChatNavMenu = () => {
                 </Nav>
                 <hr></hr>
                 <Button tag={Link} to={"/channel/search"} className="mb-2">Join a Channel</Button>
+                <Button tag={Link} to={"/channel/manage"} className="mb-2">Manage Channels</Button>
                 <Button onClick={toggleCreateModal}>Create a Channel</Button>
                 <ChannelCreate createModal={createModal} toggle={toggleCreateModal} />
             </div>

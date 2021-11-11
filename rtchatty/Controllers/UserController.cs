@@ -181,5 +181,15 @@ namespace rtchatty.Controllers
             else
                 return Conflict(nameof(user));
         }
+
+        [HttpPost]
+        [Route("leaveChannel")]
+        public ActionResult<Channel> leaveChannel(User user)
+        {
+            if(service.LeaveChannel(user))
+                return Ok();
+            else
+                return Conflict(nameof(user));
+        }
     }
 }
