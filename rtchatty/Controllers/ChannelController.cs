@@ -22,8 +22,6 @@ namespace rtchatty.Controllers
         [Route("create")]
         public ActionResult<Channel> CreateChannel(Channel channel) 
         {
-            string invalidItem = "";
-
             if (!service.ValidateChannelName(channel.Name)) 
             {
                 return Conflict(nameof(channel.Name));
