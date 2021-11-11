@@ -49,12 +49,6 @@ const Chat = (props) => {
 				try {
 					console.log('connected');
 
-					console.log('ConnectionId is: ', connection.connectionId);
-					
-					// if(!chatRoomName)
-					// setChatRoomName('General Chat');
-					console.log('channel name is: ', channel);
-
 					// connection.invoke("Join");
 					updateConnectionID();
 
@@ -62,7 +56,7 @@ const Chat = (props) => {
 					prepareClientHubMethods();
 
 					// Populate with a list of messages
-					getAllMessages();
+					getAllMessages(channel);
 				}
 				catch (e) {
 					console.log('Connection failed: ', e)
@@ -125,10 +119,6 @@ const Chat = (props) => {
 	 */
 	const sendMessage = async (user, message, recipient) => {
 
-		// message = groupName;
-		//TODO: Remove debug
-		console.log('Channel name is: ', channel);
-
 		const chatMessage = {
 			user: user,
 			message: message,
@@ -152,10 +142,14 @@ const Chat = (props) => {
 	/**
 	 * Call Hub endpoint to pull all existing messages
 	 */
-	const getAllMessages = async () => {
+	const getAllMessages = async (channel) => {
 		if (connection.connectionStarted) {
 			try {
-				await axios.get('https://localhost:5001/Chat/getAll');
+				await axios.get('https://localhost:5001/Chat/getAll', {
+					params: {
+						channel: channel
+					}
+				});
 			}
 			catch (e) {
 				console.log('Retrieving message failed', e);
@@ -181,7 +175,6 @@ const Chat = (props) => {
 		if(connection.connectionStarted){
 			let connectionId = connection.connectionId
 			let usernameFixed = username[0];
-			console.log(usernameFixed);
 			try {
 				await axios.put('https://localhost:5001/api/user/updateConnection', {Username: usernameFixed, connectionId});
 			}
