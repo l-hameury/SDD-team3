@@ -16,6 +16,7 @@ const ChannelCreate = (props) => {
 
     const createChannel = (e) => {
         setShowSuccess(false);
+        setShowError(false);
         setCreatedChannel(channelName);
 
         axios.post("https://localhost:5001/api/channel/create", {
