@@ -52,6 +52,7 @@ const ChannelSearch = () => {
         <div>
             <Row className="justify-content-md-center">
                 <Col xs="6">
+                    <h1>Join a Channel</h1>
                     <div className="alert alert-success" hidden={!showJoinSuccess} name="successAlert">Success! You joined {channel}.</div>
                     <div className="alert alert-danger" hidden={!showJoinError} name="errorAlert">You are already a member of {channel}.</div>
                     {channelCards}
