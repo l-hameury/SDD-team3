@@ -22,6 +22,7 @@ const Chat = () => {
 	const username = useState(localStorage.getItem('username'));
 	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
+	const [notifications, setNotification] = useState(0)
 
 	latestChat.current = chat;
 
@@ -59,6 +60,7 @@ const Chat = () => {
 
 					// Populate with a list of messages
 					getAllMessages();
+
 				}
 				catch (e) {
 					console.log('Connection failed: ', e)
@@ -198,6 +200,27 @@ const Chat = () => {
 	//sets the modal status to true or false for sorting
 	const togglesort = () => setSortModal(!sortmodal);
 
+	//Get User's notification number...
+	useEffect(() =>{
+		console.log('In chat component, before notification count is updated...')
+		axios.get('https://localhost:5001/api/user/getUserByEmail', {
+			params: {
+			  email: userEmail[0],
+			},
+		}).then(function(res){
+			console.log(res)
+			const n = res.data.notificationCount;
+			setNotification(n)
+			console.log(res.data.notificationCount)
+			console.log(`In chat component, Result count = ${notifications}`)
+			console.log(`In chat component, After notification count is updated count = ${notifications}`)
+		})
+		.catch(function(error){	
+			console.log(`An error occured in Notification component: ${error}`)
+		})
+
+	})
+
 	return (
 		<div>
 			<Row>
@@ -233,7 +256,7 @@ const Chat = () => {
 							</ModalBody>
 						</Modal>
 						<hr />
-						<ClearNotification username={username}></ClearNotification>
+						<ClearNotification notificationCount= {notifications} username={username} userEmail={userEmail}></ClearNotification>
 						<Container className="pb-1 mb-5">
 							<ChatWindow chat={chat}/>
 							<ChatInput username={username} sendMessage={sendMessage} />

@@ -202,11 +202,15 @@ namespace rtchatty.Services
             return userList[0];
         }
 
-        public User clearNotification(string username){
-            var updatedUser = GetUserByUsername(username);
-            updatedUser.NotificationCount = 0;
-            _users.ReplaceOne<User>(user => user.Username.ToLower().Contains(username), updatedUser);
-
+        public User clearNotification(User user){
+            var username = user.Username;
+            User updatedUser = GetUserByUsername(username);
+            if(updatedUser != null){
+                updatedUser.NotificationCount = 0;
+                _users.ReplaceOne<User>(user => user.Username.ToLower().Contains(username), updatedUser);
+            }else{
+                Console.WriteLine("User was null");
+            }
             return updatedUser;
         }
 
