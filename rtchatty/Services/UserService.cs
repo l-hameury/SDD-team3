@@ -192,8 +192,6 @@ namespace rtchatty.Services
         public User notify(string username){
             List<User> userList = GetUsers();
             foreach(var user in userList){
-                Console.WriteLine("Sender: " + username);
-                Console.WriteLine("Receiver: " + user.Username);
                 if(!user.Username.Contains(username)){
                     user.NotificationCount+=1;
                     _users.ReplaceOne<User>(u => u.Email.ToLower().Contains(user.Email.ToLower()), user);

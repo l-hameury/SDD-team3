@@ -202,18 +202,12 @@ const Chat = () => {
 
 	//Get User's notification number...
 	useEffect(() =>{
-		console.log('In chat component, before notification count is updated...')
 		axios.get('https://localhost:5001/api/user/getUserByEmail', {
 			params: {
 			  email: userEmail[0],
 			},
 		}).then(function(res){
-			console.log(res)
-			const n = res.data.notificationCount;
-			setNotification(n)
-			console.log(res.data.notificationCount)
-			console.log(`In chat component, Result count = ${notifications}`)
-			console.log(`In chat component, After notification count is updated count = ${notifications}`)
+			setNotification(res.data.notificationCount)
 		})
 		.catch(function(error){	
 			console.log(`An error occured in Notification component: ${error}`)

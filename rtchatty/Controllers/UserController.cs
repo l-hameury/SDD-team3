@@ -174,7 +174,6 @@ namespace rtchatty.Controllers
         [Route("clearnotifications")]
         [HttpPost]
         public ActionResult<User> ClearNotification(User user){
-            Console.WriteLine("User name: " + user.Username);
             return service.clearNotification(user);
         }
     }
