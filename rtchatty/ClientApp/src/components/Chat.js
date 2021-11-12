@@ -49,6 +49,12 @@ const Chat = (props) => {
 				try {
 					console.log('connected');
 
+					console.log('ConnectionId is: ', connection.connectionId);
+					
+					// if(!chatRoomName)
+					// setChatRoomName('General Chat');
+					console.log('channel name is: ', channel);
+
 					// connection.invoke("Join");
 					updateConnectionID();
 
@@ -128,6 +134,10 @@ const Chat = (props) => {
 	 */
 	const sendMessage = async (user, message, recipient) => {
 
+		// message = groupName;
+		//TODO: Remove debug
+		console.log('Channel name is: ', channel);
+
 		const chatMessage = {
 			user: user,
 			message: message,
@@ -151,7 +161,7 @@ const Chat = (props) => {
 	/**
 	 * Call Hub endpoint to pull all existing messages
 	 */
-	const getAllMessages = async (channel) => {
+	const getAllMessages = async () => {
 		if (connection.connectionStarted) {
 			try {
 				await axios.get('https://localhost:5001/Chat/getAll', {
