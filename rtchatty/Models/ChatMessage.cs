@@ -23,5 +23,7 @@ namespace rtchatty.Models
 		public List<string> Likes { get; set; } = new List<string>();
 		[BsonElement("Dislikes")]
 		public List<string> Dislikes { get; set; } = new List<string>();
+		[BsonElement("Avatar")]
+		public string Avatar { get; set; }
 	}
 }

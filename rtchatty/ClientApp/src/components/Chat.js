@@ -81,7 +81,14 @@ const Chat = () => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp }
+					let messages = { user: element.message.user,
+						recipient: element.message.recipient,
+						likes: element.message.likes,
+						dislikes: element.message.dislikes, 
+						// avatar: element.user.avatar, 
+						avatar: element.message.avatar, 
+						message: element.message.message, 
+						timestamp: element.message.timestamp }
 					const updatedChat = [...latestChat.current];
 					updatedChat.push(messages);
 					setChat(updatedChat);
@@ -92,7 +99,6 @@ const Chat = () => {
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
 			
-			message.avatar = avatar;
 			const updatedChat = [...latestChat.current];
 			updatedChat.push(message);
 
@@ -109,6 +115,18 @@ const Chat = () => {
 			updatedChat.splice(index, 1, newMsg)
 			setChat(updatedChat)
 		})
+
+		connection.on('LikeOrDislikeMessage', (oldMsg, newMsg) => {
+			newMsg.avatar = oldMsg.avatar
+			newMsg.likes = oldMsg.likes
+			newMsg.dislikes = oldMsg.dislikes
+			newMsg.recipient = oldMsg.recipient
+			const updatedChat = [...latestChat.current]
+			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
+			updatedChat.splice(index, 1, newMsg)
+			setChat(updatedChat)
+		})
+		
 	}
 
 	/**

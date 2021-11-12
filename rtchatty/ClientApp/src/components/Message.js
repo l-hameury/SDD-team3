@@ -17,8 +17,10 @@ const Message = (props) => {
 	const [editMessageButton, setEditButton] = useState(false)
 	const [editMsgModal, setEditMsgModal] = useState(false)
 	const currentUser = localStorage.getItem("email").toString()
-	const [liked, setLiked] = useState([props.likes].includes(currentUser))
-	const [disliked, setDisliked] = useState([props.dislikes].includes(currentUser))
+	const [likes, setLikes] = useState(props.likes)
+	const [dislikes, setDislikes] = useState(props.dislikes)
+	const [liked, setLiked] = useState(props.likes.includes(currentUser))
+	const [disliked, setDisliked] = useState(props.dislikes.includes(currentUser))
 
 	const toggleCard = async (event) => {
 		// In case the recipient is null
@@ -52,7 +54,10 @@ const Message = (props) => {
 					Dislikes: props.dislikes
 			})
 			.then(function (res) {
+				setLikes(res.data.likes)
+				setDislikes(res.data.dislikes)	
 				setLiked(!liked)
+				setDisliked(false)
 			})
 			// .catch(function () {
 			// 	setUserCardModal(false)
@@ -61,15 +66,20 @@ const Message = (props) => {
 	}
 
 	const dislikeMessage = async (messageId) => {
-		if (currentUser && messageId) {
-			await axios.get('https://localhost:5001/Chat/dislikeMessage', {
-				params: {
-					username: currentUser,
-					messageId: messageId
-				}
+		if (currentUser) {
+			await axios.post('https://localhost:5001/Chat/dislikeMessage', {
+					User: props.user,
+					Message: props.message,
+					Timestamp: props.timestamp,
+					Likes: props.likes,
+					Dislikes: props.dislikes
+					
 			})
 			.then(function (res) {
-				setdisLiked(!disliked)
+				setLikes(res.data.likes)
+				setDislikes(res.data.dislikes)	
+				setDisliked(!disliked)
+				setLiked(false)
 			})
 			// .catch(function () {
 			// 	setUserCardModal(false)
@@ -87,7 +97,7 @@ const Message = (props) => {
 				<Container>
 					<Row noGutters>
 						<Col xs="auto">
-							<img width="40em" src={props.user.avatar ? props.user.avatar : defaultProfilePic} alt="profile pic" ></img>
+							<img width="40em" src={props.avatar ? props.avatar : defaultProfilePic} alt="profile pic" ></img>
 						</Col>
 						<Col>
 							<CardTitle>
@@ -99,20 +109,20 @@ const Message = (props) => {
 								? <Button size="sm" onClick={toggleMsgModal}>Edit Message</Button>
 								: ''}
 								<Button 
-									color={liked ? "secondary" : "primary"} 
+									color={liked ? "warning" : "primary"} 
 									size="sm"
 									className="m-1"
 									onClick={() => likeMessage()} >
 									<FontAwesomeIcon icon={faThumbsUp} transform="grow-5" className="p-0 m-1" />
-									<Badge color={liked ? "secondary" : "primary"} > {[props.likes].length} </Badge>
+									<Badge> {likes.length} </Badge>
 								</Button>
 								<Button 
-									color={disliked ? "secondary" : "danger"} 
+									color={disliked ? "warning" : "danger"} 
 									size="sm" 
 									className="m-1"
 									onClick={() => dislikeMessage()}>
 									<FontAwesomeIcon icon={faThumbsDown} transform="grow-5" className="p-0 m-1" />
-									<Badge outline color={disliked ? "secondary" : "danger"}> {[props.dislikes].length} </Badge>
+									<Badge> {dislikes.length} </Badge>
 								</Button>
 							</CardTitle>
 							<Modal style={{ width: "350px" }} isOpen={userCardModal} toggle={() => setUserCardModal(!userCardModal)}>
