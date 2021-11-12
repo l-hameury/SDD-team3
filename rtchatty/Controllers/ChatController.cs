@@ -68,8 +68,8 @@ namespace rtchatty.Controllers
         [HttpDelete]
         public async Task DeleteMessage(ChatMessage message)
         {
-            _chatService.DeleteMessage(message);
-            await _chatHub.Clients.All.DeleteMessage(message);
+            var msg = _chatService.DeleteMessage(message);
+            await _chatHub.Clients.All.DeleteMessage(msg);
         }
 
         // TODO: Implement users and Groups for sending DMs
