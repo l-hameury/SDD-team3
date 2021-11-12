@@ -16,6 +16,8 @@ import "./custom.css";
 import axios from "axios";
 import AdminPage from "./components/Admin";
 import LogOut from "./components/LogOut";
+import ChannelSearch from "./components/ChannelSearch";
+import ChannelManage from "./components/ChannelManage";
 
 // refactoring App.js
 function App() {
@@ -41,7 +43,9 @@ function App() {
         <Route exact path="/" component={Home} />
         <Route exact path="/counter" component={Counter} />
         <Route exact path="/fetch-data" component={FetchData} />
-        <Route exact path="/chat" component={Chat} />
+        <Route exact path="/chat/:channel?" component={Chat} />
+        <Route exact path="/channel/search" component={ChannelSearch} />
+        <Route exact path="/channel/manage" component={ChannelManage} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/user-nav" component={UserNav} />

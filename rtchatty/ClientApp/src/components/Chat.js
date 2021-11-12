@@ -5,20 +5,23 @@ import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
 import SearchKeyword from './SearchKeyword';
+import SortMessages from './SortMessages';
 import { Container } from 'reactstrap';
 import ChatNavMenu from './ChatNav';
 
-const Chat = () => {
+const Chat = (props) => {
 	const [connection, setConnection] = useState(null);
 	const [chat, setChat] = useState([]);
 	const [messagesEnd, setMessagesEnd] = useState();
-	const [modal, setModal] = useState(false);
+	const [searchmodal, setSearchModal] = useState(false);
+	const [sortmodal, setSortModal] = useState(false);
 	const latestChat = useRef(null);
 	const [chatNavOpen, setChatNav] = useState();
 	const toggleChatNav = () => setChatNav(!chatNavOpen);
 	const username = useState(localStorage.getItem('username'));
 	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
+	const channel = (props.match.params.channel) ? props.match.params.channel : "General Chat";
 
 	latestChat.current = chat;
 
@@ -44,10 +47,8 @@ const Chat = () => {
 			if (connection) {
 				await connection.start();
 				try {
-					console.log('connected')
+					console.log('connected');
 
-					console.log('ConnectionId is: ', connection.connectionId)
-					
 					// connection.invoke("Join");
 					updateConnectionID();
 
@@ -55,7 +56,7 @@ const Chat = () => {
 					prepareClientHubMethods();
 
 					// Populate with a list of messages
-					getAllMessages();
+					getAllMessages(channel);
 				}
 				catch (e) {
 					console.log('Connection failed: ', e)
@@ -79,10 +80,12 @@ const Chat = () => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp }
+					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp , channel: element.message.Channel}
 					const updatedChat = [...latestChat.current];
-					updatedChat.push(messages);
-					setChat(updatedChat);
+					if(message.channel = channel){
+						updatedChat.push(messages);
+						setChat(updatedChat);
+					}
 				});
 			}
 		});
@@ -99,20 +102,14 @@ const Chat = () => {
 			scrollToBottom();
 		});
 
-		// I think this will need some modification once chat channels are implemented because
-		// as of right now, this functionality will edit the message that is currently on 'General Chat'
-		// so if you edit a message that is not on the 'General Chat'(a message on a chat channel) it will edit the 'General Chat' message regardless, hope that makes sense
-		// I might be able to do conditional statements here to check for group and recipient, then I can update the correct chat accordingly
 		connection.on('EditMessage', (oldMsg, newMsg) => {
-			newMsg.avatar = avatar
-			newMsg.recipient = oldMsg.recipient
 			const updatedChat = [...latestChat.current]
 			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
-			updatedChat.splice(index, 1, newMsg)
+			oldMsg.message = newMsg.message
+			updatedChat.splice(index, 1, oldMsg)
 			setChat(updatedChat)
 		})
 
-		// this will also need to be modified after chat channel implementation because of same reason above
 		connection.on('DeleteMessage', message => {
 			const updatedChat = [...latestChat.current]
 			const index = updatedChat.map(function(x){return x.message}).indexOf(message.message)
@@ -127,14 +124,12 @@ const Chat = () => {
 	 * 		For chat rooms, DMs, etc.
 	 */
 	const sendMessage = async (user, message, recipient) => {
-		
-		// TODO: Add recipient email for private messages
-		// Maybe nullable field in object? I dunno yet
+
 		const chatMessage = {
 			user: user,
 			message: message,
-			// TODO: Remove this probably
-			recipient: recipient
+			recipient: recipient,
+			Channel: channel,
 		};
 		if (connection.connectionStarted) {
 			try {
@@ -145,7 +140,6 @@ const Chat = () => {
 			}
 		}
 		else {
-			// TODO: We're not using a separate server here, so.... not super relevant
 			alert('No connection to server yet.');
 		}
 		scrollToBottom();
@@ -154,11 +148,14 @@ const Chat = () => {
 	/**
 	 * Call Hub endpoint to pull all existing messages
 	 */
-	const getAllMessages = async () => {
-		console.log("Get message called here! \n");
+	const getAllMessages = async (channel) => {
 		if (connection.connectionStarted) {
 			try {
-				await axios.get('https://localhost:5001/Chat/getAll');
+				await axios.get('https://localhost:5001/Chat/getAll', {
+					params: {
+						channel: channel
+					}
+				});
 			}
 			catch (e) {
 				console.log('Retrieving message failed', e);
@@ -184,7 +181,6 @@ const Chat = () => {
 		if(connection.connectionStarted){
 			let connectionId = connection.connectionId
 			let usernameFixed = username[0];
-			console.log(usernameFixed);
 			try {
 				await axios.put('https://localhost:5001/api/user/updateConnection', {Username: usernameFixed, connectionId});
 			}
@@ -194,7 +190,11 @@ const Chat = () => {
 		}
 	}
 	//sets the modal status to true(show)/false
-	const toggle = () => setModal(!modal);
+	const togglesearch = () => setSearchModal(!searchmodal);
+
+	//sets the modal status to true or false for sorting
+	const togglesort = () => setSortModal(!sortmodal);
+
 	return (
 		<div>
 			<Row>
@@ -204,16 +204,29 @@ const Chat = () => {
 				<div className="vr" style={{ backgroundColor: "white", borderLeft: "1px solid #333" }}></div>
 				<Col>
 					<div>
-						<h1>General Chat</h1>
-						<Button onClick={toggle}>Search</Button>
-						<Modal isOpen={modal} toggle={toggle}>
+						<h1>{channel ? channel : "General Chat"}</h1>
+						<span>
+							<Button onClick={togglesearch}>Search</Button> {'  '}
+							<Button onClick={togglesort} >Sort</Button> 
+						</span>
+						<Modal isOpen={searchmodal} >
 							<Row>
 								<ModalHeader>Search for Messages{'        '}
-									<Button color="danger" onClick={toggle}>Close</Button>
+									<Button color="danger" onClick={togglesearch}>Close</Button>
 								</ModalHeader>
 							</Row>
 							<ModalBody>
 								<SearchKeyword chat={chat} />
+							</ModalBody>
+						</Modal>
+						<Modal isOpen={sortmodal}>
+							<Row>
+								<ModalHeader>Sort Messages By User or Date{'        '}
+									<Button color="danger" onClick={togglesort}>Close</Button>
+								</ModalHeader>
+							</Row>
+							<ModalBody>
+								<SortMessages chat={chat}/>
 							</ModalBody>
 						</Modal>
 						<hr />

@@ -28,20 +28,14 @@ namespace rtchatty.Controllers
         }
 
         [HttpPost("messages")]
-        public async Task SendMessage(ChatMessage message, string username = "", string recipient = "")
+        public async Task SendMessage(ChatMessage message, string chatRoomName, string username = "", string recipient = "")
         {
             _chatService.StoreMessage(message);
-
-            Console.WriteLine("Recipient pre if is: ", message.recipient);
-
-            // TODO: Uncomment this line to send a private message to the user with this specific email.
-            // email = "kris@test.com";
 
             // if email was passed, get the corresponding User and connection ID. 
             // Then call Receive Message only on that connection.
             if(message.recipient != "")
             {
-                Console.WriteLine("Recipient is: ", message.recipient);
                 User user = _userService.GetUserByUsername(message.recipient);
                 await _chatHub.Clients.Client(user.ConnectionID).ReceiveMessage(message);
             }
@@ -53,11 +47,11 @@ namespace rtchatty.Controllers
 
         }
 
-        // TODO: Add `group` property to allow sending to specific groups/chats
-        [HttpGet("getAll")]
-        public async Task GetMessages()
+        [Route("getAll")]
+        [HttpGet]
+        public async Task GetMessages(string channel = "")
         {
-            List<object> messageList = _chatService.GetMessages();
+            List<object> messageList = _chatService.GetMessages(channel);
             await _chatHub.Clients.All.PopulateMessages(messageList);
             // await _chatHub.GetMessages();
         }
@@ -67,7 +61,6 @@ namespace rtchatty.Controllers
         public async Task EditMessage(ChatMessage message)
         {
             var msg = _chatService.EditMessage(message);
-            // I think this will need to be modified once chat channels are implemented. I'll leave this here for now as a reminder
             await _chatHub.Clients.All.EditMessage(msg, message);
         }
 
@@ -76,7 +69,6 @@ namespace rtchatty.Controllers
         public async Task DeleteMessage(ChatMessage message)
         {
             _chatService.DeleteMessage(message);
-            // I think this will need to be modified once chat channels are implemented. I'll leave this here for now as a reminder
             await _chatHub.Clients.All.DeleteMessage(message);
         }
 

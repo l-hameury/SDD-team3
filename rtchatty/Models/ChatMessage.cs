@@ -8,8 +8,8 @@ namespace rtchatty.Models
 		[BsonId]
 		[BsonRepresentation(BsonType.ObjectId)]
 		public string Id { get; set; }
-		[BsonElement("Group")]
-		public string Group { get; set; }
+		[BsonElement("Channel")]
+		public string Channel { get; set; }
 		[BsonElement("User")]
 		public string User { get; set; }
 		//TODO: Probably delete this 
