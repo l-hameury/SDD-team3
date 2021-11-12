@@ -10,7 +10,7 @@ import { Container } from 'reactstrap';
 import ChatNavMenu from './ChatNav';
 import ClearNotification from './ClearNotification';
 
-const Chat = () => {
+const Chat = (props) => {
 	const [connection, setConnection] = useState(null);
 	const [chat, setChat] = useState([]);
 	const [messagesEnd, setMessagesEnd] = useState();
@@ -23,6 +23,7 @@ const Chat = () => {
 	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
 	const [notifications, setNotification] = useState(0)
+	const channel = (props.match.params.channel) ? props.match.params.channel : "General Chat";
 
 	latestChat.current = chat;
 
@@ -48,10 +49,14 @@ const Chat = () => {
 			if (connection) {
 				await connection.start();
 				try {
-					console.log('connected')
+					console.log('connected');
 
-					console.log('ConnectionId is: ', connection.connectionId)
+					console.log('ConnectionId is: ', connection.connectionId);
 					
+					// if(!chatRoomName)
+					// setChatRoomName('General Chat');
+					console.log('channel name is: ', channel);
+
 					// connection.invoke("Join");
 					updateConnectionID();
 
@@ -84,10 +89,12 @@ const Chat = () => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp }
+					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp , channel: element.message.Channel}
 					const updatedChat = [...latestChat.current];
-					updatedChat.push(messages);
-					setChat(updatedChat);
+					if(message.channel = channel){
+						updatedChat.push(messages);
+						setChat(updatedChat);
+					}
 				});
 			}
 		});
@@ -120,14 +127,16 @@ const Chat = () => {
 	 * 		For chat rooms, DMs, etc.
 	 */
 	const sendMessage = async (user, message, recipient) => {
-		
-		// TODO: Add recipient email for private messages
-		// Maybe nullable field in object? I dunno yet
+
+		// message = groupName;
+		//TODO: Remove debug
+		console.log('Channel name is: ', channel);
+
 		const chatMessage = {
 			user: user,
 			message: message,
-			// TODO: Remove this probably
-			recipient: recipient
+			recipient: recipient,
+			Channel: channel,
 		};
 		if (connection.connectionStarted) {
 			try {
@@ -146,7 +155,6 @@ const Chat = () => {
 			}
 		}
 		else {
-			// TODO: We're not using a separate server here, so.... not super relevant
 			alert('No connection to server yet.');
 		}
 		scrollToBottom();
@@ -156,7 +164,6 @@ const Chat = () => {
 	 * Call Hub endpoint to pull all existing messages
 	 */
 	const getAllMessages = async () => {
-		console.log("Get message called here! \n");
 		if (connection.connectionStarted) {
 			try {
 				await axios.get('https://localhost:5001/Chat/getAll');
@@ -224,7 +231,7 @@ const Chat = () => {
 				<div className="vr" style={{ backgroundColor: "white", borderLeft: "1px solid #333" }}></div>
 				<Col>
 					<div>
-						<h1>General Chat</h1>
+						<h1>{channel ? channel : "General Chat"}</h1>
 						<span>
 							<Button onClick={togglesearch}>Search</Button> {'  '}
 							<Button onClick={togglesort} >Sort</Button> 
