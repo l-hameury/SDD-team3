@@ -99,7 +99,6 @@ const Chat = (props) => {
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
 			if(message.channel !== channel) return
-			message.avatar = avatar;
 			const updatedChat = [...latestChat.current];
 			updatedChat.push(message);
 
@@ -142,6 +141,7 @@ const Chat = (props) => {
 			user: user,
 			message: message,
 			recipient: recipient,
+			avatar: avatar,
 			Channel: channel,
 		};
 		if (connection.connectionStarted) {
