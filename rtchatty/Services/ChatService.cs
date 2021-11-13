@@ -11,7 +11,7 @@ namespace rtchatty.Services
 	{
 		private readonly IMongoCollection<ChatMessage> _messages;
 		private readonly IMongoCollection<User> _users;
-		private readonly string key;
+		// private readonly string key;
 
 		public ChatService(IConfiguration configuration)
 		{

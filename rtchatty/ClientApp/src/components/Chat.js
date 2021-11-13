@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import axios from 'axios';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
@@ -22,6 +22,7 @@ const Chat = (props) => {
 	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
 	const channel = (props.match.params.channel) ? props.match.params.channel : "General Chat";
+	// const [channel, setChannel] = useState(props.match.params.channel ? props.match.params.channel : "General Chat")
 
 	latestChat.current = chat;
 
@@ -67,6 +68,15 @@ const Chat = (props) => {
 		startConnection();
 	}, [connection]);
 
+	useEffect(()=>{
+		if(connection && connection.connectionStarted){
+			console.log("useEffect " , props.match.params.channel)
+			console.log('calling get all messages');
+			setChat([]);
+			getAllMessages(props.match.params.channel, connection.connectionId);
+		}
+	},[props.match.params.channel]);
+
 	/**
 	 * Client Hub Methods are methods declared here
 	 * That the Hub (server-side) uses to communicate 
@@ -80,9 +90,10 @@ const Chat = (props) => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp , channel: element.message.Channel}
+					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, 
+						timestamp: element.message.timestamp , channel: element.message.channel}
 					const updatedChat = [...latestChat.current];
-					if(message.channel = channel){
+					if(messages.channel == channel){
 						updatedChat.push(messages);
 						setChat(updatedChat);
 					}
@@ -90,14 +101,31 @@ const Chat = (props) => {
 			}
 		});
 
+		connection.on('ChangeChannels', messageList => {
+			console.log(messageList)
+			// TODO: Probably do this server-side with connection ID
+			messageList.forEach(element => {
+				let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, 
+					timestamp: element.message.timestamp , channel: element.message.channel}
+				const updatedChat = [...latestChat.current];
+				// if(messages.channel == channel){
+					updatedChat.push(messages);
+					setChat(updatedChat);
+				// }
+			});
+		});
+
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
 			
 			message.avatar = avatar;
 			const updatedChat = [...latestChat.current];
-			updatedChat.push(message);
-
-			setChat(updatedChat);
+			console.log('message channel is: ', message.channel);
+			console.log('state channel is: ', channel);
+			// if(message.channel == props.match.params.channel){
+				updatedChat.push(message);
+				setChat(updatedChat);
+			// }
 
 			scrollToBottom();
 		});
@@ -123,7 +151,7 @@ const Chat = (props) => {
 			user: user,
 			message: message,
 			recipient: recipient,
-			Channel: channel,
+			channel: props.match.params.channel,
 		};
 		if (connection.connectionStarted) {
 			try {
@@ -142,12 +170,13 @@ const Chat = (props) => {
 	/**
 	 * Call Hub endpoint to pull all existing messages
 	 */
-	const getAllMessages = async (channel) => {
+	const getAllMessages = async (channel, connectionId) => {
 		if (connection.connectionStarted) {
 			try {
 				await axios.get('https://localhost:5001/Chat/getAll', {
 					params: {
-						channel: channel
+						channel: channel,
+						connectionId: connectionId
 					}
 				});
 			}

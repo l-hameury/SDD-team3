@@ -51,7 +51,7 @@ const Message = (props) => {
 								<small>{moment(props.timestamp).format('LT')} </small>
 								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.user}</strong>
 								<p style={{display:"inline"}}> to </p>
-								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.recipient ? props.recipient : "General Chat"}</strong>:
+								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.recipient ? props.recipient : "Channel"}</strong>:
 								{localStorage.getItem('username') == props.user && editMessageButton
 								? <Button size="sm" onClick={toggleMsgModal}>Edit Message</Button>
 								: ''}
