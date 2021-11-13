@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 namespace rtchatty.Models
@@ -19,10 +18,6 @@ namespace rtchatty.Models
 		[BsonElement("Message")]
 		public string Message { get; set; }
 		public DateTime Timestamp { get; set; }
-		[BsonElement("Likes")]
-		public List<string> Likes { get; set; } = new List<string>();
-		[BsonElement("Dislikes")]
-		public List<string> Dislikes { get; set; } = new List<string>();
 		[BsonElement("Avatar")]
 		public string Avatar { get; set; }
 	}
