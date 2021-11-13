@@ -111,8 +111,14 @@ const Chat = (props) => {
 			console.log(messageList)
 			// TODO: Probably do this server-side with connection ID
 			messageList.forEach(element => {
-				let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, 
-					timestamp: element.message.timestamp , channel: element.message.channel}
+				let messages = { user: element.message.user,
+					recipient: element.message.recipient,
+					likes: element.message.likes,
+					dislikes: element.message.dislikes, 
+					avatar: element.user.avatar,
+					message: element.message.message, 
+					timestamp: element.message.timestamp,
+					channel: element.message.channel}
 				const updatedChat = [...latestChat.current];
 				// if(messages.channel == channel){
 					updatedChat.push(messages);
