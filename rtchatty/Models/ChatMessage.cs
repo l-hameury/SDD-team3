@@ -19,6 +19,10 @@ namespace rtchatty.Models
 		[BsonElement("Message")]
 		public string Message { get; set; }
 		public DateTime Timestamp { get; set; }
+		[BsonElement("Likes")]
+		public List<string> Likes { get; set; } = new List<string>();
+		[BsonElement("Dislikes")]
+		public List<string> Dislikes { get; set; } = new List<string>();
 		[BsonElement("Avatar")]
 		public string Avatar { get; set; }
 	}
