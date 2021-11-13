@@ -23,7 +23,7 @@ const ChannelCreate = (props) => {
             name: channelName
         })
         .then(function (res) {
-            props.toggle; // Not working >:(
+            //props.toggle; // Not working >:(
             setShowSuccess(true);
         })
         .catch(function (error) {

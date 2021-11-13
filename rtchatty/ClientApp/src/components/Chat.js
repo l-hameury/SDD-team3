@@ -91,7 +91,7 @@ const Chat = (props) => {
 				messageList.forEach(element => {
 					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp , channel: element.message.Channel}
 					const updatedChat = [...latestChat.current];
-					if(message.channel = channel){
+					if(messages.channel = channel){
 						updatedChat.push(messages);
 						setChat(updatedChat);
 					}
