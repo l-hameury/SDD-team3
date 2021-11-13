@@ -114,8 +114,7 @@ const Chat = (props) => {
 
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
-			
-			message.avatar = avatar;
+			if(message.channel !== channel) return
 			const updatedChat = [...latestChat.current];
 			console.log('message channel is: ', message.channel);
 			console.log('state channel is: ', channel);
@@ -128,11 +127,20 @@ const Chat = (props) => {
 		});
 
 		connection.on('EditMessage', (oldMsg, newMsg) => {
-			newMsg.avatar = avatar
-			newMsg.recipient = oldMsg.recipient
+			if(oldMsg.channel !== channel) return
+			oldMsg.avatar = avatar
 			const updatedChat = [...latestChat.current]
 			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
-			updatedChat.splice(index, 1, newMsg)
+			oldMsg.message = newMsg.message
+			updatedChat.splice(index, 1, oldMsg)
+			setChat(updatedChat)
+		})
+
+		connection.on('DeleteMessage', message => {
+			if(message.channel !== channel) return
+			const updatedChat = [...latestChat.current]
+			const index = updatedChat.map(function(x){return x.message}).indexOf(message.message)
+			updatedChat.splice(index, 1)
 			setChat(updatedChat)
 		})
 	}
@@ -148,7 +156,8 @@ const Chat = (props) => {
 			user: user,
 			message: message,
 			recipient: recipient,
-			channel: channel,
+			avatar: avatar,
+			Channel: channel,
 		};
 		if (connection.connectionStarted) {
 			try {

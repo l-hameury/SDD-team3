@@ -50,12 +50,21 @@ namespace rtchatty.Services
 
 		public ChatMessage EditMessage(ChatMessage message)
 		{
-			// okay ideally I would've filtered by the Message ID, but I couldn't figure out how to get the ID.
-			// so I filtered by what I think is the next best thing which is matching by Username && Timestamp ._.
 			var filter = Builders<ChatMessage>.Filter.Eq(db => db.User, message.User) & Builders<ChatMessage>.Filter.Eq(db => db.Timestamp, message.Timestamp);
 			var msg = _messages.Find(filter).FirstOrDefault();
 			var update = Builders<ChatMessage>.Update.Set(db => db.Message, message.Message);
 			_messages.UpdateOne(filter,update);
+
+			return msg;
+		}
+
+		public ChatMessage DeleteMessage(ChatMessage message){
+			var filter = Builders<ChatMessage>.Filter.Eq(db => db.User, message.User) 
+				& Builders<ChatMessage>.Filter.Eq(db => db.Message, message.Message) 
+				& Builders<ChatMessage>.Filter.Eq(db => db.Timestamp, message.Timestamp);
+				
+			var msg = _messages.Find(filter).FirstOrDefault();
+			_messages.FindOneAndDelete<ChatMessage>(filter);
 
 			return msg;
 		}

@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import "./NavMenu.css";
 import axios from "axios";
 import ChannelCreate from "./ChannelCreate";
-import Chat from "./Chat";
 
 const ChatNavMenu = () => {
     const username = localStorage.getItem('username');

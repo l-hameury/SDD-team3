@@ -8,18 +8,34 @@ const EditMessageModal = (props) => {
 
 	const submitChange = async (event) => {
 		event.preventDefault()
-		await axios.post('https://localhost:5001/Chat/editMessage', {
-			User: props.username,
-			Message: newMsg,
-			Timestamp: props.timestamp
-		})
-		.then(function (){
+		try{
+			await axios.post('https://localhost:5001/Chat/editMessage', {
+				User: props.username,
+				Message: newMsg,
+				Timestamp: props.timestamp
+			})
 			props.toggle()
-		})
-		.catch(function (err){
-			console.log(err)
+		}
+		catch (error){
+			console.log(error)
+		}
+	}
+
+	const submitDelete = async (event) => {
+		event.preventDefault()
+		try{
+			await axios.delete('https://localhost:5001/Chat/deleteMessage', {
+				data: {
+					User: props.username,
+					Message: props.text,
+					Timestamp: props.timestamp
+				}
+			})
 			props.toggle()
-		})
+		}
+		catch (error){
+			console.log(error)
+		}
 	}
 
 	return(
@@ -28,6 +44,7 @@ const EditMessageModal = (props) => {
 				<ModalBody>
 					<Input defaultValue={props.text} onChange={handleChange}></Input>
 					<Button size="sm" onClick={submitChange}>Submit</Button>
+					<Button size="sm" color="danger" onClick={submitDelete}>Delete</Button>
 				</ModalBody>
 			</Modal>
 		</div>

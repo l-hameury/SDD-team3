@@ -11,5 +11,6 @@ namespace rtchatty.Hubs.Clients
 		Task PopulateMessages(List<object> messageList);
 		Task EditMessage(ChatMessage oldMsg, ChatMessage newMsg);
 		Task ChangeChannels(List<object> messageList);
+		Task DeleteMessage(ChatMessage message);
 	}
 }
