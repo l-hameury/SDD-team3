@@ -101,6 +101,7 @@ namespace rtchatty.Controllers
         [HttpPost]
         public async Task<ChatMessage> DislikeMessage(ChatMessage message)
         {
+            //fuck github
             ClaimsIdentity identity = User.Identity as ClaimsIdentity;
             IEnumerable<Claim> claims = identity.Claims;
             var email = claims.FirstOrDefault().Value;
