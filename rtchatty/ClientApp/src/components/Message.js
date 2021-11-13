@@ -105,9 +105,6 @@ const Message = (props) => {
 								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.user}</strong>
 								<p style={{display:"inline"}}> to </p>
 								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.recipient ? props.recipient : "Channel"}</strong>:
-								{localStorage.getItem('username') == props.user && editMessageButton
-								? <Button size="sm" onClick={toggleMsgModal}>Edit Message</Button>
-								: ''}
 								<Button 
 									color={liked ? "warning" : "primary"} 
 									size="sm"
@@ -124,6 +121,9 @@ const Message = (props) => {
 									<FontAwesomeIcon icon={faThumbsDown} transform="grow-5" className="p-0 m-1" />
 									<Badge> {dislikes.length} </Badge>
 								</Button>
+								{localStorage.getItem('username') == props.user && editMessageButton
+								? <Button size="sm" onClick={toggleMsgModal}>Edit Message</Button>
+								: ''}
 							</CardTitle>
 							<Modal style={{ width: "350px" }} isOpen={userCardModal} toggle={() => setUserCardModal(!userCardModal)}>
 								<ModalBody><UserCard user={user} /></ModalBody>
