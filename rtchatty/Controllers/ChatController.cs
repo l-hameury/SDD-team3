@@ -28,9 +28,16 @@ namespace rtchatty.Controllers
         }
 
         [HttpPost("messages")]
-        public async Task SendMessage(ChatMessage message, string channel, string username = "", string recipient = "")
+        public async Task SendMessage(ChatMessage message, string chatRoomName, string username = "", string recipient = "")
         {
             _chatService.StoreMessage(message);
+
+            Console.WriteLine("Recipient pre if is: ", message.recipient);
+            Console.WriteLine("Chat Room name is : ", chatRoomName);
+            Console.WriteLine("Or maybe group name is : ", message.Channel);
+
+            // TODO: Uncomment this line to send a private message to the user with this specific email.
+            // email = "kris@test.com";
 
             // if email was passed, get the corresponding User and connection ID. 
             // Then call Receive Message only on that connection.
@@ -69,5 +76,21 @@ namespace rtchatty.Controllers
             var msg = _chatService.EditMessage(message);
             await _chatHub.Clients.All.EditMessage(msg, message);
         }
+
+        [Route("deleteMessage")]
+        [HttpDelete]
+        public async Task DeleteMessage(ChatMessage message)
+        {
+            var msg = _chatService.DeleteMessage(message);
+            await _chatHub.Clients.All.DeleteMessage(msg);
+        }
+
+        // TODO: Implement users and Groups for sending DMs
+		// Source for this sample: 
+		// https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/signalr/groups/sample/Hubs/ChatHub.cs
+		// public Task SendPrivateMessage(string user, string message)
+		// {
+		// 	return chatHub.Clients.User(user).SendPrivateMessage("ReceiveMessage", message);
+		// }
     }
 }

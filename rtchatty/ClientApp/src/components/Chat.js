@@ -22,7 +22,6 @@ const Chat = (props) => {
 	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
 	const channel = (props.match.params.channel) ? props.match.params.channel : "General Chat";
-	// const [channel, setChannel] = useState(props.match.params.channel ? props.match.params.channel : "General Chat")
 
 	latestChat.current = chat;
 
@@ -50,6 +49,12 @@ const Chat = (props) => {
 				try {
 					console.log('connected');
 
+					console.log('ConnectionId is: ', connection.connectionId);
+					
+					// if(!chatRoomName)
+					// setChatRoomName('General Chat');
+					console.log('channel name is: ', channel);
+
 					// connection.invoke("Join");
 					updateConnectionID();
 
@@ -73,7 +78,7 @@ const Chat = (props) => {
 			console.log("useEffect " , props.match.params.channel)
 			console.log('calling get all messages');
 			setChat([]);
-			getAllMessages(props.match.params.channel, connection.connectionId);
+			getAllMessages(props.match.params.channel ? props.match.params.channel : "General Chat", connection.connectionId);
 		}
 	},[props.match.params.channel]);
 
@@ -90,10 +95,9 @@ const Chat = (props) => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, 
-						timestamp: element.message.timestamp , channel: element.message.channel}
+					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, timestamp: element.message.timestamp , channel: element.message.Channel}
 					const updatedChat = [...latestChat.current];
-					if(messages.channel == channel){
+					if(messages.channel = channel){
 						updatedChat.push(messages);
 						setChat(updatedChat);
 					}
@@ -117,8 +121,7 @@ const Chat = (props) => {
 
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
-			
-			message.avatar = avatar;
+			// if(message.channel !== props.match.params.channel) return
 			const updatedChat = [...latestChat.current];
 			console.log('message channel is: ', message.channel);
 			console.log('state channel is: ', channel);
@@ -131,11 +134,20 @@ const Chat = (props) => {
 		});
 
 		connection.on('EditMessage', (oldMsg, newMsg) => {
-			newMsg.avatar = avatar
-			newMsg.recipient = oldMsg.recipient
+			if(oldMsg.channel !== channel) return
+			oldMsg.avatar = avatar
 			const updatedChat = [...latestChat.current]
 			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
-			updatedChat.splice(index, 1, newMsg)
+			oldMsg.message = newMsg.message
+			updatedChat.splice(index, 1, oldMsg)
+			setChat(updatedChat)
+		})
+
+		connection.on('DeleteMessage', message => {
+			if(message.channel !== channel) return
+			const updatedChat = [...latestChat.current]
+			const index = updatedChat.map(function(x){return x.message}).indexOf(message.message)
+			updatedChat.splice(index, 1)
 			setChat(updatedChat)
 		})
 	}
@@ -147,11 +159,16 @@ const Chat = (props) => {
 	 */
 	const sendMessage = async (user, message, recipient) => {
 
+		// message = groupName;
+		//TODO: Remove debug
+		console.log('Channel name is: ', channel);
+
 		const chatMessage = {
 			user: user,
 			message: message,
 			recipient: recipient,
-			channel: props.match.params.channel,
+			avatar: avatar,
+			Channel: channel,
 		};
 		if (connection.connectionStarted) {
 			try {
