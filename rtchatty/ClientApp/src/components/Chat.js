@@ -71,7 +71,7 @@ const Chat = (props) => {
 		if(connection && connection.connectionStarted){
 			console.log('calling get all messages');
 			setChat([]);
-			getAllMessages(channel, connection.connectionId);
+			getAllMessages( (props.match.params.channel) ? props.match.params.channel : "General Chat", connection.connectionId);
 		}
 	},[props.match.params.channel]);
 
