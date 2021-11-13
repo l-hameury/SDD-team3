@@ -110,7 +110,8 @@ const Register = () => {
             password: inputs.password,
             canSearch: true,
             statusShow: true,
-            canMessage: true
+            canMessage: true,
+            channels: ["General Chat"],
         })
             .then(function (res) {
                 console.log(res)

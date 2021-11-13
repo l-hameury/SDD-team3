@@ -8,8 +8,8 @@ namespace rtchatty.Models
 		[BsonId]
 		[BsonRepresentation(BsonType.ObjectId)]
 		public string Id { get; set; }
-		[BsonElement("Group")]
-		public string Group { get; set; }
+		[BsonElement("Channel")]
+		public string Channel { get; set; }
 		[BsonElement("User")]
 		public string User { get; set; }
 		//TODO: Probably delete this 
@@ -18,5 +18,7 @@ namespace rtchatty.Models
 		[BsonElement("Message")]
 		public string Message { get; set; }
 		public DateTime Timestamp { get; set; }
+		[BsonElement("Avatar")]
+		public string Avatar { get; set; }
 	}
 }

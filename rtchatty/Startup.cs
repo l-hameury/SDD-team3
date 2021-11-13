@@ -32,6 +32,7 @@ namespace rtchatty
             services.AddScoped<UserService>();
             services.AddScoped<ChatService>();
             services.AddScoped<AdminService>();
+            services.AddScoped<ChannelService>();
 
             services.AddSingleton<IChattyDatabaseSettings>(
                 db => db.GetRequiredService<IOptions<ChattyDatabaseSettings>>().Value);

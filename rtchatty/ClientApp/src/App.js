@@ -19,6 +19,8 @@ import "./custom.css";
 import axios from "axios";
 import AdminPage from "./components/Admin";
 import LogOut from "./components/LogOut";
+import ChannelSearch from "./components/ChannelSearch";
+import ChannelManage from "./components/ChannelManage";
 
 // refactoring App.js
 function App() {
