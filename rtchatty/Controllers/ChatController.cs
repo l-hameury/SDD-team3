@@ -54,11 +54,11 @@ namespace rtchatty.Controllers
 
         }
 
-        // TODO: Add `group` property to allow sending to specific groups/chats
-        [HttpGet("getAll")]
-        public async Task GetMessages()
+        [Route("getAll")]
+        [HttpGet]
+        public async Task GetMessages(string channel = "")
         {
-            List<object> messageList = _chatService.GetMessages();
+            List<object> messageList = _chatService.GetMessages(channel);
             await _chatHub.Clients.All.PopulateMessages(messageList);
             // await _chatHub.GetMessages();
         }
@@ -69,6 +69,14 @@ namespace rtchatty.Controllers
         {
             var msg = _chatService.EditMessage(message);
             await _chatHub.Clients.All.EditMessage(msg, message);
+        }
+
+        [Route("deleteMessage")]
+        [HttpDelete]
+        public async Task DeleteMessage(ChatMessage message)
+        {
+            var msg = _chatService.DeleteMessage(message);
+            await _chatHub.Clients.All.DeleteMessage(msg);
         }
 
         // TODO: Implement users and Groups for sending DMs

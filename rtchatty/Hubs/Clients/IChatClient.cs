@@ -10,5 +10,6 @@ namespace rtchatty.Hubs.Clients
 		Task SendPrivateMessage(string user, ChatMessage message);
 		Task PopulateMessages(List<object> messageList);
 		Task EditMessage(ChatMessage oldMsg, ChatMessage newMsg);
+		Task DeleteMessage(ChatMessage message);
 	}
 }

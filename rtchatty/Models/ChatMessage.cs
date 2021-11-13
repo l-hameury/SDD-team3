@@ -19,5 +19,7 @@ namespace rtchatty.Models
 		[BsonElement("Message")]
 		public string Message { get; set; }
 		public DateTime Timestamp { get; set; }
+		[BsonElement("Avatar")]
+		public string Avatar { get; set; }
 	}
 }

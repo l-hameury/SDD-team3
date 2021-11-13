@@ -8,6 +8,7 @@ import EditMessageModal from './EditMessageModal';
 
 // Rendering a message box
 const Message = (props) => {
+	console.log(props)
 	const [user, setUser] = useState({})
 	const [userCardModal, setUserCardModal] = useState(false)
 	const [usernameUnderline, setUsernameUnderline] = useState(false)
@@ -44,7 +45,7 @@ const Message = (props) => {
 				<Container>
 					<Row noGutters>
 						<Col xs="auto">
-							<img width="40em" src={props.user.avatar ? props.user.avatar : defaultProfilePic} alt="profile pic" ></img>
+							<img width="40em" src={props.avatar ? props.avatar : defaultProfilePic} onError={(e) => { e.target.src = defaultProfilePic }} ></img>
 						</Col>
 						<Col>
 							<CardTitle>
