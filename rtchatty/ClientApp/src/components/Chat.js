@@ -94,14 +94,13 @@ const Chat = (props) => {
 					let messages = { user: element.message.user,
 						recipient: element.message.recipient,
 						likes: element.message.likes,
-						dislikes: element.message.dislikes, 
-						// avatar: element.user.avatar, 
+						dislikes: element.message.dislikes,  
 						avatar: element.message.avatar, 
 						message: element.message.message, 
 						timestamp: element.message.timestamp
 					}
 					const updatedChat = [...latestChat.current];
-					if(messages.channel == channel){
+					if(messages.channel == props.match.params.channel){
 						updatedChat.push(messages);
 						setChat(updatedChat);
 					}
@@ -122,23 +121,16 @@ const Chat = (props) => {
 					timestamp: element.message.timestamp,
 					channel: element.message.channel}
 				const updatedChat = [...latestChat.current];
-				// if(messages.channel == channel){
-					updatedChat.push(messages);
-					setChat(updatedChat);
-				// }
+				updatedChat.push(messages);
+				setChat(updatedChat);
 			});
 		});
 
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
-			// if(message.channel !== props.match.params.channel) return
 			const updatedChat = [...latestChat.current];
-			console.log('message channel is: ', message.channel);
-			console.log('state channel is: ', channel);
-			// if(message.channel == props.match.params.channel){
-				updatedChat.push(message);
-				setChat(updatedChat);
-			// }
+			updatedChat.push(message);
+			setChat(updatedChat);
 
 			scrollToBottom();
 		});
@@ -171,7 +163,6 @@ const Chat = (props) => {
 			updatedChat.splice(index, 1, newMsg)
 			setChat(updatedChat)
 		})
-		
 	}
 
 	/**
