@@ -89,8 +89,15 @@ const Chat = (props) => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, 
-						timestamp: element.message.timestamp , channel: element.message.channel}
+					let messages = { user: element.message.user,
+						recipient: element.message.recipient,
+						likes: element.message.likes,
+						dislikes: element.message.dislikes, 
+						// avatar: element.user.avatar, 
+						avatar: element.message.avatar, 
+						message: element.message.message, 
+						timestamp: element.message.timestamp
+					}
 					const updatedChat = [...latestChat.current];
 					if(messages.channel == channel){
 						updatedChat.push(messages);
@@ -145,6 +152,18 @@ const Chat = (props) => {
 			updatedChat.splice(index, 1)
 			setChat(updatedChat)
 		})
+
+		connection.on('LikeOrDislikeMessage', (oldMsg, newMsg) => {
+			newMsg.avatar = oldMsg.avatar
+			newMsg.likes = oldMsg.likes
+			newMsg.dislikes = oldMsg.dislikes
+			newMsg.recipient = oldMsg.recipient
+			const updatedChat = [...latestChat.current]
+			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
+			updatedChat.splice(index, 1, newMsg)
+			setChat(updatedChat)
+		})
+		
 	}
 
 	/**
@@ -157,6 +176,8 @@ const Chat = (props) => {
 		const chatMessage = {
 			user: user,
 			message: message,
+			likes: [],
+			dislikes: [],
 			recipient: recipient,
 			avatar: avatar,
 			Channel: channel,
