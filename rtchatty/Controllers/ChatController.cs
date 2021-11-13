@@ -28,24 +28,10 @@ namespace rtchatty.Controllers
         }
 
         [HttpPost("messages")]
-<<<<<<< HEAD
         public async Task SendMessage(ChatMessage message, string channel, string username = "", string recipient = "")
         {
             _chatService.StoreMessage(message);
 
-=======
-        public async Task SendMessage(ChatMessage message, string chatRoomName, string username = "", string recipient = "")
-        {
-            _chatService.StoreMessage(message);
-
-            Console.WriteLine("Recipient pre if is: ", message.recipient);
-            Console.WriteLine("Chat Room name is : ", chatRoomName);
-            Console.WriteLine("Or maybe group name is : ", message.Channel);
-
-            // TODO: Uncomment this line to send a private message to the user with this specific email.
-            // email = "kris@test.com";
-
->>>>>>> dab738c39154ee59fe665a5cdfedad79d6bde83a
             // if email was passed, get the corresponding User and connection ID. 
             // Then call Receive Message only on that connection.
             if(message.recipient != "")
@@ -65,7 +51,6 @@ namespace rtchatty.Controllers
 
         [Route("getAll")]
         [HttpGet]
-<<<<<<< HEAD
         public async Task GetMessages(string channel = "", string connectionId = "")
         {
             List<object> messageList = _chatService.GetMessages(channel);
@@ -74,12 +59,6 @@ namespace rtchatty.Controllers
             } else{
                 await _chatHub.Clients.All.PopulateMessages(messageList);
             }
-=======
-        public async Task GetMessages(string channel = "")
-        {
-            List<object> messageList = _chatService.GetMessages(channel);
-            await _chatHub.Clients.All.PopulateMessages(messageList);
->>>>>>> dab738c39154ee59fe665a5cdfedad79d6bde83a
             // await _chatHub.GetMessages();
         }
 
@@ -90,8 +69,6 @@ namespace rtchatty.Controllers
             var msg = _chatService.EditMessage(message);
             await _chatHub.Clients.All.EditMessage(msg, message);
         }
-<<<<<<< HEAD
-=======
 
         [Route("deleteMessage")]
         [HttpDelete]
@@ -108,6 +85,5 @@ namespace rtchatty.Controllers
 		// {
 		// 	return chatHub.Clients.User(user).SendPrivateMessage("ReceiveMessage", message);
 		// }
->>>>>>> dab738c39154ee59fe665a5cdfedad79d6bde83a
     }
 }
