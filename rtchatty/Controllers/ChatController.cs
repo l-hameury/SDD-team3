@@ -49,6 +49,8 @@ namespace rtchatty.Controllers
             else {
                 // chatHub.Clients.All sends to all chathub clients. This sends messages back to the front end
                 // And makes a call to the `ReceiveMessage()` function therein.
+                Console.WriteLine("message is: ", message.Message);
+                Console.WriteLine("message channel is: ", message.Channel);
                 await _chatHub.Clients.All.ReceiveMessage(message);
             }
 
@@ -56,10 +58,14 @@ namespace rtchatty.Controllers
 
         [Route("getAll")]
         [HttpGet]
-        public async Task GetMessages(string channel = "")
+        public async Task GetMessages(string channel = "", string connectionId = "")
         {
             List<object> messageList = _chatService.GetMessages(channel);
-            await _chatHub.Clients.All.PopulateMessages(messageList);
+            if(connectionId != ""){
+                await _chatHub.Clients.Client(connectionId).ChangeChannels(messageList);
+            } else{
+                await _chatHub.Clients.All.PopulateMessages(messageList);
+            }
             // await _chatHub.GetMessages();
         }
 
