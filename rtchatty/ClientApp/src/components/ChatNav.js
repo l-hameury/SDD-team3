@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import "./NavMenu.css";
 import axios from "axios";
 import ChannelCreate from "./ChannelCreate";
+import Chat from "./Chat";
 
 const ChatNavMenu = () => {
     const username = localStorage.getItem('username');
@@ -34,8 +35,7 @@ const ChatNavMenu = () => {
     // Mapping the list of channels from the array to a linkable list rendered for the user to click on
     const channels = channelList.map((channel) =>
         <NavItem key={channel + 'DM'}>
-            {(channel == "General Chat") ? <NavLink tag={Link} to={"/chat"}> {channel} </NavLink> : <NavLink tag={Link} to={"/chat/" + channel}> {channel} </NavLink>}
-
+            <NavLink tag={Link} to={"/chat" + (channel == "General Chat" ? "" : "/" + channel)}> {channel} </NavLink>
         </NavItem>
     );
 
