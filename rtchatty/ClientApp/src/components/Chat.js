@@ -62,7 +62,7 @@ const Chat = (props) => {
 					prepareClientHubMethods();
 
 					// Populate with a list of messages
-					getAllMessages();
+					getAllMessages(channel);
 				}
 				catch (e) {
 					console.log('Connection failed: ', e)
@@ -98,8 +98,7 @@ const Chat = (props) => {
 
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
-			
-			message.avatar = avatar;
+			if(message.channel !== channel) return
 			const updatedChat = [...latestChat.current];
 			updatedChat.push(message);
 
@@ -109,11 +108,20 @@ const Chat = (props) => {
 		});
 
 		connection.on('EditMessage', (oldMsg, newMsg) => {
-			newMsg.avatar = avatar
-			newMsg.recipient = oldMsg.recipient
+			if(oldMsg.channel !== channel) return
+			oldMsg.avatar = avatar
 			const updatedChat = [...latestChat.current]
 			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
-			updatedChat.splice(index, 1, newMsg)
+			oldMsg.message = newMsg.message
+			updatedChat.splice(index, 1, oldMsg)
+			setChat(updatedChat)
+		})
+
+		connection.on('DeleteMessage', message => {
+			if(message.channel !== channel) return
+			const updatedChat = [...latestChat.current]
+			const index = updatedChat.map(function(x){return x.message}).indexOf(message.message)
+			updatedChat.splice(index, 1)
 			setChat(updatedChat)
 		})
 	}
@@ -133,6 +141,7 @@ const Chat = (props) => {
 			user: user,
 			message: message,
 			recipient: recipient,
+			avatar: avatar,
 			Channel: channel,
 		};
 		if (connection.connectionStarted) {
@@ -155,7 +164,11 @@ const Chat = (props) => {
 	const getAllMessages = async () => {
 		if (connection.connectionStarted) {
 			try {
-				await axios.get('https://localhost:5001/Chat/getAll');
+				await axios.get('https://localhost:5001/Chat/getAll', {
+					params: {
+						channel: channel
+					}
+				});
 			}
 			catch (e) {
 				console.log('Retrieving message failed', e);
@@ -181,7 +194,6 @@ const Chat = (props) => {
 		if(connection.connectionStarted){
 			let connectionId = connection.connectionId
 			let usernameFixed = username[0];
-			console.log(usernameFixed);
 			try {
 				await axios.put('https://localhost:5001/api/user/updateConnection', {Username: usernameFixed, connectionId});
 			}
