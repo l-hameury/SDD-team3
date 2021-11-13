@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net.Mail;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
 using rtchatty.Hubs;
 using rtchatty.Hubs.Clients;
 using rtchatty.Models;
@@ -33,11 +30,6 @@ namespace rtchatty.Controllers
         [HttpPost("messages")]
         public async Task SendMessage(ChatMessage message, string chatRoomName, string username = "", string recipient = "")
         {
-            ClaimsIdentity identity = User.Identity as ClaimsIdentity;
-            IEnumerable<Claim> claims = identity.Claims;
-            var email = claims.FirstOrDefault().Value;
-            User sender = _userService.GetUserByEmail(email);
-            message.Avatar = sender.Avatar;
             _chatService.StoreMessage(message);
 
             Console.WriteLine("Recipient pre if is: ", message.recipient);
@@ -85,30 +77,7 @@ namespace rtchatty.Controllers
             await _chatHub.Clients.All.EditMessage(msg, message);
         }
 
-        [Route("likeMessage")]
-        [HttpPost]
-        public async Task<ChatMessage> LikeMessage(ChatMessage message)
-        {
-            ClaimsIdentity identity = User.Identity as ClaimsIdentity;
-            IEnumerable<Claim> claims = identity.Claims;
-            var email = claims.FirstOrDefault().Value;
-            var msg = _chatService.LikeMessage(message, email);
-            await _chatHub.Clients.All.LikeOrDislikeMessage(msg, message);
-            return msg;
-        }
-
-        [Route("dislikeMessage")]
-        [HttpPost]
-        public async Task<ChatMessage> DislikeMessage(ChatMessage message)
-        {
-            ClaimsIdentity identity = User.Identity as ClaimsIdentity;
-            IEnumerable<Claim> claims = identity.Claims;
-            var email = claims.FirstOrDefault().Value;
-            var msg = _chatService.DislikeMessage(message, email);
-            await _chatHub.Clients.All.LikeOrDislikeMessage(msg, message);
-            return msg;
-        }
-         [Route("deleteMessage")]
+        [Route("deleteMessage")]
         [HttpDelete]
         public async Task DeleteMessage(ChatMessage message)
         {

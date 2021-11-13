@@ -12,9 +12,7 @@ const EditMessageModal = (props) => {
 			await axios.post('https://localhost:5001/Chat/editMessage', {
 				User: props.username,
 				Message: newMsg,
-				Timestamp: props.timestamp,
-				Likes: props.likes,
-				Dislikes: props.dislikes,
+				Timestamp: props.timestamp
 			})
 			props.toggle()
 		}
