@@ -144,8 +144,6 @@ const Chat = (props) => {
 		});
 
 		connection.on('EditMessage', (oldMsg, newMsg) => {
-			if(oldMsg.channel !== channel) return
-			oldMsg.avatar = avatar
 			const updatedChat = [...latestChat.current]
 			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
 			oldMsg.message = newMsg.message
@@ -154,7 +152,6 @@ const Chat = (props) => {
 		})
 
 		connection.on('DeleteMessage', message => {
-			if(message.channel !== channel) return
 			const updatedChat = [...latestChat.current]
 			const index = updatedChat.map(function(x){return x.message}).indexOf(message.message)
 			updatedChat.splice(index, 1)
