@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import axios from 'axios';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
@@ -9,7 +9,7 @@ import SortMessages from './SortMessages';
 import { Container } from 'reactstrap';
 import ChatNavMenu from './ChatNav';
 
-const Chat = () => {
+const Chat = (props) => {
 	const [connection, setConnection] = useState(null);
 	const [chat, setChat] = useState([]);
 	const [messagesEnd, setMessagesEnd] = useState();
@@ -21,6 +21,7 @@ const Chat = () => {
 	const username = useState(localStorage.getItem('username'));
 	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
+	const channel = (props.match.params.channel) ? props.match.params.channel : "General Chat";
 
 	latestChat.current = chat;
 
@@ -46,10 +47,8 @@ const Chat = () => {
 			if (connection) {
 				await connection.start();
 				try {
-					console.log('connected')
+					console.log('connected');
 
-					console.log('ConnectionId is: ', connection.connectionId)
-					
 					// connection.invoke("Join");
 					updateConnectionID();
 
@@ -57,7 +56,7 @@ const Chat = () => {
 					prepareClientHubMethods();
 
 					// Populate with a list of messages
-					getAllMessages();
+					getAllMessages(channel);
 				}
 				catch (e) {
 					console.log('Connection failed: ', e)
@@ -67,6 +66,15 @@ const Chat = () => {
 
 		startConnection();
 	}, [connection]);
+
+	useEffect(()=>{
+		if(connection && connection.connectionStarted){
+			console.log("useEffect " , props.match.params.channel)
+			console.log('calling get all messages');
+			setChat([]);
+			getAllMessages( (props.match.params.channel) ? props.match.params.channel : "General Chat", connection.connectionId);
+		}
+	},[props.match.params.channel]);
 
 	/**
 	 * Client Hub Methods are methods declared here
@@ -88,31 +96,60 @@ const Chat = () => {
 						// avatar: element.user.avatar, 
 						avatar: element.message.avatar, 
 						message: element.message.message, 
-						timestamp: element.message.timestamp }
+						timestamp: element.message.timestamp
+					}
 					const updatedChat = [...latestChat.current];
-					updatedChat.push(messages);
-					setChat(updatedChat);
+					if(messages.channel == channel){
+						updatedChat.push(messages);
+						setChat(updatedChat);
+					}
 				});
 			}
 		});
 
+		connection.on('ChangeChannels', messageList => {
+			console.log(messageList)
+			// TODO: Probably do this server-side with connection ID
+			messageList.forEach(element => {
+				let messages = { user: element.message.user, recipient: element.message.recipient, avatar: element.user.avatar, message: element.message.message, 
+					timestamp: element.message.timestamp , channel: element.message.channel}
+				const updatedChat = [...latestChat.current];
+				// if(messages.channel == channel){
+					updatedChat.push(messages);
+					setChat(updatedChat);
+				// }
+			});
+		});
+
 		// Handle Receive Message functionality from Hub
 		connection.on('ReceiveMessage', message => {
-			
+			// if(message.channel !== props.match.params.channel) return
 			const updatedChat = [...latestChat.current];
-			updatedChat.push(message);
-
-			setChat(updatedChat);
+			console.log('message channel is: ', message.channel);
+			console.log('state channel is: ', channel);
+			// if(message.channel == props.match.params.channel){
+				updatedChat.push(message);
+				setChat(updatedChat);
+			// }
 
 			scrollToBottom();
 		});
 
 		connection.on('EditMessage', (oldMsg, newMsg) => {
-			newMsg.avatar = avatar
-			newMsg.recipient = oldMsg.recipient
+			if(oldMsg.channel !== channel) return
+			oldMsg.avatar = avatar
 			const updatedChat = [...latestChat.current]
 			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
-			updatedChat.splice(index, 1, newMsg)
+			oldMsg.message = newMsg.message
+			updatedChat.splice(index, 1, oldMsg)
+			setChat(updatedChat)
+		})
+
+		connection.on('DeleteMessage', message => {
+			if(message.channel !== channel) return
+			const updatedChat = [...latestChat.current]
+			const index = updatedChat.map(function(x){return x.message}).indexOf(message.message)
+			updatedChat.splice(index, 1)
 			setChat(updatedChat)
 		})
 
@@ -135,16 +172,15 @@ const Chat = () => {
 	 * 		For chat rooms, DMs, etc.
 	 */
 	const sendMessage = async (user, message, recipient) => {
-		
-		// TODO: Add recipient email for private messages
-		// Maybe nullable field in object? I dunno yet
+
 		const chatMessage = {
 			user: user,
 			message: message,
-			// TODO: Remove this probably
-			recipient: recipient,
 			likes: [],
 			dislikes: [],
+			recipient: recipient,
+			avatar: avatar,
+			Channel: channel,
 		};
 		if (connection.connectionStarted) {
 			try {
@@ -155,7 +191,6 @@ const Chat = () => {
 			}
 		}
 		else {
-			// TODO: We're not using a separate server here, so.... not super relevant
 			alert('No connection to server yet.');
 		}
 		scrollToBottom();
@@ -164,11 +199,15 @@ const Chat = () => {
 	/**
 	 * Call Hub endpoint to pull all existing messages
 	 */
-	const getAllMessages = async () => {
-		console.log("Get message called here! \n");
+	const getAllMessages = async (channel, connectionId) => {
 		if (connection.connectionStarted) {
 			try {
-				await axios.get('https://localhost:5001/Chat/getAll');
+				await axios.get('https://localhost:5001/Chat/getAll', {
+					params: {
+						channel: channel,
+						connectionId: connectionId
+					}
+				});
 			}
 			catch (e) {
 				console.log('Retrieving message failed', e);
@@ -194,7 +233,6 @@ const Chat = () => {
 		if(connection.connectionStarted){
 			let connectionId = connection.connectionId
 			let usernameFixed = username[0];
-			console.log(usernameFixed);
 			try {
 				await axios.put('https://localhost:5001/api/user/updateConnection', {Username: usernameFixed, connectionId});
 			}
@@ -218,7 +256,7 @@ const Chat = () => {
 				<div className="vr" style={{ backgroundColor: "white", borderLeft: "1px solid #333" }}></div>
 				<Col>
 					<div>
-						<h1>General Chat</h1>
+						<h1>{channel ? channel : "General Chat"}</h1>
 						<span>
 							<Button onClick={togglesearch}>Search</Button> {'  '}
 							<Button onClick={togglesort} >Sort</Button> 

@@ -31,7 +31,7 @@ namespace rtchatty.Controllers
         }
 
         [HttpPost("messages")]
-        public async Task SendMessage(ChatMessage message, string username = "", string recipient = "")
+        public async Task SendMessage(ChatMessage message, string chatRoomName, string username = "", string recipient = "")
         {
             ClaimsIdentity identity = User.Identity as ClaimsIdentity;
             IEnumerable<Claim> claims = identity.Claims;
@@ -41,6 +41,8 @@ namespace rtchatty.Controllers
             _chatService.StoreMessage(message);
 
             Console.WriteLine("Recipient pre if is: ", message.recipient);
+            Console.WriteLine("Chat Room name is : ", chatRoomName);
+            Console.WriteLine("Or maybe group name is : ", message.Channel);
 
             // TODO: Uncomment this line to send a private message to the user with this specific email.
             // email = "kris@test.com";
@@ -49,24 +51,29 @@ namespace rtchatty.Controllers
             // Then call Receive Message only on that connection.
             if(message.recipient != "")
             {
-                Console.WriteLine("Recipient is: ", message.recipient);
                 User user = _userService.GetUserByUsername(message.recipient);
                 await _chatHub.Clients.Client(user.ConnectionID).ReceiveMessage(message);
             }
             else {
                 // chatHub.Clients.All sends to all chathub clients. This sends messages back to the front end
                 // And makes a call to the `ReceiveMessage()` function therein.
+                Console.WriteLine("message is: ", message.Message);
+                Console.WriteLine("message channel is: ", message.Channel);
                 await _chatHub.Clients.All.ReceiveMessage(message);
             }
 
         }
 
-        // TODO: Add `group` property to allow sending to specific groups/chats
-        [HttpGet("getAll")]
-        public async Task GetMessages()
+        [Route("getAll")]
+        [HttpGet]
+        public async Task GetMessages(string channel = "", string connectionId = "")
         {
-            List<object> messageList = _chatService.GetMessages();
-            await _chatHub.Clients.All.PopulateMessages(messageList);
+            List<object> messageList = _chatService.GetMessages(channel);
+            if(connectionId != ""){
+                await _chatHub.Clients.Client(connectionId).ChangeChannels(messageList);
+            } else{
+                await _chatHub.Clients.All.PopulateMessages(messageList);
+            }
             // await _chatHub.GetMessages();
         }
 
@@ -100,6 +107,13 @@ namespace rtchatty.Controllers
             var msg = _chatService.DislikeMessage(message, email);
             await _chatHub.Clients.All.LikeOrDislikeMessage(msg, message);
             return msg;
+        }
+         [Route("deleteMessage")]
+        [HttpDelete]
+        public async Task DeleteMessage(ChatMessage message)
+        {
+            var msg = _chatService.DeleteMessage(message);
+            await _chatHub.Clients.All.DeleteMessage(msg);
         }
 
         // TODO: Implement users and Groups for sending DMs

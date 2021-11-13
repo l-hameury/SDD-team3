@@ -97,14 +97,14 @@ const Message = (props) => {
 				<Container>
 					<Row noGutters>
 						<Col xs="auto">
-							<img width="40em" src={props.avatar ? props.avatar : defaultProfilePic} alt="profile pic" ></img>
+							<img width="40em" src={props.avatar ? props.avatar : defaultProfilePic} onError={(e) => { e.target.src = defaultProfilePic }} ></img>
 						</Col>
 						<Col>
 							<CardTitle>
 								<small>{moment(props.timestamp).format('LT')} </small>
 								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.user}</strong>
 								<p style={{display:"inline"}}> to </p>
-								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.recipient ? props.recipient : "General Chat"}</strong>:
+								<strong className={usernameUnderline ? 'username' : ''} onMouseEnter={toggleUnderline} onMouseLeave={toggleUnderline} onClick={e => toggleCard(e)}>{props.recipient ? props.recipient : "Channel"}</strong>:
 								{localStorage.getItem('username') == props.user && editMessageButton
 								? <Button size="sm" onClick={toggleMsgModal}>Edit Message</Button>
 								: ''}
