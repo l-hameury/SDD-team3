@@ -8,6 +8,7 @@ import SearchKeyword from './SearchKeyword';
 import SortMessages from './SortMessages';
 import { Container } from 'reactstrap';
 import ChatNavMenu from './ChatNav';
+import ClearNotification from './ClearNotification';
 
 const Chat = (props) => {
 	const [connection, setConnection] = useState(null);
@@ -21,6 +22,7 @@ const Chat = (props) => {
 	const username = useState(localStorage.getItem('username'));
 	const userEmail = useState(localStorage.getItem('email'));
 	const avatar = localStorage.getItem('avatar');
+	const [notifications, setNotification] = useState(0)
 	const channel = (props.match.params.channel) ? props.match.params.channel : "General Chat";
 
 	latestChat.current = chat;
@@ -168,6 +170,14 @@ const Chat = (props) => {
 			catch (e) {
 				console.log('Sending message failed', e);
 			}
+
+			//notify everyone after sending the message...
+			try {
+				await axios.post('https://localhost:5001/api/user/notify', chatMessage);
+			}
+			catch (e) {
+				console.log('Failed to notify users about the sent message', e);
+			}
 		}
 		else {
 			alert('No connection to server yet.');
@@ -226,6 +236,21 @@ const Chat = (props) => {
 	//sets the modal status to true or false for sorting
 	const togglesort = () => setSortModal(!sortmodal);
 
+	//Get User's notification number...
+	useEffect(() =>{
+		axios.get('https://localhost:5001/api/user/getUserByEmail', {
+			params: {
+			  email: userEmail[0],
+			},
+		}).then(function(res){
+			setNotification(res.data.notificationCount)
+		})
+		.catch(function(error){	
+			console.log(`An error occured in Notification component: ${error}`)
+		})
+
+	})
+
 	return (
 		<div>
 			<Row>
@@ -261,6 +286,7 @@ const Chat = (props) => {
 							</ModalBody>
 						</Modal>
 						<hr />
+						<ClearNotification notificationCount= {notifications} username={username} userEmail={userEmail}></ClearNotification>
 						<Container className="pb-1 mb-5">
 							<ChatWindow chat={chat}/>
 							<ChatInput username={username} sendMessage={sendMessage} />

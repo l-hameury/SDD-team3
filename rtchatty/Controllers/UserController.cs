@@ -165,6 +165,17 @@ namespace rtchatty.Controllers
             return service.unfriend(user);
         }
 
+        [Route("notify")]
+        [HttpPost]
+        public ActionResult<User> Notify(ChatMessage message){
+            return service.notify(message.User);
+        }
+
+        [Route("clearnotifications")]
+        [HttpPost]
+        public ActionResult<User> ClearNotification(User user){
+            return service.clearNotification(user);
+        }
         [HttpGet]
         [Route("getUserChannels")]
         public ActionResult<List<string>> GetUserChannels(string username) {
