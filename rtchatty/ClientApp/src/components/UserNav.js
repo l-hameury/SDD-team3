@@ -53,7 +53,7 @@ export default function UserNav() {
       <Container>
         <div className="block-example border border-success">
           <CardBody>
-            <Link to="/profile">Leticia</Link>
+            <Link to="/profile">{localStorage.getItem('username')}</Link>
           </CardBody>
         </div>
       </Container>

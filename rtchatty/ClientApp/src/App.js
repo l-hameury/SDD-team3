@@ -1,4 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
+import { Button } from 'reactstrap';
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
 import { FetchData } from "./components/FetchData";
@@ -49,7 +50,7 @@ function App() {
       <>
         <GlobalStyles />
         <Layout>
-          <button onClick={themeToggler}>Switch Theme</button>
+          <Button color="secondary" onClick={themeToggler}>Switch Theme</Button>
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/counter" component={Counter} />
