@@ -47,17 +47,9 @@ const Message = (props) => {
 	const likeMessage = async () => {
 		if (currentUser) {
 			await axios.post('https://localhost:5001/Chat/likeMessage', {
-					User: props.user,
-					Message: props.message,
-					Timestamp: props.timestamp,
-					Likes: props.likes,
-					Dislikes: props.dislikes
+					id: props.id
 			})
 			.then(function (res) {
-				setLikes(res.data.likes)
-				setDislikes(res.data.dislikes)	
-				setLiked(!liked)
-				setDisliked(false)
 			})
 			// .catch(function () {
 			// 	setUserCardModal(false)
@@ -68,18 +60,9 @@ const Message = (props) => {
 	const dislikeMessage = async (messageId) => {
 		if (currentUser) {
 			await axios.post('https://localhost:5001/Chat/dislikeMessage', {
-					User: props.user,
-					Message: props.message,
-					Timestamp: props.timestamp,
-					Likes: props.likes,
-					Dislikes: props.dislikes
-					
+					id: props.id		
 			})
 			.then(function (res) {
-				setLikes(res.data.likes)
-				setDislikes(res.data.dislikes)	
-				setDisliked(!disliked)
-				setLiked(false)
 			})
 			// .catch(function () {
 			// 	setUserCardModal(false)
@@ -88,12 +71,13 @@ const Message = (props) => {
 	}
 
 	const toggleUnderline = () => setUsernameUnderline(!usernameUnderline)
-	const toggleEditButton = () => setEditButton(!editMessageButton)
+	const toggleEditButtonT = () => setEditButton(true)
+	const toggleEditButtonF = () => setEditButton(false)
 	const toggleMsgModal = () => setEditMsgModal(!editMsgModal)
 
 	return (
 		<div /* style={{ background: "#eee", borderRadius: '5px', padding: '0 10px' }} */>
-			<Card body onMouseEnter={toggleEditButton} onMouseLeave={toggleEditButton}>
+			<Card body onMouseEnter={toggleEditButtonT} onMouseLeave={toggleEditButtonF}>
 				<Container>
 					<Row noGutters>
 						<Col xs="auto">
@@ -111,7 +95,7 @@ const Message = (props) => {
 									className="m-1"
 									onClick={() => likeMessage()} >
 									<FontAwesomeIcon icon={faThumbsUp} transform="grow-5" className="p-0 m-1" />
-									<Badge> {likes.length} </Badge>
+									<Badge> {props.likes.length} </Badge>
 								</Button>
 								<Button 
 									color={disliked ? "warning" : "danger"} 
@@ -119,7 +103,7 @@ const Message = (props) => {
 									className="m-1"
 									onClick={() => dislikeMessage()}>
 									<FontAwesomeIcon icon={faThumbsDown} transform="grow-5" className="p-0 m-1" />
-									<Badge> {dislikes.length} </Badge>
+									<Badge> {props.dislikes.length} </Badge>
 								</Button>
 								{localStorage.getItem('username') == props.user && editMessageButton
 								? <Button size="sm" onClick={toggleMsgModal}>Edit Message</Button>

@@ -91,7 +91,8 @@ const Chat = (props) => {
 			// Only pull all messages if there currently are no messages
 			if (latestChat.current.length === 0) {
 				messageList.forEach(element => {
-					let messages = { user: element.message.user,
+					let messages = { id: element.message.id,
+						user: element.message.user,
 						recipient: element.message.recipient,
 						likes: element.message.likes,
 						dislikes: element.message.dislikes,  
@@ -112,7 +113,8 @@ const Chat = (props) => {
 			console.log(messageList)
 			// TODO: Probably do this server-side with connection ID
 			messageList.forEach(element => {
-				let messages = { user: element.message.user,
+				let messages = { id: element.message.id,
+					user: element.message.user,
 					recipient: element.message.recipient,
 					likes: element.message.likes,
 					dislikes: element.message.dislikes, 
@@ -151,10 +153,8 @@ const Chat = (props) => {
 		})
 
 		connection.on('LikeOrDislikeMessage', (oldMsg, newMsg) => {
-			newMsg.avatar = oldMsg.avatar
-			newMsg.likes = oldMsg.likes
-			newMsg.dislikes = oldMsg.dislikes
-			newMsg.recipient = oldMsg.recipient
+			newMsg = oldMsg
+
 			const updatedChat = [...latestChat.current]
 			const index = updatedChat.map(function(x){return x.message}).indexOf(oldMsg.message)
 			updatedChat.splice(index, 1, newMsg)
